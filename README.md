@@ -31,36 +31,26 @@ This project is a weather dashboard application built using Python and Tkinter. 
    cd TPS_Capstone2025
 Create and activate a virtual environment:
 
-bash
-Copy
-Edit
+
 python -m venv venv
 source venv/Scripts/activate   # Windows PowerShell/Git Bash
 # or
 venv\Scripts\activate          # Windows CMD
 Install dependencies:
 
-bash
-Copy
-Edit
+
 pip install -r requirements.txt
 Create a .env file in the project root and add your API key:
 
-ini
-Copy
-Edit
+
 OPENWEATHER_API_KEY=your_api_key_here
 Running the App
 Run the main script:
-
-bash
-Copy
-Edit
 python app.py
+
+
 Project Structure
-arduino
-Copy
-Edit
+
 TPS_Capstone2025/
 ├── app.py
 ├── config.py

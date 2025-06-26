@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
+from datetime import datetime
 from core.api import fetch_current_weather, fetch_forecast
 from core.icons import get_icon_image, get_detail_icon
 from core.storage import save_current_weather_to_csv, save_forecast_to_csv
-from datetime import datetime
+from features.dark_light_mode import ThemeToggle 
+
 
 class MainWindow:
     def __init__(self, root):
@@ -11,6 +13,7 @@ class MainWindow:
         self.root.title("Weather App")
         self.root.geometry("600x720")
         self.root.configure(bg="#2E2E2E")  # Dark background
+        self.current_theme = "dark"
 
         self.city_var = tk.StringVar()
 
@@ -36,7 +39,7 @@ class MainWindow:
         )
         self.city_entry.pack(side="left", padx=(0, 5), ipady=5)
 
-        # Sharp styled tk.Button (not ttk)
+        # Search button
         self.search_button = tk.Button(
             self.input_frame,
             text="Search",
@@ -52,6 +55,18 @@ class MainWindow:
             pady=5
         )
         self.search_button.pack(side="right")
+
+        # Theme toggle button (floating in top-right corner)
+        self.theme_toggle_container = tk.Frame(self.root, bg="#2E2E2E")
+        self.theme_toggle_container.place(relx=1.0, rely=0.0, x=-10, y=10, anchor="ne")
+
+        self.theme_toggle = ThemeToggle(
+            parent=self.theme_toggle_container,
+            toggle_callback=self.apply_theme,
+            current_theme=self.current_theme,
+            size=(24, 24)
+        )
+        self.theme_toggle.button.pack()
 
         # --- Main Weather Card Frame ---
         self.weather_card = ttk.Frame(root, padding=10, style="MainCard.TFrame")
@@ -195,5 +210,8 @@ class MainWindow:
 
         return forecast_summary
 
-
+    def apply_theme(self, theme_name):
+        self.current_theme = theme_name
+        print(f"Theme switched to: {theme_name}")
+        # TODO: You can apply real color/style changes here later
 
