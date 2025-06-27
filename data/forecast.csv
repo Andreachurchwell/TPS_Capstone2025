@@ -759,3 +759,763 @@ Dallas,2025-07-01 12:00:00,81.84,scattered clouds
 Dallas,2025-07-01 15:00:00,89.65,clear sky
 Dallas,2025-07-01 18:00:00,98.85,clear sky
 Dallas,2025-07-01 21:00:00,99.21,scattered clouds
+Munich,2025-06-27 00:00:00,63.34,light rain
+Munich,2025-06-27 03:00:00,60.82,broken clouds
+Munich,2025-06-27 06:00:00,65.44,broken clouds
+Munich,2025-06-27 09:00:00,72.55,overcast clouds
+Munich,2025-06-27 12:00:00,68.27,light rain
+Munich,2025-06-27 15:00:00,64.13,light rain
+Munich,2025-06-27 18:00:00,65.55,overcast clouds
+Munich,2025-06-27 21:00:00,59.34,scattered clouds
+Munich,2025-06-28 00:00:00,58.86,broken clouds
+Munich,2025-06-28 03:00:00,58.12,broken clouds
+Munich,2025-06-28 06:00:00,64.99,scattered clouds
+Munich,2025-06-28 09:00:00,76.24,clear sky
+Munich,2025-06-28 12:00:00,80.44,clear sky
+Munich,2025-06-28 15:00:00,80.87,clear sky
+Munich,2025-06-28 18:00:00,75.9,clear sky
+Munich,2025-06-28 21:00:00,66.67,clear sky
+Munich,2025-06-29 00:00:00,63.82,clear sky
+Munich,2025-06-29 03:00:00,61.99,few clouds
+Munich,2025-06-29 06:00:00,69.48,few clouds
+Munich,2025-06-29 09:00:00,79.59,clear sky
+Munich,2025-06-29 12:00:00,83.79,clear sky
+Munich,2025-06-29 15:00:00,83.88,clear sky
+Munich,2025-06-29 18:00:00,77.52,clear sky
+Munich,2025-06-29 21:00:00,69.55,clear sky
+Munich,2025-06-30 00:00:00,65.95,clear sky
+Munich,2025-06-30 03:00:00,63.59,broken clouds
+Munich,2025-06-30 06:00:00,71.02,scattered clouds
+Munich,2025-06-30 09:00:00,80.2,clear sky
+Munich,2025-06-30 12:00:00,85.19,clear sky
+Munich,2025-06-30 15:00:00,85.06,clear sky
+Munich,2025-06-30 18:00:00,78.53,scattered clouds
+Munich,2025-06-30 21:00:00,70.43,broken clouds
+Munich,2025-07-01 00:00:00,66.72,broken clouds
+Munich,2025-07-01 03:00:00,63.7,light rain
+Munich,2025-07-01 06:00:00,68.18,light rain
+Munich,2025-07-01 09:00:00,81.81,light rain
+Munich,2025-07-01 12:00:00,88.61,few clouds
+Munich,2025-07-01 15:00:00,89.28,clear sky
+Munich,2025-07-01 18:00:00,72.18,moderate rain
+Munich,2025-07-01 21:00:00,65.59,light rain
+Denver,2025-06-27 00:00:00,87.42,broken clouds
+Denver,2025-06-27 03:00:00,82.53,broken clouds
+Denver,2025-06-27 06:00:00,72.93,light rain
+Denver,2025-06-27 09:00:00,63.23,clear sky
+Denver,2025-06-27 12:00:00,61.95,clear sky
+Denver,2025-06-27 15:00:00,78.4,clear sky
+Denver,2025-06-27 18:00:00,91.17,clear sky
+Denver,2025-06-27 21:00:00,89.22,scattered clouds
+Denver,2025-06-28 00:00:00,85.44,broken clouds
+Denver,2025-06-28 03:00:00,81.5,overcast clouds
+Denver,2025-06-28 06:00:00,74.93,overcast clouds
+Denver,2025-06-28 09:00:00,71.94,few clouds
+Denver,2025-06-28 12:00:00,69.31,few clouds
+Denver,2025-06-28 15:00:00,81.99,clear sky
+Denver,2025-06-28 18:00:00,95,clear sky
+Denver,2025-06-28 21:00:00,92.88,scattered clouds
+Denver,2025-06-29 00:00:00,87.17,broken clouds
+Denver,2025-06-29 03:00:00,82.9,overcast clouds
+Denver,2025-06-29 06:00:00,75.61,broken clouds
+Denver,2025-06-29 09:00:00,72.84,scattered clouds
+Denver,2025-06-29 12:00:00,70.47,scattered clouds
+Denver,2025-06-29 15:00:00,80.24,clear sky
+Denver,2025-06-29 18:00:00,89.11,clear sky
+Denver,2025-06-29 21:00:00,82.8,light rain
+Denver,2025-06-30 00:00:00,72.34,light rain
+Denver,2025-06-30 03:00:00,72.16,broken clouds
+Denver,2025-06-30 06:00:00,69.93,scattered clouds
+Denver,2025-06-30 09:00:00,67.21,scattered clouds
+Denver,2025-06-30 12:00:00,63.39,few clouds
+Denver,2025-06-30 15:00:00,72.23,clear sky
+Denver,2025-06-30 18:00:00,81.43,clear sky
+Denver,2025-06-30 21:00:00,86.81,scattered clouds
+Denver,2025-07-01 00:00:00,67.32,light rain
+Denver,2025-07-01 03:00:00,67.64,light rain
+Denver,2025-07-01 06:00:00,67.39,overcast clouds
+Denver,2025-07-01 09:00:00,65.97,overcast clouds
+Denver,2025-07-01 12:00:00,64.45,overcast clouds
+Denver,2025-07-01 15:00:00,71.24,broken clouds
+Denver,2025-07-01 18:00:00,83.82,overcast clouds
+Denver,2025-07-01 21:00:00,88.39,scattered clouds
+Clifton,2025-06-27 00:00:00,69.46,overcast clouds
+Clifton,2025-06-27 03:00:00,69.71,overcast clouds
+Clifton,2025-06-27 06:00:00,68.54,overcast clouds
+Clifton,2025-06-27 09:00:00,67.19,broken clouds
+Clifton,2025-06-27 12:00:00,68.72,broken clouds
+Clifton,2025-06-27 15:00:00,77.18,broken clouds
+Clifton,2025-06-27 18:00:00,79.18,broken clouds
+Clifton,2025-06-27 21:00:00,75.33,broken clouds
+Clifton,2025-06-28 00:00:00,69.26,overcast clouds
+Clifton,2025-06-28 03:00:00,68.02,overcast clouds
+Clifton,2025-06-28 06:00:00,69.12,light rain
+Clifton,2025-06-28 09:00:00,69.93,light rain
+Clifton,2025-06-28 12:00:00,70.79,light rain
+Clifton,2025-06-28 15:00:00,76.8,overcast clouds
+Clifton,2025-06-28 18:00:00,89.98,overcast clouds
+Clifton,2025-06-28 21:00:00,91.38,overcast clouds
+Clifton,2025-06-29 00:00:00,85.28,light rain
+Clifton,2025-06-29 03:00:00,77.95,light rain
+Clifton,2025-06-29 06:00:00,75.02,light rain
+Clifton,2025-06-29 09:00:00,70.66,overcast clouds
+Clifton,2025-06-29 12:00:00,73.74,broken clouds
+Clifton,2025-06-29 15:00:00,82.29,scattered clouds
+Clifton,2025-06-29 18:00:00,89.78,few clouds
+Clifton,2025-06-29 21:00:00,91.74,clear sky
+Clifton,2025-06-30 00:00:00,84.56,clear sky
+Clifton,2025-06-30 03:00:00,76.8,scattered clouds
+Clifton,2025-06-30 06:00:00,73.09,scattered clouds
+Clifton,2025-06-30 09:00:00,70.7,clear sky
+Clifton,2025-06-30 12:00:00,76.51,clear sky
+Clifton,2025-06-30 15:00:00,87.98,clear sky
+Clifton,2025-06-30 18:00:00,94.21,few clouds
+Clifton,2025-06-30 21:00:00,91.11,scattered clouds
+Clifton,2025-07-01 00:00:00,81.82,scattered clouds
+Clifton,2025-07-01 03:00:00,79.14,few clouds
+Clifton,2025-07-01 06:00:00,77.02,scattered clouds
+Clifton,2025-07-01 09:00:00,75.18,light rain
+Clifton,2025-07-01 12:00:00,74.8,light rain
+Clifton,2025-07-01 15:00:00,82.4,overcast clouds
+Clifton,2025-07-01 18:00:00,77.45,moderate rain
+Clifton,2025-07-01 21:00:00,83.28,light rain
+Crump,2025-06-27 00:00:00,89.62,clear sky
+Crump,2025-06-27 03:00:00,87.57,light rain
+Crump,2025-06-27 06:00:00,81.57,light rain
+Crump,2025-06-27 09:00:00,74.59,light rain
+Crump,2025-06-27 12:00:00,75.83,light rain
+Crump,2025-06-27 15:00:00,80.22,light rain
+Crump,2025-06-27 18:00:00,86.61,overcast clouds
+Crump,2025-06-27 21:00:00,89.1,broken clouds
+Crump,2025-06-28 00:00:00,83.35,light rain
+Crump,2025-06-28 03:00:00,75.07,light rain
+Crump,2025-06-28 06:00:00,73.13,light rain
+Crump,2025-06-28 09:00:00,72.07,light rain
+Crump,2025-06-28 12:00:00,72.73,light rain
+Crump,2025-06-28 15:00:00,81.32,overcast clouds
+Crump,2025-06-28 18:00:00,87.33,light rain
+Crump,2025-06-28 21:00:00,88.9,light rain
+Crump,2025-06-29 00:00:00,80.74,light rain
+Crump,2025-06-29 03:00:00,75.42,light rain
+Crump,2025-06-29 06:00:00,73.13,light rain
+Crump,2025-06-29 09:00:00,71.76,light rain
+Crump,2025-06-29 12:00:00,73.83,light rain
+Crump,2025-06-29 15:00:00,81.03,light rain
+Crump,2025-06-29 18:00:00,85.77,moderate rain
+Crump,2025-06-29 21:00:00,86.52,light rain
+Crump,2025-06-30 00:00:00,79.29,light rain
+Crump,2025-06-30 03:00:00,73.51,light rain
+Crump,2025-06-30 06:00:00,72.93,light rain
+Crump,2025-06-30 09:00:00,72.1,broken clouds
+Crump,2025-06-30 12:00:00,73.4,light rain
+Crump,2025-06-30 15:00:00,79.16,broken clouds
+Crump,2025-06-30 18:00:00,85.68,light rain
+Crump,2025-06-30 21:00:00,85.21,light rain
+Crump,2025-07-01 00:00:00,78.53,light rain
+Crump,2025-07-01 03:00:00,74.7,scattered clouds
+Crump,2025-07-01 06:00:00,74.19,light rain
+Crump,2025-07-01 09:00:00,71.92,light rain
+Crump,2025-07-01 12:00:00,73.51,overcast clouds
+Crump,2025-07-01 15:00:00,81.73,overcast clouds
+Crump,2025-07-01 18:00:00,86.92,overcast clouds
+Crump,2025-07-01 21:00:00,87.71,broken clouds
+Dallas,2025-06-27 00:00:00,90.97,scattered clouds
+Dallas,2025-06-27 03:00:00,88.97,scattered clouds
+Dallas,2025-06-27 06:00:00,83.82,scattered clouds
+Dallas,2025-06-27 09:00:00,78.17,overcast clouds
+Dallas,2025-06-27 12:00:00,76.57,overcast clouds
+Dallas,2025-06-27 15:00:00,85.08,overcast clouds
+Dallas,2025-06-27 18:00:00,93.25,overcast clouds
+Dallas,2025-06-27 21:00:00,92.68,light rain
+Dallas,2025-06-28 00:00:00,91.17,overcast clouds
+Dallas,2025-06-28 03:00:00,86.13,scattered clouds
+Dallas,2025-06-28 06:00:00,83.16,few clouds
+Dallas,2025-06-28 09:00:00,80.62,clear sky
+Dallas,2025-06-28 12:00:00,78.55,few clouds
+Dallas,2025-06-28 15:00:00,86.36,clear sky
+Dallas,2025-06-28 18:00:00,94.75,clear sky
+Dallas,2025-06-28 21:00:00,98.08,clear sky
+Dallas,2025-06-29 00:00:00,94.33,clear sky
+Dallas,2025-06-29 03:00:00,87.93,clear sky
+Dallas,2025-06-29 06:00:00,83.79,clear sky
+Dallas,2025-06-29 09:00:00,80.42,clear sky
+Dallas,2025-06-29 12:00:00,78.67,clear sky
+Dallas,2025-06-29 15:00:00,86.11,clear sky
+Dallas,2025-06-29 18:00:00,94.48,clear sky
+Dallas,2025-06-29 21:00:00,98.51,clear sky
+Dallas,2025-06-30 00:00:00,95.81,clear sky
+Dallas,2025-06-30 03:00:00,86.09,clear sky
+Dallas,2025-06-30 06:00:00,82.9,clear sky
+Dallas,2025-06-30 09:00:00,80.6,clear sky
+Dallas,2025-06-30 12:00:00,78.84,clear sky
+Dallas,2025-06-30 15:00:00,86.99,clear sky
+Dallas,2025-06-30 18:00:00,95.49,clear sky
+Dallas,2025-06-30 21:00:00,99.66,clear sky
+Dallas,2025-07-01 00:00:00,98.1,clear sky
+Dallas,2025-07-01 03:00:00,89.35,clear sky
+Dallas,2025-07-01 06:00:00,85.8,clear sky
+Dallas,2025-07-01 09:00:00,83.17,few clouds
+Dallas,2025-07-01 12:00:00,81.84,scattered clouds
+Dallas,2025-07-01 15:00:00,89.65,clear sky
+Dallas,2025-07-01 18:00:00,98.85,clear sky
+Dallas,2025-07-01 21:00:00,99.21,scattered clouds
+Houston,2025-06-27 00:00:00,80.06,light rain
+Houston,2025-06-27 03:00:00,79.75,few clouds
+Houston,2025-06-27 06:00:00,78.3,few clouds
+Houston,2025-06-27 09:00:00,75.65,scattered clouds
+Houston,2025-06-27 12:00:00,77.18,scattered clouds
+Houston,2025-06-27 15:00:00,85.82,broken clouds
+Houston,2025-06-27 18:00:00,93.29,broken clouds
+Houston,2025-06-27 21:00:00,95.5,broken clouds
+Houston,2025-06-28 00:00:00,89.47,scattered clouds
+Houston,2025-06-28 03:00:00,83.19,clear sky
+Houston,2025-06-28 06:00:00,80.74,clear sky
+Houston,2025-06-28 09:00:00,79.18,few clouds
+Houston,2025-06-28 12:00:00,78.89,clear sky
+Houston,2025-06-28 15:00:00,86.52,clear sky
+Houston,2025-06-28 18:00:00,94.1,clear sky
+Houston,2025-06-28 21:00:00,94.01,scattered clouds
+Houston,2025-06-29 00:00:00,89.31,scattered clouds
+Houston,2025-06-29 03:00:00,83.1,scattered clouds
+Houston,2025-06-29 06:00:00,81.14,broken clouds
+Houston,2025-06-29 09:00:00,79.93,overcast clouds
+Houston,2025-06-29 12:00:00,79.57,overcast clouds
+Houston,2025-06-29 15:00:00,86.56,overcast clouds
+Houston,2025-06-29 18:00:00,90.27,light rain
+Houston,2025-06-29 21:00:00,89.2,overcast clouds
+Houston,2025-06-30 00:00:00,87.39,overcast clouds
+Houston,2025-06-30 03:00:00,82.47,overcast clouds
+Houston,2025-06-30 06:00:00,80.47,overcast clouds
+Houston,2025-06-30 09:00:00,77.05,light rain
+Houston,2025-06-30 12:00:00,78.04,light rain
+Houston,2025-06-30 15:00:00,86,scattered clouds
+Houston,2025-06-30 18:00:00,94.33,scattered clouds
+Houston,2025-06-30 21:00:00,97.77,scattered clouds
+Houston,2025-07-01 00:00:00,89.71,scattered clouds
+Houston,2025-07-01 03:00:00,84.16,few clouds
+Houston,2025-07-01 06:00:00,81.77,clear sky
+Houston,2025-07-01 09:00:00,80.22,clear sky
+Houston,2025-07-01 12:00:00,79.68,clear sky
+Houston,2025-07-01 15:00:00,87.91,clear sky
+Houston,2025-07-01 18:00:00,95.34,clear sky
+Houston,2025-07-01 21:00:00,95.74,scattered clouds
+Houston,2025-06-27 00:00:00,80.06,light rain
+Houston,2025-06-27 03:00:00,79.75,few clouds
+Houston,2025-06-27 06:00:00,78.3,few clouds
+Houston,2025-06-27 09:00:00,75.65,scattered clouds
+Houston,2025-06-27 12:00:00,77.18,scattered clouds
+Houston,2025-06-27 15:00:00,85.82,broken clouds
+Houston,2025-06-27 18:00:00,93.29,broken clouds
+Houston,2025-06-27 21:00:00,95.5,broken clouds
+Houston,2025-06-28 00:00:00,89.47,scattered clouds
+Houston,2025-06-28 03:00:00,83.19,clear sky
+Houston,2025-06-28 06:00:00,80.74,clear sky
+Houston,2025-06-28 09:00:00,79.18,few clouds
+Houston,2025-06-28 12:00:00,78.89,clear sky
+Houston,2025-06-28 15:00:00,86.52,clear sky
+Houston,2025-06-28 18:00:00,94.1,clear sky
+Houston,2025-06-28 21:00:00,94.01,scattered clouds
+Houston,2025-06-29 00:00:00,89.31,scattered clouds
+Houston,2025-06-29 03:00:00,83.1,scattered clouds
+Houston,2025-06-29 06:00:00,81.14,broken clouds
+Houston,2025-06-29 09:00:00,79.93,overcast clouds
+Houston,2025-06-29 12:00:00,79.57,overcast clouds
+Houston,2025-06-29 15:00:00,86.56,overcast clouds
+Houston,2025-06-29 18:00:00,90.27,light rain
+Houston,2025-06-29 21:00:00,89.2,overcast clouds
+Houston,2025-06-30 00:00:00,87.39,overcast clouds
+Houston,2025-06-30 03:00:00,82.47,overcast clouds
+Houston,2025-06-30 06:00:00,80.47,overcast clouds
+Houston,2025-06-30 09:00:00,77.05,light rain
+Houston,2025-06-30 12:00:00,78.04,light rain
+Houston,2025-06-30 15:00:00,86,scattered clouds
+Houston,2025-06-30 18:00:00,94.33,scattered clouds
+Houston,2025-06-30 21:00:00,97.77,scattered clouds
+Houston,2025-07-01 00:00:00,89.71,scattered clouds
+Houston,2025-07-01 03:00:00,84.16,few clouds
+Houston,2025-07-01 06:00:00,81.77,clear sky
+Houston,2025-07-01 09:00:00,80.22,clear sky
+Houston,2025-07-01 12:00:00,79.68,clear sky
+Houston,2025-07-01 15:00:00,87.91,clear sky
+Houston,2025-07-01 18:00:00,95.34,clear sky
+Houston,2025-07-01 21:00:00,95.74,scattered clouds
+Dallas,2025-06-27 00:00:00,90.97,scattered clouds
+Dallas,2025-06-27 03:00:00,88.97,scattered clouds
+Dallas,2025-06-27 06:00:00,83.82,scattered clouds
+Dallas,2025-06-27 09:00:00,78.17,overcast clouds
+Dallas,2025-06-27 12:00:00,76.57,overcast clouds
+Dallas,2025-06-27 15:00:00,85.08,overcast clouds
+Dallas,2025-06-27 18:00:00,93.25,overcast clouds
+Dallas,2025-06-27 21:00:00,92.68,light rain
+Dallas,2025-06-28 00:00:00,91.17,overcast clouds
+Dallas,2025-06-28 03:00:00,86.13,scattered clouds
+Dallas,2025-06-28 06:00:00,83.16,few clouds
+Dallas,2025-06-28 09:00:00,80.62,clear sky
+Dallas,2025-06-28 12:00:00,78.55,few clouds
+Dallas,2025-06-28 15:00:00,86.36,clear sky
+Dallas,2025-06-28 18:00:00,94.75,clear sky
+Dallas,2025-06-28 21:00:00,98.08,clear sky
+Dallas,2025-06-29 00:00:00,94.33,clear sky
+Dallas,2025-06-29 03:00:00,87.93,clear sky
+Dallas,2025-06-29 06:00:00,83.79,clear sky
+Dallas,2025-06-29 09:00:00,80.42,clear sky
+Dallas,2025-06-29 12:00:00,78.67,clear sky
+Dallas,2025-06-29 15:00:00,86.11,clear sky
+Dallas,2025-06-29 18:00:00,94.48,clear sky
+Dallas,2025-06-29 21:00:00,98.51,clear sky
+Dallas,2025-06-30 00:00:00,95.81,clear sky
+Dallas,2025-06-30 03:00:00,86.09,clear sky
+Dallas,2025-06-30 06:00:00,82.9,clear sky
+Dallas,2025-06-30 09:00:00,80.6,clear sky
+Dallas,2025-06-30 12:00:00,78.84,clear sky
+Dallas,2025-06-30 15:00:00,86.99,clear sky
+Dallas,2025-06-30 18:00:00,95.49,clear sky
+Dallas,2025-06-30 21:00:00,99.66,clear sky
+Dallas,2025-07-01 00:00:00,98.1,clear sky
+Dallas,2025-07-01 03:00:00,89.35,clear sky
+Dallas,2025-07-01 06:00:00,85.8,clear sky
+Dallas,2025-07-01 09:00:00,83.17,few clouds
+Dallas,2025-07-01 12:00:00,81.84,scattered clouds
+Dallas,2025-07-01 15:00:00,89.65,clear sky
+Dallas,2025-07-01 18:00:00,98.85,clear sky
+Dallas,2025-07-01 21:00:00,99.21,scattered clouds
+Miami,2025-06-27 00:00:00,81.9,broken clouds
+Miami,2025-06-27 03:00:00,81.68,broken clouds
+Miami,2025-06-27 06:00:00,78.78,broken clouds
+Miami,2025-06-27 09:00:00,76.75,scattered clouds
+Miami,2025-06-27 12:00:00,80.82,scattered clouds
+Miami,2025-06-27 15:00:00,85.24,light rain
+Miami,2025-06-27 18:00:00,86.2,light rain
+Miami,2025-06-27 21:00:00,85.96,broken clouds
+Miami,2025-06-28 00:00:00,85.26,light rain
+Miami,2025-06-28 03:00:00,84.13,light rain
+Miami,2025-06-28 06:00:00,83.5,overcast clouds
+Miami,2025-06-28 09:00:00,82.98,overcast clouds
+Miami,2025-06-28 12:00:00,83.1,light rain
+Miami,2025-06-28 15:00:00,84.61,overcast clouds
+Miami,2025-06-28 18:00:00,86.11,overcast clouds
+Miami,2025-06-28 21:00:00,85.37,overcast clouds
+Miami,2025-06-29 00:00:00,84.07,broken clouds
+Miami,2025-06-29 03:00:00,83.26,broken clouds
+Miami,2025-06-29 06:00:00,82.72,broken clouds
+Miami,2025-06-29 09:00:00,82.29,overcast clouds
+Miami,2025-06-29 12:00:00,82.71,broken clouds
+Miami,2025-06-29 15:00:00,84.07,overcast clouds
+Miami,2025-06-29 18:00:00,85.19,overcast clouds
+Miami,2025-06-29 21:00:00,83.77,overcast clouds
+Miami,2025-06-30 00:00:00,84.38,light rain
+Miami,2025-06-30 03:00:00,82.96,overcast clouds
+Miami,2025-06-30 06:00:00,78.08,light rain
+Miami,2025-06-30 09:00:00,79.65,overcast clouds
+Miami,2025-06-30 12:00:00,82.44,overcast clouds
+Miami,2025-06-30 15:00:00,84.87,light rain
+Miami,2025-06-30 18:00:00,85.96,overcast clouds
+Miami,2025-06-30 21:00:00,85.93,overcast clouds
+Miami,2025-07-01 00:00:00,84.87,light rain
+Miami,2025-07-01 03:00:00,83.7,light rain
+Miami,2025-07-01 06:00:00,81.59,broken clouds
+Miami,2025-07-01 09:00:00,81.64,few clouds
+Miami,2025-07-01 12:00:00,82.26,few clouds
+Miami,2025-07-01 15:00:00,85.23,scattered clouds
+Miami,2025-07-01 18:00:00,86.47,light rain
+Miami,2025-07-01 21:00:00,85.98,scattered clouds
+Munich,2025-06-27 00:00:00,62.96,light rain
+Munich,2025-06-27 03:00:00,60.67,broken clouds
+Munich,2025-06-27 06:00:00,65.32,broken clouds
+Munich,2025-06-27 09:00:00,72.55,overcast clouds
+Munich,2025-06-27 12:00:00,68.27,light rain
+Munich,2025-06-27 15:00:00,64.13,light rain
+Munich,2025-06-27 18:00:00,65.55,overcast clouds
+Munich,2025-06-27 21:00:00,59.34,scattered clouds
+Munich,2025-06-28 00:00:00,58.86,broken clouds
+Munich,2025-06-28 03:00:00,58.12,broken clouds
+Munich,2025-06-28 06:00:00,64.99,scattered clouds
+Munich,2025-06-28 09:00:00,76.24,clear sky
+Munich,2025-06-28 12:00:00,80.44,clear sky
+Munich,2025-06-28 15:00:00,80.87,clear sky
+Munich,2025-06-28 18:00:00,75.9,clear sky
+Munich,2025-06-28 21:00:00,66.67,clear sky
+Munich,2025-06-29 00:00:00,63.82,clear sky
+Munich,2025-06-29 03:00:00,61.99,few clouds
+Munich,2025-06-29 06:00:00,69.48,few clouds
+Munich,2025-06-29 09:00:00,79.59,clear sky
+Munich,2025-06-29 12:00:00,83.79,clear sky
+Munich,2025-06-29 15:00:00,83.88,clear sky
+Munich,2025-06-29 18:00:00,77.52,clear sky
+Munich,2025-06-29 21:00:00,69.55,clear sky
+Munich,2025-06-30 00:00:00,65.95,clear sky
+Munich,2025-06-30 03:00:00,63.59,broken clouds
+Munich,2025-06-30 06:00:00,71.02,scattered clouds
+Munich,2025-06-30 09:00:00,80.2,clear sky
+Munich,2025-06-30 12:00:00,85.19,clear sky
+Munich,2025-06-30 15:00:00,85.06,clear sky
+Munich,2025-06-30 18:00:00,78.53,scattered clouds
+Munich,2025-06-30 21:00:00,70.43,broken clouds
+Munich,2025-07-01 00:00:00,66.72,broken clouds
+Munich,2025-07-01 03:00:00,63.7,light rain
+Munich,2025-07-01 06:00:00,68.18,light rain
+Munich,2025-07-01 09:00:00,81.81,light rain
+Munich,2025-07-01 12:00:00,88.61,few clouds
+Munich,2025-07-01 15:00:00,89.28,clear sky
+Munich,2025-07-01 18:00:00,72.18,moderate rain
+Munich,2025-07-01 21:00:00,65.59,light rain
+Dallas,2025-06-27 00:00:00,90.68,scattered clouds
+Dallas,2025-06-27 03:00:00,88.77,scattered clouds
+Dallas,2025-06-27 06:00:00,83.71,scattered clouds
+Dallas,2025-06-27 09:00:00,78.17,overcast clouds
+Dallas,2025-06-27 12:00:00,76.57,overcast clouds
+Dallas,2025-06-27 15:00:00,85.08,overcast clouds
+Dallas,2025-06-27 18:00:00,93.25,overcast clouds
+Dallas,2025-06-27 21:00:00,92.68,light rain
+Dallas,2025-06-28 00:00:00,91.17,overcast clouds
+Dallas,2025-06-28 03:00:00,86.13,scattered clouds
+Dallas,2025-06-28 06:00:00,83.16,few clouds
+Dallas,2025-06-28 09:00:00,80.62,clear sky
+Dallas,2025-06-28 12:00:00,78.55,few clouds
+Dallas,2025-06-28 15:00:00,86.36,clear sky
+Dallas,2025-06-28 18:00:00,94.75,clear sky
+Dallas,2025-06-28 21:00:00,98.08,clear sky
+Dallas,2025-06-29 00:00:00,94.33,clear sky
+Dallas,2025-06-29 03:00:00,87.93,clear sky
+Dallas,2025-06-29 06:00:00,83.79,clear sky
+Dallas,2025-06-29 09:00:00,80.42,clear sky
+Dallas,2025-06-29 12:00:00,78.67,clear sky
+Dallas,2025-06-29 15:00:00,86.11,clear sky
+Dallas,2025-06-29 18:00:00,94.48,clear sky
+Dallas,2025-06-29 21:00:00,98.51,clear sky
+Dallas,2025-06-30 00:00:00,95.81,clear sky
+Dallas,2025-06-30 03:00:00,86.09,clear sky
+Dallas,2025-06-30 06:00:00,82.9,clear sky
+Dallas,2025-06-30 09:00:00,80.6,clear sky
+Dallas,2025-06-30 12:00:00,78.84,clear sky
+Dallas,2025-06-30 15:00:00,86.99,clear sky
+Dallas,2025-06-30 18:00:00,95.49,clear sky
+Dallas,2025-06-30 21:00:00,99.66,clear sky
+Dallas,2025-07-01 00:00:00,98.1,clear sky
+Dallas,2025-07-01 03:00:00,89.35,clear sky
+Dallas,2025-07-01 06:00:00,85.8,clear sky
+Dallas,2025-07-01 09:00:00,83.17,few clouds
+Dallas,2025-07-01 12:00:00,81.84,scattered clouds
+Dallas,2025-07-01 15:00:00,89.65,clear sky
+Dallas,2025-07-01 18:00:00,98.85,clear sky
+Dallas,2025-07-01 21:00:00,99.21,scattered clouds
+Denver,2025-06-27 00:00:00,86.45,broken clouds
+Denver,2025-06-27 03:00:00,82.02,broken clouds
+Denver,2025-06-27 06:00:00,72.61,light rain
+Denver,2025-06-27 09:00:00,63.23,clear sky
+Denver,2025-06-27 12:00:00,61.95,clear sky
+Denver,2025-06-27 15:00:00,78.4,clear sky
+Denver,2025-06-27 18:00:00,91.17,clear sky
+Denver,2025-06-27 21:00:00,89.22,scattered clouds
+Denver,2025-06-28 00:00:00,85.44,broken clouds
+Denver,2025-06-28 03:00:00,81.5,overcast clouds
+Denver,2025-06-28 06:00:00,74.93,overcast clouds
+Denver,2025-06-28 09:00:00,71.94,few clouds
+Denver,2025-06-28 12:00:00,69.31,few clouds
+Denver,2025-06-28 15:00:00,81.99,clear sky
+Denver,2025-06-28 18:00:00,95,clear sky
+Denver,2025-06-28 21:00:00,92.88,scattered clouds
+Denver,2025-06-29 00:00:00,87.17,broken clouds
+Denver,2025-06-29 03:00:00,82.9,overcast clouds
+Denver,2025-06-29 06:00:00,75.61,broken clouds
+Denver,2025-06-29 09:00:00,72.84,scattered clouds
+Denver,2025-06-29 12:00:00,70.47,scattered clouds
+Denver,2025-06-29 15:00:00,80.24,clear sky
+Denver,2025-06-29 18:00:00,89.11,clear sky
+Denver,2025-06-29 21:00:00,82.8,light rain
+Denver,2025-06-30 00:00:00,72.34,light rain
+Denver,2025-06-30 03:00:00,72.16,broken clouds
+Denver,2025-06-30 06:00:00,69.93,scattered clouds
+Denver,2025-06-30 09:00:00,67.21,scattered clouds
+Denver,2025-06-30 12:00:00,63.39,few clouds
+Denver,2025-06-30 15:00:00,72.23,clear sky
+Denver,2025-06-30 18:00:00,81.43,clear sky
+Denver,2025-06-30 21:00:00,86.81,scattered clouds
+Denver,2025-07-01 00:00:00,67.32,light rain
+Denver,2025-07-01 03:00:00,67.64,light rain
+Denver,2025-07-01 06:00:00,67.39,overcast clouds
+Denver,2025-07-01 09:00:00,65.97,overcast clouds
+Denver,2025-07-01 12:00:00,64.45,overcast clouds
+Denver,2025-07-01 15:00:00,71.24,broken clouds
+Denver,2025-07-01 18:00:00,83.82,overcast clouds
+Denver,2025-07-01 21:00:00,88.39,scattered clouds
+Little Rock,2025-06-27 00:00:00,91.18,broken clouds
+Little Rock,2025-06-27 03:00:00,88.47,broken clouds
+Little Rock,2025-06-27 06:00:00,82.6,scattered clouds
+Little Rock,2025-06-27 09:00:00,75.16,clear sky
+Little Rock,2025-06-27 12:00:00,78.08,few clouds
+Little Rock,2025-06-27 15:00:00,86.86,broken clouds
+Little Rock,2025-06-27 18:00:00,94.68,scattered clouds
+Little Rock,2025-06-27 21:00:00,95.11,overcast clouds
+Little Rock,2025-06-28 00:00:00,87.66,light rain
+Little Rock,2025-06-28 03:00:00,78.31,light rain
+Little Rock,2025-06-28 06:00:00,75.79,broken clouds
+Little Rock,2025-06-28 09:00:00,74.34,light rain
+Little Rock,2025-06-28 12:00:00,74.75,broken clouds
+Little Rock,2025-06-28 15:00:00,85.96,scattered clouds
+Little Rock,2025-06-28 18:00:00,95.14,scattered clouds
+Little Rock,2025-06-28 21:00:00,89.62,overcast clouds
+Little Rock,2025-06-29 00:00:00,86.38,overcast clouds
+Little Rock,2025-06-29 03:00:00,76.73,light rain
+Little Rock,2025-06-29 06:00:00,77.56,light rain
+Little Rock,2025-06-29 09:00:00,74.95,overcast clouds
+Little Rock,2025-06-29 12:00:00,75.67,overcast clouds
+Little Rock,2025-06-29 15:00:00,86.67,broken clouds
+Little Rock,2025-06-29 18:00:00,94.44,scattered clouds
+Little Rock,2025-06-29 21:00:00,90.03,broken clouds
+Little Rock,2025-06-30 00:00:00,84.29,overcast clouds
+Little Rock,2025-06-30 03:00:00,76.87,light rain
+Little Rock,2025-06-30 06:00:00,75.74,overcast clouds
+Little Rock,2025-06-30 09:00:00,74.5,broken clouds
+Little Rock,2025-06-30 12:00:00,74.44,light rain
+Little Rock,2025-06-30 15:00:00,87.08,scattered clouds
+Little Rock,2025-06-30 18:00:00,93.94,few clouds
+Little Rock,2025-06-30 21:00:00,97.7,broken clouds
+Little Rock,2025-07-01 00:00:00,85.69,broken clouds
+Little Rock,2025-07-01 03:00:00,81.72,broken clouds
+Little Rock,2025-07-01 06:00:00,77.25,light rain
+Little Rock,2025-07-01 09:00:00,73.51,light rain
+Little Rock,2025-07-01 12:00:00,72.54,light rain
+Little Rock,2025-07-01 15:00:00,80.58,light rain
+Little Rock,2025-07-01 18:00:00,91.92,overcast clouds
+Little Rock,2025-07-01 21:00:00,86.23,light rain
+Newark,2025-06-27 00:00:00,69.55,overcast clouds
+Newark,2025-06-27 03:00:00,69.84,overcast clouds
+Newark,2025-06-27 06:00:00,68.63,overcast clouds
+Newark,2025-06-27 09:00:00,67.53,broken clouds
+Newark,2025-06-27 12:00:00,69.3,broken clouds
+Newark,2025-06-27 15:00:00,75.67,broken clouds
+Newark,2025-06-27 18:00:00,75.16,broken clouds
+Newark,2025-06-27 21:00:00,72.03,broken clouds
+Newark,2025-06-28 00:00:00,68.31,overcast clouds
+Newark,2025-06-28 03:00:00,68.05,light rain
+Newark,2025-06-28 06:00:00,69.62,light rain
+Newark,2025-06-28 09:00:00,70.36,light rain
+Newark,2025-06-28 12:00:00,71.46,light rain
+Newark,2025-06-28 15:00:00,77.32,overcast clouds
+Newark,2025-06-28 18:00:00,88.9,overcast clouds
+Newark,2025-06-28 21:00:00,90.37,light rain
+Newark,2025-06-29 00:00:00,86.14,overcast clouds
+Newark,2025-06-29 03:00:00,78.19,light rain
+Newark,2025-06-29 06:00:00,75.38,light rain
+Newark,2025-06-29 09:00:00,71.22,broken clouds
+Newark,2025-06-29 12:00:00,74.1,scattered clouds
+Newark,2025-06-29 15:00:00,82.83,scattered clouds
+Newark,2025-06-29 18:00:00,90.43,few clouds
+Newark,2025-06-29 21:00:00,92.17,clear sky
+Newark,2025-06-30 00:00:00,86.25,few clouds
+Newark,2025-06-30 03:00:00,78.57,scattered clouds
+Newark,2025-06-30 06:00:00,74.61,few clouds
+Newark,2025-06-30 09:00:00,72.12,clear sky
+Newark,2025-06-30 12:00:00,76.95,clear sky
+Newark,2025-06-30 15:00:00,87.21,clear sky
+Newark,2025-06-30 18:00:00,92.21,few clouds
+Newark,2025-06-30 21:00:00,88.38,scattered clouds
+Newark,2025-07-01 00:00:00,82.15,broken clouds
+Newark,2025-07-01 03:00:00,79.56,few clouds
+Newark,2025-07-01 06:00:00,77.34,scattered clouds
+Newark,2025-07-01 09:00:00,75.29,light rain
+Newark,2025-07-01 12:00:00,74.79,light rain
+Newark,2025-07-01 15:00:00,84.09,overcast clouds
+Newark,2025-07-01 18:00:00,77.99,light rain
+Newark,2025-07-01 21:00:00,82.4,light rain
+Tempe,2025-06-27 00:00:00,104,few clouds
+Tempe,2025-06-27 03:00:00,100.24,few clouds
+Tempe,2025-06-27 06:00:00,89.98,clear sky
+Tempe,2025-06-27 09:00:00,78.67,clear sky
+Tempe,2025-06-27 12:00:00,77.25,clear sky
+Tempe,2025-06-27 15:00:00,89.42,clear sky
+Tempe,2025-06-27 18:00:00,96.64,clear sky
+Tempe,2025-06-27 21:00:00,102.6,clear sky
+Tempe,2025-06-28 00:00:00,104.7,clear sky
+Tempe,2025-06-28 03:00:00,100.42,clear sky
+Tempe,2025-06-28 06:00:00,95.07,clear sky
+Tempe,2025-06-28 09:00:00,90.7,clear sky
+Tempe,2025-06-28 12:00:00,87.06,clear sky
+Tempe,2025-06-28 15:00:00,91.09,clear sky
+Tempe,2025-06-28 18:00:00,97.84,clear sky
+Tempe,2025-06-28 21:00:00,103.78,clear sky
+Tempe,2025-06-29 00:00:00,106.05,clear sky
+Tempe,2025-06-29 03:00:00,102.11,clear sky
+Tempe,2025-06-29 06:00:00,98.71,clear sky
+Tempe,2025-06-29 09:00:00,93.07,clear sky
+Tempe,2025-06-29 12:00:00,89.04,clear sky
+Tempe,2025-06-29 15:00:00,93.06,clear sky
+Tempe,2025-06-29 18:00:00,100.85,clear sky
+Tempe,2025-06-29 21:00:00,109.26,clear sky
+Tempe,2025-06-30 00:00:00,110.64,clear sky
+Tempe,2025-06-30 03:00:00,105.89,clear sky
+Tempe,2025-06-30 06:00:00,100.27,clear sky
+Tempe,2025-06-30 09:00:00,95.38,few clouds
+Tempe,2025-06-30 12:00:00,91.4,few clouds
+Tempe,2025-06-30 15:00:00,95.61,broken clouds
+Tempe,2025-06-30 18:00:00,103.05,scattered clouds
+Tempe,2025-06-30 21:00:00,111.04,clear sky
+Tempe,2025-07-01 00:00:00,113.32,clear sky
+Tempe,2025-07-01 03:00:00,108.01,clear sky
+Tempe,2025-07-01 06:00:00,102.38,scattered clouds
+Tempe,2025-07-01 09:00:00,96.24,broken clouds
+Tempe,2025-07-01 12:00:00,91.98,broken clouds
+Tempe,2025-07-01 15:00:00,96.08,few clouds
+Tempe,2025-07-01 18:00:00,104.97,few clouds
+Tempe,2025-07-01 21:00:00,110.84,clear sky
+Key West,2025-06-27 00:00:00,85.19,clear sky
+Key West,2025-06-27 03:00:00,84.51,light rain
+Key West,2025-06-27 06:00:00,83.05,broken clouds
+Key West,2025-06-27 09:00:00,83.37,light rain
+Key West,2025-06-27 12:00:00,85.84,overcast clouds
+Key West,2025-06-27 15:00:00,83.75,overcast clouds
+Key West,2025-06-27 18:00:00,83.88,overcast clouds
+Key West,2025-06-27 21:00:00,83.91,light rain
+Key West,2025-06-28 00:00:00,83.89,light rain
+Key West,2025-06-28 03:00:00,83.8,light rain
+Key West,2025-06-28 06:00:00,83.5,broken clouds
+Key West,2025-06-28 09:00:00,83.1,overcast clouds
+Key West,2025-06-28 12:00:00,83.35,broken clouds
+Key West,2025-06-28 15:00:00,83.64,light rain
+Key West,2025-06-28 18:00:00,83.55,few clouds
+Key West,2025-06-28 21:00:00,83.61,few clouds
+Key West,2025-06-29 00:00:00,83.68,few clouds
+Key West,2025-06-29 03:00:00,83.28,clear sky
+Key West,2025-06-29 06:00:00,83.03,clear sky
+Key West,2025-06-29 09:00:00,82.62,scattered clouds
+Key West,2025-06-29 12:00:00,82.67,broken clouds
+Key West,2025-06-29 15:00:00,82.2,light rain
+Key West,2025-06-29 18:00:00,83.26,light rain
+Key West,2025-06-29 21:00:00,83.59,overcast clouds
+Key West,2025-06-30 00:00:00,83.44,overcast clouds
+Key West,2025-06-30 03:00:00,83.32,overcast clouds
+Key West,2025-06-30 06:00:00,83.21,overcast clouds
+Key West,2025-06-30 09:00:00,82.62,scattered clouds
+Key West,2025-06-30 12:00:00,82.67,scattered clouds
+Key West,2025-06-30 15:00:00,82.26,light rain
+Key West,2025-06-30 18:00:00,83.48,light rain
+Key West,2025-06-30 21:00:00,83.79,light rain
+Key West,2025-07-01 00:00:00,83.48,broken clouds
+Key West,2025-07-01 03:00:00,81.97,broken clouds
+Key West,2025-07-01 06:00:00,81.95,scattered clouds
+Key West,2025-07-01 09:00:00,82.85,few clouds
+Key West,2025-07-01 12:00:00,82.71,scattered clouds
+Key West,2025-07-01 15:00:00,83.14,overcast clouds
+Key West,2025-07-01 18:00:00,83.3,overcast clouds
+Key West,2025-07-01 21:00:00,83.26,overcast clouds
+London,2025-06-27 03:00:00,60.91,light rain
+London,2025-06-27 06:00:00,59.9,light rain
+London,2025-06-27 09:00:00,68.67,scattered clouds
+London,2025-06-27 12:00:00,73.27,broken clouds
+London,2025-06-27 15:00:00,82,broken clouds
+London,2025-06-27 18:00:00,79.36,scattered clouds
+London,2025-06-27 21:00:00,70.57,scattered clouds
+London,2025-06-28 00:00:00,65.98,scattered clouds
+London,2025-06-28 03:00:00,64.33,clear sky
+London,2025-06-28 06:00:00,68.43,clear sky
+London,2025-06-28 09:00:00,74.39,overcast clouds
+London,2025-06-28 12:00:00,81.86,overcast clouds
+London,2025-06-28 15:00:00,80.31,overcast clouds
+London,2025-06-28 18:00:00,82.42,broken clouds
+London,2025-06-28 21:00:00,73.89,clear sky
+London,2025-06-29 00:00:00,68.81,clear sky
+London,2025-06-29 03:00:00,65.55,clear sky
+London,2025-06-29 06:00:00,67.57,clear sky
+London,2025-06-29 09:00:00,76.93,clear sky
+London,2025-06-29 12:00:00,85.37,clear sky
+London,2025-06-29 15:00:00,89.35,scattered clouds
+London,2025-06-29 18:00:00,88.63,few clouds
+London,2025-06-29 21:00:00,79.09,few clouds
+London,2025-06-30 00:00:00,74.25,few clouds
+London,2025-06-30 03:00:00,71.06,clear sky
+London,2025-06-30 06:00:00,73.56,clear sky
+London,2025-06-30 09:00:00,84.18,broken clouds
+London,2025-06-30 12:00:00,93.67,scattered clouds
+London,2025-06-30 15:00:00,96.08,few clouds
+London,2025-06-30 18:00:00,91.33,clear sky
+London,2025-06-30 21:00:00,79.45,clear sky
+London,2025-07-01 00:00:00,74.59,clear sky
+London,2025-07-01 03:00:00,69.87,broken clouds
+London,2025-07-01 06:00:00,69.91,scattered clouds
+London,2025-07-01 09:00:00,77.54,broken clouds
+London,2025-07-01 12:00:00,81.91,broken clouds
+London,2025-07-01 15:00:00,84.15,overcast clouds
+London,2025-07-01 18:00:00,80.8,overcast clouds
+London,2025-07-01 21:00:00,75.61,overcast clouds
+London,2025-07-02 00:00:00,72.54,overcast clouds
+Miami,2025-06-27 03:00:00,80.96,scattered clouds
+Miami,2025-06-27 06:00:00,78.48,scattered clouds
+Miami,2025-06-27 09:00:00,76.75,scattered clouds
+Miami,2025-06-27 12:00:00,80.82,scattered clouds
+Miami,2025-06-27 15:00:00,85.24,light rain
+Miami,2025-06-27 18:00:00,86.2,light rain
+Miami,2025-06-27 21:00:00,85.96,broken clouds
+Miami,2025-06-28 00:00:00,85.26,light rain
+Miami,2025-06-28 03:00:00,84.13,light rain
+Miami,2025-06-28 06:00:00,83.5,overcast clouds
+Miami,2025-06-28 09:00:00,82.98,overcast clouds
+Miami,2025-06-28 12:00:00,83.1,light rain
+Miami,2025-06-28 15:00:00,84.61,overcast clouds
+Miami,2025-06-28 18:00:00,86.11,overcast clouds
+Miami,2025-06-28 21:00:00,85.37,overcast clouds
+Miami,2025-06-29 00:00:00,84.07,broken clouds
+Miami,2025-06-29 03:00:00,83.26,broken clouds
+Miami,2025-06-29 06:00:00,82.72,broken clouds
+Miami,2025-06-29 09:00:00,82.29,overcast clouds
+Miami,2025-06-29 12:00:00,82.71,broken clouds
+Miami,2025-06-29 15:00:00,84.07,overcast clouds
+Miami,2025-06-29 18:00:00,85.19,overcast clouds
+Miami,2025-06-29 21:00:00,83.77,overcast clouds
+Miami,2025-06-30 00:00:00,84.38,light rain
+Miami,2025-06-30 03:00:00,82.96,overcast clouds
+Miami,2025-06-30 06:00:00,78.08,light rain
+Miami,2025-06-30 09:00:00,79.65,overcast clouds
+Miami,2025-06-30 12:00:00,82.44,overcast clouds
+Miami,2025-06-30 15:00:00,84.87,light rain
+Miami,2025-06-30 18:00:00,85.96,overcast clouds
+Miami,2025-06-30 21:00:00,85.93,overcast clouds
+Miami,2025-07-01 00:00:00,84.87,light rain
+Miami,2025-07-01 03:00:00,83.7,light rain
+Miami,2025-07-01 06:00:00,81.59,broken clouds
+Miami,2025-07-01 09:00:00,81.64,few clouds
+Miami,2025-07-01 12:00:00,82.26,few clouds
+Miami,2025-07-01 15:00:00,85.23,scattered clouds
+Miami,2025-07-01 18:00:00,86.47,light rain
+Miami,2025-07-01 21:00:00,85.98,scattered clouds
+Miami,2025-07-02 00:00:00,85.05,light rain
+Kingsbridge,2025-06-27 03:00:00,60.22,overcast clouds
+Kingsbridge,2025-06-27 06:00:00,60.82,broken clouds
+Kingsbridge,2025-06-27 09:00:00,68.22,overcast clouds
+Kingsbridge,2025-06-27 12:00:00,72.01,overcast clouds
+Kingsbridge,2025-06-27 15:00:00,65.52,few clouds
+Kingsbridge,2025-06-27 18:00:00,64.29,broken clouds
+Kingsbridge,2025-06-27 21:00:00,62.64,scattered clouds
+Kingsbridge,2025-06-28 00:00:00,62.67,broken clouds
+Kingsbridge,2025-06-28 03:00:00,62.6,overcast clouds
+Kingsbridge,2025-06-28 06:00:00,62.92,overcast clouds
+Kingsbridge,2025-06-28 09:00:00,65.21,overcast clouds
+Kingsbridge,2025-06-28 12:00:00,66.63,broken clouds
+Kingsbridge,2025-06-28 15:00:00,66.38,broken clouds
+Kingsbridge,2025-06-28 18:00:00,65.61,scattered clouds
+Kingsbridge,2025-06-28 21:00:00,63.82,overcast clouds
+Kingsbridge,2025-06-29 00:00:00,62.8,broken clouds
+Kingsbridge,2025-06-29 03:00:00,61.72,broken clouds
+Kingsbridge,2025-06-29 06:00:00,64.04,broken clouds
+Kingsbridge,2025-06-29 09:00:00,67.17,overcast clouds
+Kingsbridge,2025-06-29 12:00:00,69.01,overcast clouds
+Kingsbridge,2025-06-29 15:00:00,69.21,clear sky
+Kingsbridge,2025-06-29 18:00:00,67.1,clear sky
+Kingsbridge,2025-06-29 21:00:00,64.35,clear sky
+Kingsbridge,2025-06-30 00:00:00,63.66,clear sky
+Kingsbridge,2025-06-30 03:00:00,61.14,light rain
+Kingsbridge,2025-06-30 06:00:00,63.91,clear sky
+Kingsbridge,2025-06-30 09:00:00,70.27,clear sky
+Kingsbridge,2025-06-30 12:00:00,70.83,clear sky
+Kingsbridge,2025-06-30 15:00:00,69.89,few clouds
+Kingsbridge,2025-06-30 18:00:00,68.4,clear sky
+Kingsbridge,2025-06-30 21:00:00,64.62,scattered clouds
+Kingsbridge,2025-07-01 00:00:00,61.05,broken clouds
+Kingsbridge,2025-07-01 03:00:00,59.58,overcast clouds
+Kingsbridge,2025-07-01 06:00:00,61.93,overcast clouds
+Kingsbridge,2025-07-01 09:00:00,64.98,overcast clouds
+Kingsbridge,2025-07-01 12:00:00,65.86,overcast clouds
+Kingsbridge,2025-07-01 15:00:00,67.8,overcast clouds
+Kingsbridge,2025-07-01 18:00:00,67.44,overcast clouds
+Kingsbridge,2025-07-01 21:00:00,59.18,scattered clouds
+Kingsbridge,2025-07-02 00:00:00,54.09,broken clouds

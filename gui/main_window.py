@@ -3,14 +3,15 @@ from tkinter import ttk
 from datetime import datetime
 from core.api import fetch_current_weather, fetch_forecast
 from core.icons import get_icon_image, get_detail_icon
-from core.storage import save_current_weather_to_csv, save_forecast_to_csv
+from features.storage import save_current_weather_to_csv, save_forecast_to_csv
+
 from features.dark_light_mode import ThemeToggle 
 
 
 class MainWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("Weather App")
+        self.root.title("AChurchwell-TPS2025-Capstone")
         self.root.geometry("600x720")
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"
@@ -130,7 +131,7 @@ class MainWindow:
             description = weather["weather"][0]["description"].title()
             icon_code = weather["weather"][0]["icon"]
 
-            self.city_label.config(text=city)
+            self.city_label.config(text=weather["name"])
             self.temp_desc_label.config(text=f"{temp}°F, {description}")
 
             icon_image = get_icon_image(icon_code)
@@ -210,8 +211,42 @@ class MainWindow:
 
         return forecast_summary
 
+
+
+
     def apply_theme(self, theme_name):
         self.current_theme = theme_name
         print(f"Theme switched to: {theme_name}")
-        # TODO: You can apply real color/style changes here later
+
+        if theme_name == "dark":
+            bg_color = "#2E2E2E"
+            fg_color = 	'#E8E8E8'
+            card_bg = "#3A3A3A"
+        else:  # light
+            bg_color = '#E8E8E8'
+            fg_color = "#2E2E2E"
+            card_bg = '#D3D3D3'
+
+        # Update root background
+        self.root.configure(bg=bg_color)
+
+        # Update styles (you may have set these earlier using ttk.Style)
+        style = ttk.Style()
+
+        # General frame style
+        style.configure("TFrame", background=bg_color)
+
+        # Labels
+        style.configure("TLabel", background=bg_color, foreground=fg_color)
+
+        # Entry and Buttons
+        style.configure("TEntry", fieldbackground=card_bg, background=card_bg, foreground=fg_color)
+        style.configure("TButton", background=card_bg, foreground=fg_color)
+
+        # If you created custom styles (like "InputRow.TFrame", etc.), update those too
+        style.configure("InputRow.TFrame", background=bg_color)
+
+
+
+
 
