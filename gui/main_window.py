@@ -19,7 +19,7 @@ class MainWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("AChurchwell-TPS2025-Capstone")
-        self.root.geometry("600x720")
+        self.root.geometry("1000x950")
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"
 
@@ -416,7 +416,7 @@ class MainWindow:
         popup = tk.Toplevel(self.root)
         popup.title(f"{days}-Day Forecast for {city}")
         popup.configure(bg="#2E2E2E")
-        popup.geometry("700x550")  # 💥 Larger popup
+        popup.geometry("1000x950")  #Larger popup
 
         title = tk.Label(popup, text=f"{days}-Day Forecast", font=("Segoe UI", 14, "bold"),
                         fg="#FFA040", bg="#2E2E2E")
