@@ -7,6 +7,13 @@ from features.storage import save_current_weather_to_csv, save_forecast_to_csv
 
 from features.dark_light_mode import ThemeToggle 
 
+from features.map_feature import MapFeature
+
+
+import subprocess
+import sys
+import os
+from tkinter import messagebox
 
 class MainWindow:
     def __init__(self, root):
@@ -16,7 +23,7 @@ class MainWindow:
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"
 
-        self.city_var = tk.StringVar()
+        self.city_var = tk.StringVar(value='Selmer')
 
         # --- Centered Search Row ---
         self.input_container = ttk.Frame(root, style="InputRow.TFrame")
@@ -47,8 +54,8 @@ class MainWindow:
             command=self.get_weather,
             font=("Segoe UI", 10, "bold"),
             fg="white",
-            bg="#5a5a5a",
-            activebackground="#777777",
+            bg="#ff6f00",
+            activebackground="#ffa040",
             activeforeground="white",
             relief="flat",
             bd=0,
@@ -90,98 +97,181 @@ class MainWindow:
             label.grid(row=row, column=col, sticky="w", padx=10, pady=5)
             self.detail_labels[key] = label
 
-        # --- Forecast area with horizontal scroll ---
-        self.forecast_canvas = tk.Canvas(root, height=220, bg="#2E2E2E", highlightthickness=0, bd=0)
-        self.scroll_x = ttk.Scrollbar(root, orient="horizontal", command=self.forecast_canvas.xview)
-        self.forecast_canvas.configure(xscrollcommand=self.scroll_x.set)
-        self.scroll_x.pack(fill="x", side="bottom")
-        self.forecast_canvas.pack(fill="x")
 
-        self.forecast_frame = ttk.Frame(self.forecast_canvas, style="ForecastContainer.TFrame")
-        self.forecast_canvas.create_window((0, 0), window=self.forecast_frame, anchor="nw")
-        self.forecast_frame.bind("<Configure>", lambda e: self.forecast_canvas.configure(scrollregion=self.forecast_canvas.bbox("all")))
+        # Add map frame and map widget
+        self.map_frame = ttk.Frame(self.root)
+        self.map_frame.pack(pady=10)
 
+        self.map = MapFeature(self.map_frame)
+
+
+        # # --- Live Radar Button ---
+        # self.radar_button = ttk.Button(
+        #     self.root,
+        #     text="Live Radar",
+        #     command=self.open_radar_map
+        # )
+        # self.radar_button.pack(pady=10)
+
+        self.radar_button = tk.Button(
+            self.root,
+            text="Live Radar",
+            command=self.open_radar_map,
+            font=("Segoe UI", 10, "bold"),
+            fg="white",
+            bg="#FF6F00",
+            activebackground="#FFA040",
+            activeforeground="white",
+            relief="flat",
+            bd=0,
+            padx=10,
+            pady=5
+        )
+        self.radar_button.pack(pady=10)
+
+
+                # Forecast buttons
+        forecast_button_frame = tk.Frame(self.root, bg="#2E2E2E")
+        forecast_button_frame.pack(pady=5)
+
+        tk.Button(
+            forecast_button_frame, text="3-Day Forecast", command=lambda: self.show_forecast_popup(3),
+            font=("Segoe UI", 10, "bold"), fg="white", bg="#5a5a5a",
+            activebackground="#777777", activeforeground="white",
+            relief="flat", bd=0, padx=10, pady=5
+        ).pack(side="left", padx=5)
+
+        tk.Button(
+            forecast_button_frame, text="5-Day Forecast", command=lambda: self.show_forecast_popup(5),
+            font=("Segoe UI", 10, "bold"), fg="white", bg="#5a5a5a",
+            activebackground="#777777", activeforeground="white",
+            relief="flat", bd=0, padx=10, pady=5
+        ).pack(side="left", padx=5)
+
+        tk.Button(
+            forecast_button_frame, text="7-Day Forecast", command=lambda: self.show_forecast_popup(7),
+            font=("Segoe UI", 10, "bold"), fg="white", bg="#5a5a5a",
+            activebackground="#777777", activeforeground="white",
+            relief="flat", bd=0, padx=10, pady=5
+        ).pack(side="left", padx=5)
+
+
+
+        # # --- Forecast area with horizontal scroll ---
+        # self.forecast_canvas = tk.Canvas(root, height=220, bg="#2E2E2E", highlightthickness=0, bd=0)
+        # self.scroll_x = ttk.Scrollbar(root, orient="horizontal", command=self.forecast_canvas.xview)
+        # self.forecast_canvas.configure(xscrollcommand=self.scroll_x.set)
+        # self.scroll_x.pack(fill="x", side="bottom")
+        # self.forecast_canvas.pack(fill="x")
+
+        # self.forecast_frame = ttk.Frame(self.forecast_canvas, style="ForecastContainer.TFrame")
+        # self.forecast_canvas.create_window((0, 0), window=self.forecast_frame, anchor="nw")
+        # self.forecast_frame.bind("<Configure>", lambda e: self.forecast_canvas.configure(scrollregion=self.forecast_canvas.bbox("all")))
+
+        # self.get_weather()
+        # self.setup_styles()
         self.setup_styles()
+        self.root.after(100, self.get_weather)
 
     def setup_styles(self):
         style = ttk.Style()
 
-        style.configure("MainCard.TFrame", background="#3a3a3a", relief="solid", borderwidth=1)
-        style.configure("CityTitle.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 18, "bold"))
+        style.configure("MainCard.TFrame", background="#3a3a3a", relief="solid", borderwidth=2)
+        style.configure("CityTitle.TLabel", background="#3a3a3a", foreground="#ffa040", font=("Segoe UI", 18, "bold"))
         style.configure("Condition.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 11))
         style.configure("Detail.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 10))
 
-        style.configure("ForecastCard.TFrame", background="#3a3a3a", relief="solid", borderwidth=1)
-        style.configure("ForecastLabel.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 9))
-        style.configure("ForecastTitle.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 10, "bold"))
+        # style.configure("ForecastCard.TFrame", background="#3a3a3a", relief="solid", borderwidth=1)
+        # style.configure("ForecastLabel.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 9))
+        # style.configure("ForecastTitle.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 10, "bold"))
 
-        style.configure("InputRow.TFrame", background="#2E2E2E")
-        style.configure("ForecastContainer.TFrame", background="#2E2E2E")
+        # style.configure("InputRow.TFrame", background="#2E2E2E")
+        # style.configure("ForecastContainer.TFrame", background="#2E2E2E")
 
     def get_weather(self):
         city = self.city_var.get().strip()
+
         if not city:
+            messagebox.showwarning(
+                "Missing City",
+                "Please enter a city name to get weather data."
+            )
+            self.city_entry.focus_set()
             return
 
         weather = fetch_current_weather(city)
         forecast = fetch_forecast(city)
 
-        if weather:
-            temp = weather["main"]["temp"]
-            description = weather["weather"][0]["description"].title()
-            icon_code = weather["weather"][0]["icon"]
-
-            self.city_label.config(text=weather["name"])
-            self.temp_desc_label.config(text=f"{temp}°F, {description}")
-
-            icon_image = get_icon_image(icon_code)
-            if icon_image:
-                self.icon_label.config(image=icon_image)
-                self.icon_label.image = icon_image
-
-            self.detail_labels["Humidity"].config(
-                text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%"
+        if not weather or "main" not in weather or "weather" not in weather:
+            messagebox.showerror(
+                "City Not Found",
+                f"Oops! '{city}' doesn't seem to be a real city.\nDouble-check your spelling and try again."
             )
-            self.detail_labels["Wind"].config(
-                text=f"{get_detail_icon('Wind')} Wind: {weather['wind']['speed']} mph"
-            )
-            self.detail_labels["Cloudiness"].config(
-                text=f"{get_detail_icon('Cloudiness')} Cloudiness: {weather['clouds']['all']}%"
-            )
-            self.detail_labels["Visibility"].config(
-                text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km"
-            )
+            self.city_entry.focus_set()
+            return
 
-            save_current_weather_to_csv(weather)
+        # --- Proceed if city is valid ---
+        temp = weather["main"]["temp"]
+        description = weather["weather"][0]["description"].title()
+        icon_code = weather["weather"][0]["icon"]
 
-        if forecast:
-            save_forecast_to_csv(forecast)
-            forecast_summary = self.process_forecast_data(forecast)
-            self.clear_forecast_cards()
+        self.city_label.config(text=weather["name"])
+        self.temp_desc_label.config(text=f"{temp}°F, {description}")
 
-            for i, day in enumerate(forecast_summary):
-                card = ttk.Frame(self.forecast_frame, padding=10, style="ForecastCard.TFrame", width=110)
-                card.grid(row=0, column=i, padx=5, sticky="n")
-                card.grid_propagate(False)
+        icon_image = get_icon_image(icon_code)
+        if icon_image:
+            self.icon_label.config(image=icon_image)
+            self.icon_label.image = icon_image
 
-                dt = datetime.strptime(day["date"], "%Y-%m-%d")
-                ttk.Label(card, text=dt.strftime("%a\n%b %d"), style="ForecastTitle.TLabel").pack(anchor="center")
+        lat = weather["coord"]["lat"]
+        lon = weather["coord"]["lon"]
+        self.map.update_location(lat, lon)
 
-                icon_image = get_icon_image(day["icon"])
-                if icon_image:
-                    icon_label = tk.Label(card, image=icon_image, bg="#3a3a3a")
-                    icon_label.image = icon_image
-                    icon_label.pack()
+        self.detail_labels["Humidity"].config(
+            text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%"
+        )
+        self.detail_labels["Wind"].config(
+            text=f"{get_detail_icon('Wind')} Wind: {weather['wind']['speed']} mph"
+        )
+        self.detail_labels["Cloudiness"].config(
+            text=f"{get_detail_icon('Cloudiness')} Cloudiness: {weather['clouds']['all']}%"
+        )
+        self.detail_labels["Visibility"].config(
+            text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km"
+        )
 
-                ttk.Label(card, text=f"High: {day['high']}°F", style="ForecastLabel.TLabel").pack(anchor="center")
-                ttk.Label(card, text=f"Low: {day['low']}°F", style="ForecastLabel.TLabel").pack(anchor="center")
-                ttk.Label(card, text=day["desc"], style="ForecastLabel.TLabel", wraplength=90, justify="center").pack(anchor="center")
-        else:
-            self.clear_forecast_cards()
+        save_current_weather_to_csv(weather)
 
-    def clear_forecast_cards(self):
-        for widget in self.forecast_frame.winfo_children():
-            widget.destroy()
+
+
+        # if forecast:
+        #     save_forecast_to_csv(forecast)
+        #     forecast_summary = self.process_forecast_data(forecast)
+        #     self.clear_forecast_cards()
+
+        #     for i, day in enumerate(forecast_summary):
+        #         card = ttk.Frame(self.forecast_frame, padding=10, style="ForecastCard.TFrame", width=110)
+        #         card.grid(row=0, column=i, padx=5, sticky="n")
+        #         card.grid_propagate(False)
+
+        #         dt = datetime.strptime(day["date"], "%Y-%m-%d")
+        #         ttk.Label(card, text=dt.strftime("%a\n%b %d"), style="ForecastTitle.TLabel").pack(anchor="center")
+
+        #         icon_image = get_icon_image(day["icon"])
+        #         if icon_image:
+        #             icon_label = tk.Label(card, image=icon_image, bg="#3a3a3a")
+        #             icon_label.image = icon_image
+        #             icon_label.pack()
+
+        #         ttk.Label(card, text=f"High: {day['high']}°F", style="ForecastLabel.TLabel").pack(anchor="center")
+        #         ttk.Label(card, text=f"Low: {day['low']}°F", style="ForecastLabel.TLabel").pack(anchor="center")
+        #         ttk.Label(card, text=day["desc"], style="ForecastLabel.TLabel", wraplength=90, justify="center").pack(anchor="center")
+        # else:
+        #     self.clear_forecast_cards()
+
+    # def clear_forecast_cards(self):
+    #     for widget in self.forecast_frame.winfo_children():
+    #         widget.destroy()
 
     def process_forecast_data(self, forecast_data):
         days = {}
@@ -211,6 +301,29 @@ class MainWindow:
 
         return forecast_summary
 
+    # def open_radar_map(self):
+    #     subprocess.Popen(["python", "features/radar_animated_map.py"])
+
+  
+
+    # def open_radar_map(self):
+    #     city = self.city_var.get().strip()
+    #     if city:
+    #         radar_script = os.path.join("features", "radar_animated_map.py")
+    #         subprocess.Popen([sys.executable, radar_script, city])
+    #     else:
+    #         print("No city entered.")
+    def open_radar_map(self):
+        city = self.city_var.get().strip()
+        if city:
+            radar_script = os.path.join("features", "radar_animated_map.py")
+            subprocess.Popen([sys.executable, radar_script, city])
+            self.show_custom_popup("Live Radar", "Radar opened in your browser.\nReturn to this app window when you're done.")
+        else:
+            self.show_custom_popup("Missing City", "Please enter a city before launching radar.")
+
+
+
 
 
 
@@ -220,12 +333,12 @@ class MainWindow:
 
         if theme_name == "dark":
             bg_color = "#2E2E2E"
-            fg_color = 	'#E8E8E8'
+            fg_color = 	"#EBE8E5FF"
             card_bg = "#3A3A3A"
         else:  # light
-            bg_color = '#E8E8E8'
+            bg_color = "#C6C2C2"
             fg_color = "#2E2E2E"
-            card_bg = '#D3D3D3'
+            card_bg = "#C6C2C2"
 
         # Update root background
         self.root.configure(bg=bg_color)
@@ -244,7 +357,142 @@ class MainWindow:
         style.configure("TButton", background=card_bg, foreground=fg_color)
 
         # If you created custom styles (like "InputRow.TFrame", etc.), update those too
-        style.configure("InputRow.TFrame", background=bg_color)
+        style.configure("InputRow.TFrame", background=bg_color)  
+
+
+
+    def show_custom_popup(self, title, message):
+            popup = tk.Toplevel(self.root)
+            popup.title(title)
+            popup.configure(bg="#3A3A3A")
+            popup.geometry("300x150")
+            popup.resizable(False, False)
+
+            label = tk.Label(popup, text=message, font=("Segoe UI", 10), fg="white", bg="#3A3A3A", wraplength=280, justify="center")
+            label.pack(pady=20, padx=10)
+
+            close_button = tk.Button(
+                popup,
+                text="OK",
+                command=popup.destroy,
+                bg="#5a5a5a",
+                fg="white",
+                font=("Segoe UI", 10, "bold"),
+                relief="flat",
+                activebackground="#777777",
+                activeforeground="white"
+            )
+            close_button.pack(pady=10)
+
+            popup.transient(self.root)
+            popup.grab_set()
+            self.root.wait_window(popup)
+
+
+    def show_forecast_popup(self, days):
+        city = self.city_var.get().strip()
+        if not city:
+            self.show_custom_popup("Missing City", "Please enter a city before viewing the forecast.")
+            return
+
+        forecast = fetch_forecast(city)
+        if not forecast or "list" not in forecast:
+            self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
+            return
+
+        forecast_summary = self.process_forecast_data(forecast)
+
+        # Extend with placeholder data if needed
+        if days > len(forecast_summary):
+            for i in range(days - len(forecast_summary)):
+                forecast_summary.append({
+                    "date": f"Day +{i+1}",
+                    "high": "--",
+                    "low": "--",
+                    "desc": "Predicted Day",
+                    "icon": "01d"
+                })
+
+        popup = tk.Toplevel(self.root)
+        popup.title(f"{days}-Day Forecast for {city}")
+        popup.configure(bg="#2E2E2E")
+        popup.geometry("700x550")  # 💥 Larger popup
+
+        title = tk.Label(popup, text=f"{days}-Day Forecast", font=("Segoe UI", 14, "bold"),
+                        fg="#FFA040", bg="#2E2E2E")
+        title.pack(pady=(20, 10))
+
+        content = tk.Frame(popup, bg="#2E2E2E")
+        content.pack(fill="both", expand=True, padx=20)
+
+        for i, day in enumerate(forecast_summary[:days]):
+            card = tk.Frame(content, bg="#3A3A3A", relief="raised", bd=1)
+            card.grid(row=i//2, column=i%2, padx=10, pady=10, sticky="nsew")
+
+            # date_label = tk.Label(card, text=day["date"], font=("Segoe UI", 11, "bold"),
+            #                     fg="#FFA040", bg="#3A3A3A")
+            # date_label.pack(anchor="w", padx=10, pady=(10, 0))
+
+            from datetime import datetime
+
+            try:
+                dt = datetime.strptime(day["date"], "%Y-%m-%d")
+                formatted_date = dt.strftime("%a, %b %d, %Y")  # Mon, Jun 30, 2025
+            except:
+                formatted_date = day["date"]  # fallback for "Day +1" predictions
+
+            date_label = tk.Label(
+                card,
+                text=formatted_date,
+                font=("Segoe UI", 10, "bold"),
+                fg="#FFA040",
+                bg="#3A3A3A"
+            )
+            date_label.pack(pady=(10, 0))
+
+
+
+
+
+            icon = get_icon_image(day["icon"])
+            if icon:
+                icon_label = tk.Label(card, image=icon, bg="#3A3A3A")
+                icon_label.image = icon
+                icon_label.pack(pady=5)
+
+            info = f"{day['desc']}\nHigh: {day['high']}°F • Low: {day['low']}°F"
+            info_label = tk.Label(card, text=info, font=("Segoe UI", 10), fg="white", bg="#3A3A3A", justify="center")
+            info_label.pack(pady=(0, 10))
+
+        #  Reserve space for future chart
+        chart_placeholder = tk.Frame(popup, bg="#2E2E2E", height=150)
+        chart_placeholder.pack(fill="both", expand=True, padx=20, pady=10)
+        chart_label = tk.Label(chart_placeholder, text="(Chart goes here soon)", font=("Segoe UI", 10, "italic"),
+                            fg="#888888", bg="#2E2E2E")
+        chart_label.pack()
+
+        #  Nicer Close Button
+        close_button = tk.Button(
+            popup,
+            text="Close Forecast",
+            command=popup.destroy,
+            font=("Segoe UI", 11, "bold"),
+            bg="#FF6F00", fg="white",
+            relief="flat", padx=10, pady=6,
+            activebackground="#FFA040", activeforeground="black"
+        )
+        close_button.pack(pady=(10, 20))
+
+
+
+
+
+
+
+
+
+
+
 
 
 

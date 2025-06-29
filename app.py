@@ -28,10 +28,13 @@
 
 import tkinter as tk
 from gui.main_window import MainWindow
+# from gui.main_window2 import MainWindow2
+# import subprocess
 
 def main():
     root = tk.Tk()
     app = MainWindow(root)
+    # app = MainWindow2(root)
     root.mainloop()
 
 if __name__ == "__main__":
