@@ -46,17 +46,19 @@ import tkinter as tk
 from gui.splash_screen import SplashScreen
 from gui.main_window import MainWindow
 
+
+# my main entry point for launching the app
 def main():
     root = tk.Tk()
     root.withdraw()  # Hide the main window initially
 
-    splash = SplashScreen(root)
-    splash.wait_window()  # Freeze here until splash closes
+    splash = SplashScreen(root)#creates and shows the ss
+    splash.wait_window()  # pauses here app wont move fwd until splash closes
 
-    root.deiconify()  # Show the real app window
-    MainWindow(root)
+    root.deiconify()  # Show the main app window
+    MainWindow(root) #launches my weather dashboard
 
-    root.mainloop()
+    root.mainloop()#starts the event loop to keep app running
 
 if __name__ == "__main__":
     main()
