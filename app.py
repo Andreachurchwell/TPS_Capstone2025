@@ -26,16 +26,38 @@
 # if __name__ == "__main__":
 #     main()
 
+# import tkinter as tk
+# from gui.main_window import MainWindow
+
+
+# def main():
+#     root = tk.Tk()
+#     app = MainWindow(root)
+
+#     root.mainloop()
+
+# if __name__ == "__main__":
+#     main()
+
+
+
+# testing splashscreen
 import tkinter as tk
+from gui.splash_screen import SplashScreen
 from gui.main_window import MainWindow
-# from gui.main_window2 import MainWindow2
-# import subprocess
 
 def main():
     root = tk.Tk()
-    app = MainWindow(root)
-    # app = MainWindow2(root)
+    root.withdraw()  # Hide the main window initially
+
+    splash = SplashScreen(root)
+    splash.wait_window()  # Freeze here until splash closes
+
+    root.deiconify()  # Show the real app window
+    MainWindow(root)
+
     root.mainloop()
 
 if __name__ == "__main__":
     main()
+
