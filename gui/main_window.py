@@ -129,21 +129,21 @@ class MainWindow:
 
 
 # leave this out for now bc i dont wanna show this!!!!! But ITS DEF GOING IN MY CAPSTONE SO DONOT DELETE ANDREA!!!!
-        self.radar_button = tk.Button(
-            self.root,
-            text="Live Radar",
-            command=self.open_radar_map,
-            font=("Segoe UI", 10, "bold"),
-            fg="white",
-            bg="#FF6F00",
-            activebackground="#FFA040",
-            activeforeground="white",
-            relief="flat",
-            bd=0,
-            padx=10,
-            pady=5
-        )
-        self.radar_button.pack(pady=10)
+        # self.radar_button = tk.Button(
+        #     self.root,
+        #     text="Live Radar",
+        #     command=self.open_radar_map,
+        #     font=("Segoe UI", 10, "bold"),
+        #     fg="white",
+        #     bg="#FF6F00",
+        #     activebackground="#FFA040",
+        #     activeforeground="white",
+        #     relief="flat",
+        #     bd=0,
+        #     padx=10,
+        #     pady=5
+        # )
+        # self.radar_button.pack(pady=10)
 
 
                 # Forecast buttons
@@ -245,42 +245,37 @@ class MainWindow:
         launch_radar_map(city, self.show_custom_popup)
 
 
-
-
-
-
-
     def apply_theme(self, theme_name):
         self.current_theme = theme_name
         print(f"Theme switched to: {theme_name}")
 
-        if theme_name == "dark":
-            bg_color = "#2E2E2E"
-            fg_color = 	"#EBE8E5FF"
-            card_bg = "#3A3A3A"
-        else:  # light
-            bg_color = "#C6C2C2"
-            fg_color = "#2E2E2E"
-            card_bg = "#C6C2C2"
-
-        # Update root background
-        self.root.configure(bg=bg_color)
-
-        # Update styles (you may have set these earlier using ttk.Style)
         style = ttk.Style()
 
-        # General frame style
+        if theme_name == "dark":
+            bg_color = "#2E2E2E"
+            fg_color = "#EBE8E5"
+            card_bg = "#3A3A3A"
+            accent = "#FF8C00"
+        else:
+            bg_color = "#F9F6F3"      # light, soft background with warm tone
+            fg_color = "#222222"      # dark text
+            card_bg = "#FFFFFF"       # white cards/input
+            accent = "#FFA94D"        # soft orange accent
+
+        self.root.configure(bg=bg_color)
+
         style.configure("TFrame", background=bg_color)
-
-        # Labels
         style.configure("TLabel", background=bg_color, foreground=fg_color)
-
-        # Entry and Buttons
         style.configure("TEntry", fieldbackground=card_bg, background=card_bg, foreground=fg_color)
         style.configure("TButton", background=card_bg, foreground=fg_color)
 
-        # If you created custom styles (like "InputRow.TFrame", etc.), update those too
-        style.configure("InputRow.TFrame", background=bg_color)  
+        style.configure("InputRow.TFrame", background=bg_color)
+
+        style.map("Accent.TButton",
+                background=[("active", accent), ("!active", accent)],
+                foreground=[("active", "white"), ("!active", "white")])
+  
+
 
 
 
@@ -332,7 +327,7 @@ class MainWindow:
                 "desc": "Predicted Day", "icon": "01d"
             })
 
-        show_forecast_popup(self.root, city, forecast_summary, days)
+        show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme)
 
 
 

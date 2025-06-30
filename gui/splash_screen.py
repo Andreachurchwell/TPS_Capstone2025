@@ -7,7 +7,7 @@ class SplashScreen(tk.Toplevel):
         super().__init__(root)
 
         self.duration = duration  # Time in ms
-        self.configure(bg="#1e1e1e")
+        self.configure(bg="#2e2e2e")
         self.overrideredirect(True)  # No window border
 
         # --- Center on screen ---
@@ -35,7 +35,7 @@ class SplashScreen(tk.Toplevel):
             text="Snakebit Skies",
             font=("Segoe UI", 28, "bold"),
             fg="#FFA040",
-            bg="#1e1e1e"
+            bg="#2e2e2e"
         )
         self.app_name_label.pack()
 
@@ -45,7 +45,7 @@ class SplashScreen(tk.Toplevel):
             text="Loading weather data",
             font=("Segoe UI", 12),
             fg="#CCCCCC",
-            bg="#1e1e1e"
+            bg="#2e2e2e"
         )
         self.loading_label.pack(pady=20)
 
