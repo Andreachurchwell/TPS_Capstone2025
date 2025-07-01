@@ -45,10 +45,12 @@
 import tkinter as tk
 from gui.splash_screen import SplashScreen
 from gui.main_window import MainWindow
+from core.weather_database import init_db
 
 
 # my main entry point for launching the app
 def main():
+    init_db() #this sets up my db
     root = tk.Tk()
     root.withdraw()  # Hide the main window initially
 
@@ -60,6 +62,22 @@ def main():
 
     root.mainloop()#starts the event loop to keep app running
 
+# if __name__ == "__main__":
+#     main()
+
 if __name__ == "__main__":
-    main()
+    try:
+        root = tk.Tk()
+        root.withdraw()
+
+        splash = SplashScreen(root)
+        splash.wait_window()
+
+        root.deiconify()
+        MainWindow(root)
+
+        root.mainloop()
+
+    except Exception:
+        pass  # ignore any last-second background errors
 

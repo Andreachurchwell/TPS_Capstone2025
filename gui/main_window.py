@@ -23,6 +23,8 @@ from gui.forecast_popups import show_forecast_popup, process_forecast_data
 
 from features.radar_launcher import launch_radar_map
 
+from core.weather_database import save_forecast_to_db
+
 
 class MainWindow:
     def __init__(self, root):
@@ -47,14 +49,14 @@ class MainWindow:
         # --- Logo Section (circular + centered under search bar) ---
 
 
-        logo_path = os.path.join("assets", "icons", "snakebit_skies.png")
-        logo_raw = Image.open(logo_path).resize((120, 120))
-        self.logo_img = ImageTk.PhotoImage(logo_raw)
+        # logo_path = os.path.join("assets", "icons", "snakebit_skies.png")
+        # logo_raw = Image.open(logo_path).resize((120, 120))
+        # self.logo_img = ImageTk.PhotoImage(logo_raw)
 
 
-        # Display logo centered under the input frame
-        self.logo_label = tk.Label(self.root, image=self.logo_img, bg="#2E2E2E")
-        self.logo_label.pack(pady=(10, 0))
+        # # Display logo centered under the input frame
+        # self.logo_label = tk.Label(self.root, image=self.logo_img, bg="#2E2E2E")
+        # self.logo_label.pack(pady=(10, 0))
 
 
         # City input
@@ -182,6 +184,9 @@ class MainWindow:
 
 
         self.setup_styles() # applies custom widget style
+
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)  # Handles graceful shutdown
+
         self.root.after(100, self.get_weather) # fetches weather for selmer(my default)
 
 
@@ -347,6 +352,25 @@ class MainWindow:
         save_forecast_to_csv(forecast)  
 # processes raw data into summary
         forecast_summary = process_forecast_data(forecast, days)
+
+
+                # Prepare data to save to DB
+        formatted_forecast = []
+        for day in forecast_summary:
+            if day["high"] == "--":  # Skip placeholders
+                continue
+            formatted_forecast.append({
+                "date": day["date"],
+                "min_temp": day["low"],
+                "max_temp": day["high"],
+                "humidity": 55,           # TEMP: real value could come later
+                "wind_speed": 5.2,        # TEMP: real value could come later
+                "description": day["desc"],
+                "icon_code": day["icon"]
+            })
+
+        # Save forecast to database
+        save_forecast_to_db(city, formatted_forecast)
 # pads forecast list if it has fewer than expected, shows blanks for now unitl i do my predictions
         while len(forecast_summary) < days:
             forecast_summary.append({
@@ -354,8 +378,31 @@ class MainWindow:
                 "high": "--", "low": "--",
                 "desc": "Predicted Day", "icon": "01d"
             })
+
+
+
+
 # display popup w forecast info styled by theme
         show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme)
+
+        # Gracefully handles app close (cleans up map to avoid Tkinter background error)
+    # def on_close(self):
+    #     try:
+    #         self.map.destroy()  # clean up the map widget
+    #     except Exception as e:
+    #         print("Map cleanup error:", e)
+    #     self.root.destroy()  # closes the app window
+
+
+    def on_close(self):
+        try:
+            self.map.destroy()
+        except Exception as e:
+            print("Map cleanup error:", e)
+
+        self.root.after(100, self.root.destroy)  #Slight delay to avoid crashing background threads
+        os._exit(0)
+
 
 
 

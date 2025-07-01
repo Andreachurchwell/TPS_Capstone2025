@@ -14,6 +14,13 @@ scipy==1.15.3
 seaborn==0.13.2
 six==1.17.0
 tzdata==2025.2
-requests
-tkintermapview
-python-dotenv
+requests==2.31.0
+tkintermapview==1.28
+python-dotenv==1.0.1
+geopy==2.4.1
+pytest==8.2.2
+openpyxl==3.1.2
+scikit-learn==1.5.0
+loguru==0.7.2
+
+
