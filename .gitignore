@@ -1,4 +1,33 @@
+# venv/
+# .env
+# __pycache__/
+# *.pyc
+
+
+# Virtual environment
 venv/
+
+# Environment variables
 .env
+
+# Python cache
 __pycache__/
 *.pyc
+
+# SQLite/Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Data exports
+*.csv
+*.xls
+*.xlsx
+
+# Log files
+*.log
+
+# IDE/editor files (optional, but good practice)
+*.vscode/
+*.idea/
+

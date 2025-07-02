@@ -28,6 +28,7 @@ def fetch_forecast(city):
     response = requests.get(url)
     # returns the parsed json if successful
     if response.status_code == 200:
+        # print(response.json())
         return response.json()
     else:
         # if theres an issue, logs it and returs none

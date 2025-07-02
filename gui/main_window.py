@@ -36,7 +36,8 @@ class MainWindow:
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"    # makes it start it dark mode
 
-        self.city_var = tk.StringVar(value='Selmer') # makes selmer my original city
+        # self.city_var = tk.StringVar(value='Selmer') # makes selmer my original city
+        self.city_var = tk.StringVar() # makes selmer my original city
 
         # --- Centered Search Row ---
         self.input_container = ttk.Frame(root, style="InputRow.TFrame")
@@ -49,14 +50,14 @@ class MainWindow:
         # --- Logo Section (circular + centered under search bar) ---
 
 
-        # logo_path = os.path.join("assets", "icons", "snakebit_skies.png")
-        # logo_raw = Image.open(logo_path).resize((120, 120))
-        # self.logo_img = ImageTk.PhotoImage(logo_raw)
+        logo_path = os.path.join("assets", "icons", "vw.png")
+        logo_raw = Image.open(logo_path).resize((120, 120))
+        self.logo_img = ImageTk.PhotoImage(logo_raw)
 
 
-        # # Display logo centered under the input frame
-        # self.logo_label = tk.Label(self.root, image=self.logo_img, bg="#2E2E2E")
-        # self.logo_label.pack(pady=(10, 0))
+        # Display logo centered under the input frame
+        self.logo_label = tk.Label(self.root, image=self.logo_img, bg="#2E2E2E")
+        self.logo_label.pack(pady=(10, 0))
 
 
         # City input
@@ -73,6 +74,7 @@ class MainWindow:
             bd=0
         )
         self.city_entry.pack(side="left", padx=(0, 5), ipady=5)
+        
 
         # Search button that will trigger weather lookups
         self.search_button = tk.Button(
@@ -139,21 +141,21 @@ class MainWindow:
 
 
 # leave this out for now bc i dont wanna show this!!!!! But ITS DEF GOING IN MY CAPSTONE SO DONOT DELETE ANDREA!!!!
-        # self.radar_button = tk.Button(
-        #     self.root,
-        #     text="Live Radar",
-        #     command=self.open_radar_map,
-        #     font=("Segoe UI", 10, "bold"),
-        #     fg="white",
-        #     bg="#FF6F00",
-        #     activebackground="#FFA040",
-        #     activeforeground="white",
-        #     relief="flat",
-        #     bd=0,
-        #     padx=10,
-        #     pady=5
-        # )
-        # self.radar_button.pack(pady=10)
+        self.radar_button = tk.Button(
+            self.root,
+            text="Live Radar",
+            command=self.open_radar_map,
+            font=("Segoe UI", 10, "bold"),
+            fg="white",
+            bg="#FF6F00",
+            activebackground="#FFA040",
+            activeforeground="white",
+            relief="flat",
+            bd=0,
+            padx=10,
+            pady=5
+        )
+        self.radar_button.pack(pady=10)
 
 
                 # creates fram for my forecast btns
@@ -207,18 +209,15 @@ class MainWindow:
     def get_weather(self):
         # get current city name from the entry field
         city = self.city_var.get().strip()
-    # if not city is found, show a warning popup
+        
+        # if nothing typed, fall back to Selmer
         if not city:
-            messagebox.showwarning(
-                "Missing City",
-                "Please enter a city name to get weather data."
-            )
-            self.city_entry.focus_set()
-            return
-# calling the api to fetch weather for the city
+            city = "Selmer"  # fallback default
+
+        # calling the api to fetch weather for the city
         weather = fetch_current_weather(city)
-       
-# if api fails or invalid city, show popup error
+        
+        # if api fails or invalid city, show popup error
         if not weather or "main" not in weather or "weather" not in weather:
             messagebox.showerror(
                 "City Not Found",
@@ -227,23 +226,27 @@ class MainWindow:
             self.city_entry.focus_set()
             return
 
-    #   if data is valid, get temp, description, and icon code
+        # if data is valid, get temp, description, and icon code
         temp = weather["main"]["temp"]
         description = weather["weather"][0]["description"].title()
         icon_code = weather["weather"][0]["icon"]
-# update teh city name and temp/desc and icon
+
+        # update the city name and temp/desc and icon
         self.city_label.config(text=weather["name"])
         self.temp_desc_label.config(text=f"{temp}°F, {description}")
-# get weather icon and display it
+
+        # get weather icon and display it
         icon_image = get_icon_image(icon_code)
         if icon_image:
             self.icon_label.config(image=icon_image)
-            self.icon_label.image = icon_image # prevents image garbage collection
-# update map location
+            self.icon_label.image = icon_image  # prevents image garbage collection
+
+        # update map location
         lat = weather["coord"]["lat"]
         lon = weather["coord"]["lon"]
         self.map.update_location(lat, lon)
-# updates weather details
+
+        # updates weather details
         self.detail_labels["Humidity"].config(
             text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%"
         )
@@ -256,7 +259,8 @@ class MainWindow:
         self.detail_labels["Visibility"].config(
             text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km"
         )
-# saves to csv file
+
+        # saves to csv file
         save_current_weather_to_csv(weather)
 
 
@@ -385,13 +389,6 @@ class MainWindow:
 # display popup w forecast info styled by theme
         show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme)
 
-        # Gracefully handles app close (cleans up map to avoid Tkinter background error)
-    # def on_close(self):
-    #     try:
-    #         self.map.destroy()  # clean up the map widget
-    #     except Exception as e:
-    #         print("Map cleanup error:", e)
-    #     self.root.destroy()  # closes the app window
 
 
     def on_close(self):
