@@ -25,6 +25,9 @@ from features.radar_launcher import launch_radar_map
 
 from core.weather_database import save_forecast_to_db
 
+from features.custom_buttons import create_button
+import customtkinter as ctk
+
 
 class MainWindow:
     def __init__(self, root):
@@ -40,12 +43,28 @@ class MainWindow:
         self.city_var = tk.StringVar() # makes selmer my original city
 
         # --- Centered Search Row ---
-        self.input_container = ttk.Frame(root, style="InputRow.TFrame")
+        self.input_container = ctk.CTkFrame(self.root, fg_color="transparent")
         self.input_container.pack(pady=10)
 
-        self.input_frame = ttk.Frame(self.input_container)
+        self.input_frame = ctk.CTkFrame(self.input_container, fg_color="transparent")
         self.input_frame.pack(anchor='center')
+        self.city_entry = ctk.CTkEntry(
+            master=self.input_frame,
+            placeholder_text="Enter city...",
+            width=240,
+            height=32,
+            font=ctk.CTkFont("Segoe UI", 12),
+            textvariable=self.city_var
+        )
+        self.city_entry.pack(side="left", padx=(0, 5))
 
+        self.search_button = create_button(
+            parent=self.input_frame,
+            text="Search",
+            command=self.get_weather,
+            theme=self.current_theme
+        )
+        self.search_button.pack(side="left", padx=(5, 0))
 
         # --- Logo Section (circular + centered under search bar) ---
 
@@ -60,38 +79,6 @@ class MainWindow:
         self.logo_label.pack(pady=(10, 0))
 
 
-        # City input
-        self.city_entry = tk.Entry(
-            self.input_frame,
-            textvariable=self.city_var,
-            font=("Segoe UI", 10),
-            fg="white",
-            bg="#444444",
-            insertbackground="white",
-            width=30,
-            relief="flat",
-            highlightthickness=0,
-            bd=0
-        )
-        self.city_entry.pack(side="left", padx=(0, 5), ipady=5)
-        
-
-        # Search button that will trigger weather lookups
-        self.search_button = tk.Button(
-            self.input_frame,
-            text="Search",
-            command=self.get_weather,
-            font=("Segoe UI", 10, "bold"),
-            fg="white",
-            bg="#ff6f00",
-            activebackground="#ffa040",
-            activeforeground="white",
-            relief="flat",
-            bd=0,
-            padx=10,
-            pady=5
-        )
-        self.search_button.pack(side="right")
 
         # Theme toggle button that links to the apply theme function
         self.theme_toggle_container = tk.Frame(self.root, bg="#2E2E2E")
@@ -139,49 +126,31 @@ class MainWindow:
         # makes map widget using custom mapfeature class
         self.map = MapFeature(self.map_frame)
 
+        
+
 
 # leave this out for now bc i dont wanna show this!!!!! But ITS DEF GOING IN MY CAPSTONE SO DONOT DELETE ANDREA!!!!
-        self.radar_button = tk.Button(
-            self.root,
+        self.radar_button = create_button(
+            parent=self.root,
             text="Live Radar",
             command=self.open_radar_map,
-            font=("Segoe UI", 10, "bold"),
-            fg="white",
-            bg="#FF6F00",
-            activebackground="#FFA040",
-            activeforeground="white",
-            relief="flat",
-            bd=0,
-            padx=10,
-            pady=5
+            theme=self.current_theme
         )
         self.radar_button.pack(pady=10)
 
-
                 # creates fram for my forecast btns
-        forecast_button_frame = tk.Frame(self.root, bg="#2E2E2E")
-        forecast_button_frame.pack(pady=5)
-# 3 day forecast btn calling show forecast popup
-        tk.Button(
-            forecast_button_frame, text="3-Day Forecast", command=lambda: self.show_forecast_popup(3),
-            font=("Segoe UI", 10, "bold"), fg="white", bg="#5a5a5a",
-            activebackground="#777777", activeforeground="white",
-            relief="flat", bd=0, padx=10, pady=5
-        ).pack(side="left", padx=5)
-# 5 day forecast btn calling show forecast popup
-        tk.Button(
-            forecast_button_frame, text="5-Day Forecast", command=lambda: self.show_forecast_popup(5),
-            font=("Segoe UI", 10, "bold"), fg="white", bg="#5a5a5a",
-            activebackground="#777777", activeforeground="white",
-            relief="flat", bd=0, padx=10, pady=5
-        ).pack(side="left", padx=5)
-# 7 day forecast btn calling show forecast popup
-        tk.Button(
-            forecast_button_frame, text="7-Day Forecast", command=lambda: self.show_forecast_popup(7),
-            font=("Segoe UI", 10, "bold"), fg="white", bg="#5a5a5a",
-            activebackground="#777777", activeforeground="white",
-            relief="flat", bd=0, padx=10, pady=5
-        ).pack(side="left", padx=5)
+        self.forecast_button_frame = tk.Frame(self.root, bg="#2E2E2E")
+        self.forecast_button_frame.pack(pady=5)
+
+
+        for days in [3, 5, 7]:
+            btn = create_button(
+                parent=self.forecast_button_frame,
+                text=f"{days}-Day Forecast",
+                command=lambda d=days: self.handle_forecast_button_click(d),
+                theme=self.current_theme
+            )
+            btn.pack(side="left", padx=5)
 
 
 
@@ -190,6 +159,8 @@ class MainWindow:
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)  # Handles graceful shutdown
 
         self.root.after(100, self.get_weather) # fetches weather for selmer(my default)
+
+
 
 
 
@@ -272,110 +243,99 @@ class MainWindow:
         # passes in self.showcustom in case the city is invalid
         launch_radar_map(city, self.show_custom_popup)
 
-
     def apply_theme(self, theme_name):
         # store current theme
         self.current_theme = theme_name
         print(f"Theme switched to: {theme_name}")
-# inits ttk styling engine
+
+        # inits ttk styling engine
         style = ttk.Style()
 
         if theme_name == "dark":
-            bg_color = "#2E2E2E" #window bg
-            fg_color = "#EBE8E5" #text color
-            card_bg = "#3A3A3A" #cards input bg
-            accent = "#FF8C00" #orange accent for btns
+            bg_color = "#2E2E2E"     # window bg
+            fg_color = "#EBE8E5"     # text color
+            card_bg = "#3A3A3A"      # cards/input bg
+            accent = "#FF8C00"       # orange accent for buttons
         else:
-            bg_color = "#F9F6F3"      # light, soft background with warm tone
-            fg_color = "#222222"      # dark text
-            card_bg = "#FFFFFF"       # white cards/input
-            accent = "#FFA94D"        # soft orange accent
-# set main window bg color
+            bg_color = "#F9F6F3"     # light, soft background
+            fg_color = "#222222"     # dark text
+            card_bg = "#FFFFFF"      # white cards/input
+            accent = "#FFA94D"       # soft orange accent
+
+        # Set main window bg
         self.root.configure(bg=bg_color)
-# layout and wig style
+
+        # TTK styles
         style.configure("TFrame", background=bg_color)
         style.configure("TLabel", background=bg_color, foreground=fg_color)
         style.configure("TEntry", fieldbackground=card_bg, background=card_bg, foreground=fg_color)
         style.configure("TButton", background=card_bg, foreground=fg_color)
 
         style.configure("InputRow.TFrame", background=bg_color)
-# maps the accent.tbtn sytle keeping it consistant 
+
+        # Map for button hover/active
         style.map("Accent.TButton",
                 background=[("active", accent), ("!active", accent)],
                 foreground=[("active", "white"), ("!active", "white")])
-  
 
 
+                # Update forecast button row background to match current theme
+        if hasattr(self, 'forecast_button_frame'):
+            self.forecast_button_frame.configure(bg=bg_color)
 
+        # Manually update CustomTkinter widgets
+        self.input_container.configure(fg_color="transparent")
+        self.input_frame.configure(fg_color="transparent")
+        self.city_entry.configure(
+            fg_color=card_bg,
+            text_color=fg_color,
+            placeholder_text_color="#AAAAAA" if theme_name == "light" else "#CCCCCC"
+        )
+        self.search_button.configure(
+            fg_color=accent,
+            hover_color="#FFB866" if theme_name == "light" else "#FFA040",
+            text_color="white" if theme_name == "dark" else fg_color
+        )
 
-    def show_custom_popup(self, title, message):
-            # new popup window linked to main app window
-            popup = tk.Toplevel(self.root)
-            popup.title(title) #sets the popup title
-            popup.configure(bg="#3A3A3A") #bg to match
-            popup.geometry("300x150") #set size
-            popup.resizable(False, False) #disables resizing
-# label to display popup msg
-            label = tk.Label(popup, text=message, font=("Segoe UI", 10), fg="white", bg="#3A3A3A", wraplength=280, justify="center")
-            label.pack(pady=20, padx=10)
-# ok btn to close popup
-            close_button = tk.Button(
-                popup,
-                text="OK",
-                command=popup.destroy,
-                bg="#5a5a5a",
-                fg="white",
-                font=("Segoe UI", 10, "bold"),
-                relief="flat",
-                activebackground="#777777",
-                activeforeground="white"
-            )
-            close_button.pack(pady=10)
-# brings popup in front of the main window
-            popup.transient(self.root)
-            # pause interaction w main unitl until popup closes
-            popup.grab_set()
-            self.root.wait_window(popup)
+        # Regular Tk widgets (logo + toggle container)
+        self.theme_toggle_container.configure(bg=bg_color)
+        self.logo_label.configure(bg=bg_color)
 
-        # formats and opens a styled popup window for the forecast
-        # passing in: root window, city name, cleaned-up forecast list, number of days, and theme (light/dark)
-    def show_forecast_popup(self, days):
-        # pulls city name removes spaces
+        # Map frame (ttk)
+        self.map_frame.configure(style="TFrame")
+
+        # Weather card (ttk)
+        self.weather_card.configure(style="MainCard.TFrame")
+
+    def handle_forecast_button_click(self, days):
         city = self.city_var.get().strip()
-        # if its emptpy, shows custome msg
         if not city:
-            self.show_custom_popup("Missing City", "Please enter a city before viewing the forecast.")
-            return
-# uses api function to get forecast data for the city
+            city = 'Selmer'
+
         forecast = fetch_forecast(city)
-        # if data missing or incorrect, msg error
         if not forecast or "list" not in forecast:
             self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
             return
-# saves data to csv for tracking
-        save_forecast_to_csv(forecast)  
-# processes raw data into summary
+
+        save_forecast_to_csv(forecast)
         forecast_summary = process_forecast_data(forecast, days)
 
-
-                # Prepare data to save to DB
+        # Save to database
         formatted_forecast = []
         for day in forecast_summary:
-            if day["high"] == "--":  # Skip placeholders
+            if day["high"] == "--":
                 continue
             formatted_forecast.append({
                 "date": day["date"],
                 "min_temp": day["low"],
                 "max_temp": day["high"],
-                "humidity": 55,           # TEMP: real value could come later
-                "wind_speed": 5.2,        # TEMP: real value could come later
+                "humidity": 55,
+                "wind_speed": 5.2,
                 "description": day["desc"],
                 "icon_code": day["icon"]
             })
-
-        # Save forecast to database
         save_forecast_to_db(city, formatted_forecast)
-# pads forecast list if it has fewer than expected, shows blanks for now unitl i do my predictions
+
         while len(forecast_summary) < days:
             forecast_summary.append({
                 "date": f"Day +{len(forecast_summary) + 1}",
@@ -384,11 +344,42 @@ class MainWindow:
             })
 
 
-
-
-# display popup w forecast info styled by theme
         show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme)
 
+    def show_custom_popup(self, title, message):
+        popup = tk.Toplevel(self.root)
+        popup.title(title)
+        popup.configure(bg="#3A3A3A")
+        popup.geometry("300x150")
+        popup.resizable(False, False)
+
+        label = tk.Label(
+            popup,
+            text=message,
+            font=("Segoe UI", 10),
+            fg="white",
+            bg="#3A3A3A",
+            wraplength=280,
+            justify="center"
+        )
+        label.pack(pady=20, padx=10)
+
+        close_button = tk.Button(
+            popup,
+            text="OK",
+            command=popup.destroy,
+            bg="#5a5a5a",
+            fg="white",
+            font=("Segoe UI", 10, "bold"),
+            relief="flat",
+            activebackground="#777777",
+            activeforeground="white"
+        )
+        close_button.pack(pady=10)
+
+        popup.transient(self.root)
+        popup.grab_set()
+        self.root.wait_window(popup)
 
 
     def on_close(self):

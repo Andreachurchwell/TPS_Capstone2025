@@ -7,6 +7,10 @@ from datetime import datetime  # wanted to format my forecast dates
 from core.icons import get_icon_image  # gets my weather icons
 from features.forecast_charts import create_temp_chart
 
+from features.custom_buttons import create_button
+
+
+
 # cleans up forecast data from the api
 def process_forecast_data(forecast_data, days=5):
     days_dict = {}
@@ -138,21 +142,13 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark"):
     except Exception as e:
         print("Chart rendering failed:", e)
 
-    # Close button
-    tk.Button(
-        popup,
+    close_btn = create_button(
+        parent=popup,
         text="Close Forecast",
         command=popup.destroy,
-        font=("Segoe UI", 11, "bold"),
-        bg=btn_bg,
-        fg="white",
-        relief="flat",
-        padx=10,
-        pady=6,
-        activebackground=btn_active,
-        activeforeground="black"
-    ).pack(pady=(10, 20))
-
+        theme=theme  # uses dark/light mode color scheme
+    )
+    close_btn.pack(pady=(10, 20))
 
 
 

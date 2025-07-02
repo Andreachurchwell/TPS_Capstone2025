@@ -28,3 +28,4 @@ def create_temp_chart(forecast_summary, bg_color="#2E2E2E", master=None):
     # return chart_canvas
 
     return FigureCanvasTkAgg(fig, master=master)
+
