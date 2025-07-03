@@ -36,8 +36,10 @@ def process_forecast_data(forecast_data, days=5):
         data = days_dict[date_str]
         forecast_summary.append({
             "date": date_str,
-            "high": round(max(data["temps"])),  # max temp
-            "low": round(min(data["temps"])),  # min temp
+            # "high": round(max(data["temps"])),  # max temp
+            # "low": round(min(data["temps"])),  # min temp
+            "high": max(data["temps"]),  # leave raw Kelvin
+            "low": min(data["temps"]),
             "desc": max(set(data["descs"]), key=data["descs"].count),  # most common description
             "icon": max(set(data["icons"]), key=data["icons"].count)  # most common icon code
         })
@@ -46,7 +48,7 @@ def process_forecast_data(forecast_data, days=5):
 
 
 # pops open a forecast window styled based on selected theme
-def show_forecast_popup(root, city, forecast_summary, days, theme="dark"):
+def show_forecast_popup(root, city, forecast_summary, days, theme="dark", format_temp_func=None):
     # my set color scheme based on lite or dark mode
     if theme == "dark":
         bg = "#2E2E2E"         # main popup bg
@@ -121,7 +123,15 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark"):
             icon_label.pack(pady=5)
 
         # weather info
-        info = f"{day['desc']}\nHigh: {day['high']}°F • Low: {day['low']}°F"
+        # info = f"{day['desc']}\nHigh: {day['high']}°F • Low: {day['low']}°F"
+        if format_temp_func:
+            high = format_temp_func(day['high'])
+            low = format_temp_func(day['low'])
+        else:
+            high = f"{day['high']}°F"
+            low = f"{day['low']}°F"
+
+        info = f"{day['desc']}\nHigh: {high} • Low: {low}"
         tk.Label(
             card,
             text=info,
@@ -132,11 +142,11 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark"):
 
     # --- Chart container ---
     chart_frame = tk.Frame(popup, bg=bg)
-    chart_frame.pack(fill="both", expand=True, padx=20, pady=10)
+    chart_frame.pack(fill="both", expand=True, padx=20, pady=(10,0))
 
     try:
         if forecast_summary and popup.winfo_exists():
-            chart_canvas = create_temp_chart(forecast_summary, bg_color=bg, master=chart_frame)
+            chart_canvas = create_temp_chart(forecast_summary, bg_color=bg, master=chart_frame, format_temp_func=format_temp_func)
             if chart_canvas:
                 chart_canvas.get_tk_widget().pack(fill="both", expand=True)
     except Exception as e:
@@ -148,7 +158,7 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark"):
         command=popup.destroy,
         theme=theme  # uses dark/light mode color scheme
     )
-    close_btn.pack(pady=(10, 20))
+    close_btn.pack(pady=(10, 30))
 
 
 

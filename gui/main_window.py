@@ -66,6 +66,22 @@ class MainWindow:
         )
         self.search_button.pack(side="left", padx=(5, 0))
 
+
+
+                # Temperature Unit Switch (F / C)
+        self.unit_switch = ctk.CTkSwitch(
+            self.input_frame,
+            text="°F / °C",
+            command=self.update_weather_units,
+            onvalue=True,
+            offvalue=False,
+            progress_color="orange",
+            fg_color="#444444",
+            button_color="white",
+            button_hover_color="gray"
+)
+        self.unit_switch.pack(side="left", padx=(10, 0)) 
+        self.use_fahrenheit = not self.unit_switch.get()
         # --- Logo Section (circular + centered under search bar) ---
 
 
@@ -198,13 +214,14 @@ class MainWindow:
             return
 
         # if data is valid, get temp, description, and icon code
-        temp = weather["main"]["temp"]
+        temp_k = weather["main"]["temp"]
+        formatted_temp = self.format_temp(temp_k)
         description = weather["weather"][0]["description"].title()
         icon_code = weather["weather"][0]["icon"]
 
         # update the city name and temp/desc and icon
         self.city_label.config(text=weather["name"])
-        self.temp_desc_label.config(text=f"{temp}°F, {description}")
+        self.temp_desc_label.config(text=f"{formatted_temp}, {description}")
 
         # get weather icon and display it
         icon_image = get_icon_image(icon_code)
@@ -242,6 +259,11 @@ class MainWindow:
         # launch radar map in browser using a helper function
         # passes in self.showcustom in case the city is invalid
         launch_radar_map(city, self.show_custom_popup)
+
+
+
+
+
 
     def apply_theme(self, theme_name):
         # store current theme
@@ -307,6 +329,13 @@ class MainWindow:
         # Weather card (ttk)
         self.weather_card.configure(style="MainCard.TFrame")
 
+
+
+
+
+
+
+
     def handle_forecast_button_click(self, days):
         city = self.city_var.get().strip()
         if not city:
@@ -344,7 +373,20 @@ class MainWindow:
             })
 
 
-        show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme)
+        # show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme, self.format_temp)
+        show_forecast_popup(
+            self.root,
+            city,
+            forecast_summary,
+            days,
+            theme=self.current_theme,
+            format_temp_func=self.format_temp
+        )
+
+
+
+
+
 
     def show_custom_popup(self, title, message):
         popup = tk.Toplevel(self.root)
@@ -380,6 +422,26 @@ class MainWindow:
         popup.transient(self.root)
         popup.grab_set()
         self.root.wait_window(popup)
+
+
+    def format_temp(self, temp):
+        try:
+            temp = float(temp)  # Fixes the bug!
+        except ValueError:
+            return "N/A"
+
+        if self.use_fahrenheit:
+            return f"{round(temp)}°F"
+        else:
+            celsius = (temp - 32) * 5 / 9
+            return f"{round(celsius)}°C"
+
+
+
+        
+    def update_weather_units(self):
+        self.use_fahrenheit = not self.unit_switch.get()  # True = °F, False = °C
+        self.get_weather()  # Optional: refresh weather display after toggling
 
 
     def on_close(self):
