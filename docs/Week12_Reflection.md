@@ -12,8 +12,8 @@ core/	Handles API calls and weather database saving
 features/	Extra features: charts, buttons, styling, export, etc.
 gui/	GUI files like main_window.py, forecast_popups.py
 assets/	Weather icons, logo, and visuals
-app.py	Launches your full app (main entry point)
-.env	Stores your API key safely
+app.py	Launches full app (main entry point)
+.env	Stores API key safely
 data/	Where CSVs and DB exports are stored
 
 🧠 Key Features
@@ -33,7 +33,7 @@ Pops up in a new window styled in dark/light mode
 
 Shows date, icon, weather description, high/low temp
 
-Horizontal scroll to handle more than 7 cards
+
 
 Uses forecast_popups.py
 
@@ -94,45 +94,23 @@ Feature	Status
 ⌛ Auto-complete city input	Planned
 ✅ Forecast popups modular	Already moved to forecast_popups.py
 ✅ Buttons class	Created and in use (clean UI)
-❌ Weather history tracker	Not included (by your choice)
 ✅ Charts scroll or scale with more days	Implemented!
 
-💡 Unique Elements
-“Volunteer Weather” branding from Tennessee theme
-
-Strong use of visuals: charts, icons, and map
-
-Slick dark UI that actually looks modern
-
-Plans to integrate ML (linear regression & KNN) to predict weather or temp trends
-
-Thoughtful architecture and scalable design
 
 
 📅 This Week’s Accomplishments (Capstone Progress)
 ✅ Confirmed and Switched to Real 16-Day Forecast
 Tested https://api.openweathermap.org/data/2.5/forecast/daily
 
-Confirmed: you’re actually getting full 16-day forecast data
+Confirmed: i'm actually getting full 16-day forecast data
 
 Validated with real JSON results and debug checks
 
 ✅ Ready to drop this into full app logic (paused for now)
 
 ✅ Updated Forecast Popup Layout
-Rebuilt your popup to use a scrollable horizontal forecast card area
 
-Cards now scale cleanly for longer forecasts like 10 or 16 days
 
-Includes:
-
-Date formatting
-
-Icons
-
-Description + high/low temp
-
-Styled to match your app’s theme
 
 ✅ Matplotlib Chart Working in Popups
 Shows temperature trends for selected forecast range
@@ -167,14 +145,10 @@ Final styling polish for consistency across app (buttons, fonts, layout)
 ✅ Held Off on ML Temporarily
 Discussed using Linear Regression for temp prediction and KNN for weather conditions
 
-You decided to hold off until the GUI is fully settled (smart call)
+I decided to hold off until the GUI is fully settled (smart call)
 
 ✅ Participated in Office Hours, Breakouts, TA Prep
-Took feedback in stride during group and breakout sessions
 
-Prepared mentally for upcoming TA/project review
-
-Practiced presenting project goals and structure
 
 
 
