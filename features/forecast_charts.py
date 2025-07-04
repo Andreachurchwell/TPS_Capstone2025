@@ -129,7 +129,7 @@ def create_temp_chart(forecast_summary, bg_color="#2E2E2E", master=None, format_
     width = 0.35
 
     ax.bar([i - width/2 for i in x], highs, width, label='Highs', color="#FFA040")   # bright orange
-    ax.bar([i + width/2 for i in x], lows, width, label='Lows', color="#00FFFF")    
+    ax.bar([i + width/2 for i in x], lows, width, label='Lows', color="#49453F")    
 
     ax.set_title("Temperature Forecast", fontsize=12, color="white" if bg_color == "#2E2E2E" else "#222")
     ax.set_ylabel("Temp", color="white" if bg_color == "#2E2E2E" else "#222")
