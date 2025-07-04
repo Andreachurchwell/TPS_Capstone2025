@@ -57,6 +57,7 @@ class MainWindow:
             textvariable=self.city_var
         )
         self.city_entry.pack(side="left", padx=(0, 5))
+        self.root.bind("<Return>", lambda event: self.get_weather())
 
         self.search_button = create_button(
             parent=self.input_frame,
