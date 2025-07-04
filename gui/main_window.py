@@ -142,7 +142,39 @@ class MainWindow:
         # makes map widget using custom mapfeature class
         self.map = MapFeature(self.map_frame)
 
-        
+
+                # ---- Map Tile Layer Dropdown ----
+        tile_layers = {
+            "OpenStreetMap": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "Radar": f"https://tile.openweathermap.org/map/radar/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
+            "Clouds": f"https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
+            "Precipitation": f"https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
+            "Temperature": f"https://tile.openweathermap.org/map/temp_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
+            "Wind": f"https://tile.openweathermap.org/map/wind_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
+        }
+
+
+
+        self.tile_layer_var = ctk.StringVar(value="OpenStreetMap")
+
+        self.tile_dropdown = ctk.CTkOptionMenu(
+            master=self.root,
+            values=list(tile_layers.keys()),
+            variable=self.tile_layer_var,
+            command=lambda selection: self.change_map_layer(tile_layers[selection])
+        )
+        self.tile_dropdown.configure(
+            width=200,
+            height=32,
+            fg_color="#444444",
+            button_color="#555555",
+            button_hover_color="orange",
+            text_color="white",
+            font=ctk.CTkFont("Segoe UI", 12)
+        )
+        self.tile_dropdown.pack(pady=5)
+
+      
 
 
 # leave this out for now bc i dont wanna show this!!!!! But ITS DEF GOING IN MY CAPSTONE SO DONOT DELETE ANDREA!!!!
@@ -286,8 +318,8 @@ class MainWindow:
 
         sunrise_time = datetime.fromtimestamp(weather['sys']['sunrise']).strftime("%I:%M %p")
         sunset_time = datetime.fromtimestamp(weather['sys']['sunset']).strftime("%I:%M %p")
-        print("Sunrise:", sunrise_time)
-        print("Sunset:", sunset_time)
+        # print("Sunrise:", sunrise_time)
+        # print("Sunset:", sunset_time)
         # saves to csv file
         save_current_weather_to_csv(weather)
 
@@ -300,7 +332,11 @@ class MainWindow:
         # passes in self.showcustom in case the city is invalid
         launch_radar_map(city, self.show_custom_popup)
 
-
+    def change_map_layer(self, tile_url):
+        print(f"Switching map tiles to: {tile_url}")
+        self.map.map_widget.set_tile_server(tile_url)
+        self.map.map_widget.set_zoom(self.map.map_widget.zoom + 0.1)
+        self.map.map_widget.set_zoom(self.map.map_widget.zoom - 0.1) 
 
 
 
@@ -368,60 +404,6 @@ class MainWindow:
 
         # Weather card (ttk)
         self.weather_card.configure(style="MainCard.TFrame")
-
-
-
-
-
-
-
-
-    # def handle_forecast_button_click(self, days):
-    #     city = self.city_var.get().strip()
-    #     if not city:
-    #         city = 'Selmer'
-
-    #     forecast = fetch_forecast(city)
-    #     if not forecast or "list" not in forecast:
-    #         self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
-    #         return
-
-    #     save_forecast_to_csv(forecast)
-    #     forecast_summary = process_forecast_data(forecast, days)
-
-    #     # Save to database
-    #     formatted_forecast = []
-    #     for day in forecast_summary:
-    #         if day["high"] == "--":
-    #             continue
-    #         formatted_forecast.append({
-    #             "date": day["date"],
-    #             "min_temp": day["low"],
-    #             "max_temp": day["high"],
-    #             "humidity": 55,
-    #             "wind_speed": 5.2,
-    #             "description": day["desc"],
-    #             "icon_code": day["icon"]
-    #         })
-    #     save_forecast_to_db(city, formatted_forecast)
-
-    #     while len(forecast_summary) < days:
-    #         forecast_summary.append({
-    #             "date": f"Day +{len(forecast_summary) + 1}",
-    #             "high": "--", "low": "--",
-    #             "desc": "Predicted Day", "icon": "01d"
-    #         })
-
-
-    #     # show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme, self.format_temp)
-    #     show_forecast_popup(
-    #         self.root,
-    #         city,
-    #         forecast_summary,
-    #         days,
-    #         theme=self.current_theme,
-    #         format_temp_func=self.format_temp
-    #     )
 
 
     def handle_forecast_button_click(self, days):
