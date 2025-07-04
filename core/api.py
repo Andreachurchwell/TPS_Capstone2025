@@ -34,3 +34,11 @@ def fetch_forecast(city):
         # if theres an issue, logs it and returs none
         print(f"Error fetching forecast: {response.status_code}")
         return None
+
+
+def fetch_extended_forecast(city, days=7):
+    url = (
+        f"https://api.openweathermap.org/data/2.5/forecast/daily?"
+        f"q={city}&cnt={days}&units=imperial&appid={API_KEY}"
+    )
+    return requests.get(url).json()

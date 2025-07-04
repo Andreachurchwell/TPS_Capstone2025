@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
-from core.api import fetch_current_weather, fetch_forecast
+from core.api import fetch_current_weather, fetch_forecast, fetch_extended_forecast
 from core.icons import get_icon_image, get_detail_icon
 from features.storage import save_current_weather_to_csv, save_forecast_to_csv
 
@@ -19,7 +19,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 
 
-from gui.forecast_popups import show_forecast_popup, process_forecast_data
+from gui.forecast_popups import show_forecast_popup, process_forecast_data,process_extended_forecast_data
 
 from features.radar_launcher import launch_radar_map
 
@@ -159,7 +159,7 @@ class MainWindow:
         self.forecast_button_frame.pack(pady=5)
 
 
-        for days in [3, 5, 7]:
+        for days in [3, 5, 7,10, 16]:
             btn = create_button(
                 parent=self.forecast_button_frame,
                 text=f"{days}-Day Forecast",
@@ -248,6 +248,46 @@ class MainWindow:
             text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km"
         )
 
+                # Optionally add more details below:
+        feels_like = self.format_temp(weather["main"]["feels_like"])
+        self.detail_labels["Feels Like"] = ttk.Label(
+            self.weather_card,
+            text=f"🌡️ Feels Like: {feels_like}",
+            style="Detail.TLabel"
+        )
+        self.detail_labels["Feels Like"].grid(row=4, column=0, sticky="w", padx=10, pady=5)
+
+        self.detail_labels["Pressure"] = ttk.Label(
+            self.weather_card,
+            text=f"📈 Pressure: {weather['main']['pressure']} hPa",
+            style="Detail.TLabel"
+        )
+        self.detail_labels["Pressure"].grid(row=4, column=1, sticky="w", padx=10, pady=5)
+
+        # Optional wind gust
+        wind_gust = weather["wind"].get("gust")
+        if wind_gust:
+            self.detail_labels["Wind Gust"] = ttk.Label(
+                self.weather_card,
+                text=f"💨 Gusts: {wind_gust} mph",
+                style="Detail.TLabel"
+            )
+            self.detail_labels["Wind Gust"].grid(row=5, column=0, sticky="w", padx=10, pady=5)
+
+        # Optional rain
+        rain_1h = weather.get("rain", {}).get("1h")
+        if rain_1h:
+            self.detail_labels["Rain"] = ttk.Label(
+                self.weather_card,
+                text=f"🌧️ Rain (1h): {rain_1h} mm",
+                style="Detail.TLabel"
+            )
+            self.detail_labels["Rain"].grid(row=5, column=1, sticky="w", padx=10, pady=5)
+
+        sunrise_time = datetime.fromtimestamp(weather['sys']['sunrise']).strftime("%I:%M %p")
+        sunset_time = datetime.fromtimestamp(weather['sys']['sunset']).strftime("%I:%M %p")
+        print("Sunrise:", sunrise_time)
+        print("Sunset:", sunset_time)
         # saves to csv file
         save_current_weather_to_csv(weather)
 
@@ -336,20 +376,77 @@ class MainWindow:
 
 
 
+    # def handle_forecast_button_click(self, days):
+    #     city = self.city_var.get().strip()
+    #     if not city:
+    #         city = 'Selmer'
+
+    #     forecast = fetch_forecast(city)
+    #     if not forecast or "list" not in forecast:
+    #         self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
+    #         return
+
+    #     save_forecast_to_csv(forecast)
+    #     forecast_summary = process_forecast_data(forecast, days)
+
+    #     # Save to database
+    #     formatted_forecast = []
+    #     for day in forecast_summary:
+    #         if day["high"] == "--":
+    #             continue
+    #         formatted_forecast.append({
+    #             "date": day["date"],
+    #             "min_temp": day["low"],
+    #             "max_temp": day["high"],
+    #             "humidity": 55,
+    #             "wind_speed": 5.2,
+    #             "description": day["desc"],
+    #             "icon_code": day["icon"]
+    #         })
+    #     save_forecast_to_db(city, formatted_forecast)
+
+    #     while len(forecast_summary) < days:
+    #         forecast_summary.append({
+    #             "date": f"Day +{len(forecast_summary) + 1}",
+    #             "high": "--", "low": "--",
+    #             "desc": "Predicted Day", "icon": "01d"
+    #         })
+
+
+    #     # show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme, self.format_temp)
+    #     show_forecast_popup(
+    #         self.root,
+    #         city,
+    #         forecast_summary,
+    #         days,
+    #         theme=self.current_theme,
+    #         format_temp_func=self.format_temp
+    #     )
+
+
     def handle_forecast_button_click(self, days):
         city = self.city_var.get().strip()
         if not city:
             city = 'Selmer'
 
-        forecast = fetch_forecast(city)
-        if not forecast or "list" not in forecast:
-            self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
-            return
+        if days in [3, 5]:  # ← these use standard 3-hour forecast
+            forecast = fetch_forecast(city)
+            if not forecast or "list" not in forecast:
+                self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
+                return
 
-        save_forecast_to_csv(forecast)
-        forecast_summary = process_forecast_data(forecast, days)
+            save_forecast_to_csv(forecast)
+            forecast_summary = process_forecast_data(forecast, days)
 
-        # Save to database
+        else:  # ← 7, 10, 16 use extended forecast
+            forecast = fetch_extended_forecast(city, days)
+            if not forecast or "list" not in forecast:
+                self.show_custom_popup("Extended Forecast Error", f"Could not retrieve extended forecast for '{city}'.")
+                return
+
+            forecast_summary = process_extended_forecast_data(forecast, days)
+
+        # Save to DB
         formatted_forecast = []
         for day in forecast_summary:
             if day["high"] == "--":
@@ -372,8 +469,6 @@ class MainWindow:
                 "desc": "Predicted Day", "icon": "01d"
             })
 
-
-        # show_forecast_popup(self.root, city, forecast_summary, days, self.current_theme, self.format_temp)
         show_forecast_popup(
             self.root,
             city,
@@ -382,6 +477,9 @@ class MainWindow:
             theme=self.current_theme,
             format_temp_func=self.format_temp
         )
+
+
+    
 
 
 

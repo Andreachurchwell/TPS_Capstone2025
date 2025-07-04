@@ -161,5 +161,24 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark", format
     close_btn.pack(pady=(10, 30))
 
 
+def process_extended_forecast_data(forecast, days=7):
+    from datetime import datetime
 
+    summary = []
+    for day in forecast.get("list", [])[:days]:
+        date = datetime.utcfromtimestamp(day["dt"]).strftime("%Y-%m-%d")
+        high = day["temp"]["max"]
+        low = day["temp"]["min"]
+        desc = day["weather"][0]["description"].title()
+        icon = day["weather"][0]["icon"]
+
+        summary.append({
+            "date": date,
+            "high": high,
+            "low": low,
+            "desc": desc,
+            "icon": icon
+        })
+
+    return summary
   
