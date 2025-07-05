@@ -27,6 +27,10 @@ from core.weather_database import save_forecast_to_db
 
 from features.custom_buttons import create_button
 import customtkinter as ctk
+from features.autocomplete import AutocompleteEntry
+from core.api import fetch_current_weather_by_coords
+
+
 
 
 class MainWindow:
@@ -48,16 +52,40 @@ class MainWindow:
 
         self.input_frame = ctk.CTkFrame(self.input_container, fg_color="transparent")
         self.input_frame.pack(anchor='center')
-        self.city_entry = ctk.CTkEntry(
+        # self.city_entry = ctk.CTkEntry(
+        #     master=self.input_frame,
+        #     placeholder_text="Enter city...",
+        #     width=240,
+        #     height=32,
+        #     font=ctk.CTkFont("Segoe UI", 12),
+        #     textvariable=self.city_var
+        # )
+        # self.city_entry.pack(side="left", padx=(0, 5))
+        # self.root.bind("<Return>", lambda event: self.get_weather())
+
+        # self.city_entry = AutocompleteEntry(
+        #     master=self.input_frame,
+        #     width=30,
+        #     font=("Segoe UI", 12)
+        # )
+        # self.city_entry.pack(side="left", padx=(0, 5))
+
+
+
+        autocomplete_theme = {
+            "bg": "#3A3A3A",         # fallback for dark
+            "fg": "#EBE8E5",
+            "highlight": "#FF8C00",
+            "border": "#FF8C00"
+        }
+
+        self.city_entry = AutocompleteEntry(
             master=self.input_frame,
-            placeholder_text="Enter city...",
             width=240,
-            height=32,
-            font=ctk.CTkFont("Segoe UI", 12),
-            textvariable=self.city_var
+            font=("Segoe UI", 12),
+            theme_colors=autocomplete_theme
         )
         self.city_entry.pack(side="left", padx=(0, 5))
-        self.root.bind("<Return>", lambda event: self.get_weather())
 
         self.search_button = create_button(
             parent=self.input_frame,
@@ -66,7 +94,6 @@ class MainWindow:
             theme=self.current_theme
         )
         self.search_button.pack(side="left", padx=(5, 0))
-
 
 
                 # Temperature Unit Switch (F / C)
@@ -225,49 +252,61 @@ class MainWindow:
         style.configure("Detail.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 10))
 
 
-
     def get_weather(self):
-        # get current city name from the entry field
-        city = self.city_var.get().strip()
-        
-        # if nothing typed, fall back to Selmer
-        if not city:
-            city = "Selmer"  # fallback default
+        # Check if the user selected a suggestion (has lat/lon)
+        location = self.city_entry.selected_location
 
-        # calling the api to fetch weather for the city
-        weather = fetch_current_weather(city)
-        
-        # if api fails or invalid city, show popup error
+        if location:
+            #  Use coordinates if selected from autocomplete
+            lat = location["lat"]
+            lon = location["lon"]
+            weather = fetch_current_weather_by_coords(lat, lon)
+            city_name = location.get("label", "Unknown")  # For debug or error messages
+        else:
+            #  User typed a city name manually
+            city = self.city_entry.get().strip()
+            if not city:
+                city = "Selmer"  # Default fallback
+            weather = fetch_current_weather(city)
+            city_name = city  # For debug or error messages
+
+        #  Debug print to check what city was used in the API response
+        if weather:
+            print("[DEBUG] Weather API response says city is:", weather.get("name"))
+        else:
+            print("[DEBUG] No weather data returned for:", city_name)
+
+        # Error handling if city is invalid or API failed
         if not weather or "main" not in weather or "weather" not in weather:
             messagebox.showerror(
                 "City Not Found",
-                f"Oops! '{city}' doesn't seem to be a real city.\nDouble-check your spelling and try again."
+                f"Oops! '{city_name}' doesn't seem to be a real city.\nDouble-check your spelling and try again."
             )
             self.city_entry.focus_set()
             return
 
-        # if data is valid, get temp, description, and icon code
+        # Process valid weather data
         temp_k = weather["main"]["temp"]
         formatted_temp = self.format_temp(temp_k)
         description = weather["weather"][0]["description"].title()
         icon_code = weather["weather"][0]["icon"]
 
-        # update the city name and temp/desc and icon
-        self.city_label.config(text=weather["name"])
+        self.city_label.config(text=location.get("label", weather["name"]) if location else weather["name"])
+
         self.temp_desc_label.config(text=f"{formatted_temp}, {description}")
 
-        # get weather icon and display it
+        # Display weather icon
         icon_image = get_icon_image(icon_code)
         if icon_image:
             self.icon_label.config(image=icon_image)
-            self.icon_label.image = icon_image  # prevents image garbage collection
+            self.icon_label.image = icon_image  # Keep a reference
 
-        # update map location
+        # 🗺️ Update map to show new location
         lat = weather["coord"]["lat"]
         lon = weather["coord"]["lon"]
         self.map.update_location(lat, lon)
 
-        # updates weather details
+        # Update detailed weather info labels
         self.detail_labels["Humidity"].config(
             text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%"
         )
@@ -281,7 +320,7 @@ class MainWindow:
             text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km"
         )
 
-                # Optionally add more details below:
+        # Optional extra details
         feels_like = self.format_temp(weather["main"]["feels_like"])
         self.detail_labels["Feels Like"] = ttk.Label(
             self.weather_card,
@@ -297,7 +336,7 @@ class MainWindow:
         )
         self.detail_labels["Pressure"].grid(row=4, column=1, sticky="w", padx=10, pady=5)
 
-        # Optional wind gust
+        # Wind Gust (optional)
         wind_gust = weather["wind"].get("gust")
         if wind_gust:
             self.detail_labels["Wind Gust"] = ttk.Label(
@@ -307,7 +346,7 @@ class MainWindow:
             )
             self.detail_labels["Wind Gust"].grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
-        # Optional rain
+        # Rain (optional)
         rain_1h = weather.get("rain", {}).get("1h")
         if rain_1h:
             self.detail_labels["Rain"] = ttk.Label(
@@ -317,20 +356,32 @@ class MainWindow:
             )
             self.detail_labels["Rain"].grid(row=5, column=1, sticky="w", padx=10, pady=5)
 
+        #  Print sunrise/sunset to terminal (optional)
         sunrise_time = datetime.fromtimestamp(weather['sys']['sunrise']).strftime("%I:%M %p")
         sunset_time = datetime.fromtimestamp(weather['sys']['sunset']).strftime("%I:%M %p")
-        # print("Sunrise:", sunrise_time)
-        # print("Sunset:", sunset_time)
-        # saves to csv file
+        print("Sunrise:", sunrise_time)
+        print("Sunset:", sunset_time)
+
+        #  Save the current weather to CSV
         save_current_weather_to_csv(weather)
 
+        #  Clear out the saved selected location so it doesn’t interfere next time
+        self.city_entry.selected_location = None
+
+    # def open_radar_map(self):
+    #     # get city from the entry
+    #     city = self.city_var.get().strip()
+    #     # launch radar map in browser using a helper function
+    #     # passes in self.showcustom in case the city is invalid
+    #     launch_radar_map(city, self.show_custom_popup)
 
 
     def open_radar_map(self):
-        # get city from the entry
-        city = self.city_var.get().strip()
-        # launch radar map in browser using a helper function
-        # passes in self.showcustom in case the city is invalid
+        city = self.city_entry.get().strip().split(",")[0]
+        if not city:
+            self.show_custom_popup("Missing City", "Please enter a city before launching radar.")
+            return
+
         launch_radar_map(city, self.show_custom_popup)
 
     def change_map_layer(self, tile_url):
@@ -382,14 +433,39 @@ class MainWindow:
         if hasattr(self, 'forecast_button_frame'):
             self.forecast_button_frame.configure(bg=bg_color)
 
+
+        
+
         # Manually update CustomTkinter widgets
         self.input_container.configure(fg_color="transparent")
         self.input_frame.configure(fg_color="transparent")
-        self.city_entry.configure(
-            fg_color=card_bg,
-            text_color=fg_color,
-            placeholder_text_color="#AAAAAA" if theme_name == "light" else "#CCCCCC"
-        )
+        # self.city_entry.configure(
+        #     fg_color=card_bg,
+        #     text_color=fg_color,
+        #     placeholder_text_color="#AAAAAA" if theme_name == "light" else "#CCCCCC"
+        # )
+        # Protect against applying CTk-only options to regular tk.Entry
+        try:
+            if isinstance(self.city_entry, ctk.CTkEntry):
+                self.city_entry.configure(
+                    fg_color=card_bg,
+                    text_color=fg_color,
+                    placeholder_text_color="#AAAAAA" if theme_name == "light" else "#CCCCCC"
+                )
+            else:
+                # fallback: standard tkinter Entry (like AutocompleteEntry)
+                self.city_entry.entry.configure(
+                    bg=card_bg,
+                    fg=fg_color,
+                    insertbackground=fg_color  # sets caret color
+                )
+        except Exception as e:
+            self.city_entry.configure(bg=accent)
+            print("City entry styling skipped due to:", e)
+
+
+
+
         self.search_button.configure(
             fg_color=accent,
             hover_color="#FFB866" if theme_name == "light" else "#FFA040",
