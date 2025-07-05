@@ -25,7 +25,7 @@ from features.radar_launcher import launch_radar_map
 
 from core.weather_database import save_forecast_to_db
 
-from features.custom_buttons import create_button
+from features.custom_buttons import create_button, create_forecast_segmented_button
 import customtkinter as ctk
 from features.autocomplete import AutocompleteEntry
 from core.api import fetch_current_weather_by_coords
@@ -39,7 +39,7 @@ class MainWindow:
         # makes the main app window
         self.root = root
         self.root.title("AChurchwell-TPS2025-Capstone")
-        self.root.geometry("1000x950") # sets my window size
+        self.root.geometry("1000x1000") # sets my window size
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"    # makes it start it dark mode
 
@@ -219,14 +219,27 @@ class MainWindow:
         self.forecast_button_frame.pack(pady=5)
 
 
-        for days in [3, 5, 7,10, 16]:
-            btn = create_button(
-                parent=self.forecast_button_frame,
-                text=f"{days}-Day Forecast",
-                command=lambda d=days: self.handle_forecast_button_click(d),
-                theme=self.current_theme
-            )
-            btn.pack(side="left", padx=5)
+        # for days in [3, 5, 7,10, 16]:
+        #     btn = create_button(
+        #         parent=self.forecast_button_frame,
+        #         text=f"{days}-Day Forecast",
+        #         command=lambda d=days: self.handle_forecast_button_click(d),
+        #         theme=self.current_theme
+        #     )
+        #     btn.pack(side="left", padx=5)
+        self.forecast_label = ctk.CTkLabel(
+            master=self.forecast_button_frame,
+            text="Select Daily Forecast",
+            font=ctk.CTkFont("Segoe UI", 14, "bold"),
+            text_color="dark gray"
+        )
+        self.forecast_label.pack(pady=(5, 2))
+        self.forecast_toggle = create_forecast_segmented_button(
+            parent=self.forecast_button_frame,
+            on_select_callback=self.handle_forecast_button_click,
+            theme="dark"  # or "light"
+        )
+        self.forecast_toggle.pack(pady=10)
 
 
 
