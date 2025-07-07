@@ -24,7 +24,7 @@ class AutocompleteEntry(tk.Frame):  # Subclass Frame, not Entry
             insertbackground=self.theme_colors["fg"],
             font=kwargs.get("font", ("Segoe UI", 12))
         )
-        self.entry.pack(fill="both", expand=True, padx=8, pady=6)
+        self.entry.pack(fill="both", expand=True, padx=4, pady=4)
 
         # Optional: outer frame border simulation
         self.configure(

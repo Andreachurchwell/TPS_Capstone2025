@@ -88,6 +88,8 @@ from gui.splash_screen import SplashScreen
 from gui.main_window import MainWindow
 from core.weather_database import init_db
 import customtkinter as ctk 
+
+
 # Main entry point
 def main():
     init_db()  # Set up database

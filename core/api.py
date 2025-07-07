@@ -51,3 +51,17 @@ def fetch_extended_forecast(city, days=7):
         f"q={city}&cnt={days}&units=imperial&appid={API_KEY}"
     )
     return requests.get(url).json()
+
+# Fetching air quality
+# ------------------------------
+def fetch_air_quality(lat, lon):
+    api_key = os.getenv("OPENWEATHER_API_KEY")
+    url = f"https://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={api_key}"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        print("[ERROR] Failed to fetch air quality:", e)
+        return None

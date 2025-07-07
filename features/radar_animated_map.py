@@ -107,6 +107,8 @@ def create_animated_radar_map(city_name):
         <div id="map" style="width: 100%; height: 100vh;"></div>
         <script>
             var map = L.map('map').setView([{lat}, {lon}], 7);
+                    L.marker([{lat}, {lon}]).addTo(map);
+
             L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
                 maxZoom: 19
             }}).addTo(map);
@@ -145,7 +147,7 @@ def create_animated_radar_map(city_name):
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(html_template)
 
-    webbrowser.open(html_path)
+    webbrowser.open_new(html_path)
 
 # # Run it
 # if __name__ == "__main__":
