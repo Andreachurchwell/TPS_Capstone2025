@@ -128,8 +128,8 @@ def create_temp_chart(forecast_summary, bg_color="#2E2E2E", master=None, format_
     x = range(len(dates))
     width = 0.35
 
-    ax.bar([i - width/2 for i in x], highs, width, label='Highs', color="#FFA040")   # bright orange
-    ax.bar([i + width/2 for i in x], lows, width, label='Lows', color="#49453F")    
+    ax.bar([i - width/2 for i in x], highs, width, label='Highs', color="#FF6347")   # bright orange
+    ax.bar([i + width/2 for i in x], lows, width, label='Lows', color="#FFA040")    
 
     ax.set_title("Temperature Forecast", fontsize=12, color="white" if bg_color == "#2E2E2E" else "#222")
     ax.set_ylabel("Temp", color="white" if bg_color == "#2E2E2E" else "#222")
@@ -137,7 +137,10 @@ def create_temp_chart(forecast_summary, bg_color="#2E2E2E", master=None, format_
     ax.set_xticks(list(x))
     ax.set_xticklabels(dates, rotation=30, ha="right", fontsize=8, color="white" if bg_color == "#2E2E2E" else "#222")
     ax.tick_params(axis='y', colors="white" if bg_color == "#2E2E2E" else "#222")
-    ax.legend(facecolor=bg_color, edgecolor="gray", fontsize=8)
+    # ax.legend(facecolor=bg_color, edgecolor="gray", fontsize=8)
+    legend_bg = "#F0F0F0" if bg_color == "#2E2E2E" else "#FFFFFF"
+    ax.legend(facecolor=legend_bg, edgecolor="gray", fontsize=8)
+
 
     return FigureCanvasTkAgg(fig, master=master)
 

@@ -1,14 +1,21 @@
 import os  # handles file paths and env variables
 import requests  # http requests from OpenWeather
-from dotenv import load_dotenv  # loads your API key
+from dotenv import load_dotenv  # loads my API key
+
+
+
+# This is where I handle all my API requests to OpenWeather. I store the API key securely in a .env file, and 
+# then I have separate functions for getting current weather, forecast, extended forecast, and air quality. I use requests to fetch the data,
+# and I wrap the air quality call in a try/except to catch errors
+
 
 # Load API key from .env file
 load_dotenv()
 API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
-# ----------------------------
-# 📍 Current Weather by City
-# ----------------------------
+
+# FETCHING CURRENT WEATHER BY THE CITIES NAME
+
 def fetch_current_weather(city):
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=imperial"
     response = requests.get(url)
@@ -18,9 +25,9 @@ def fetch_current_weather(city):
         print(f"Error fetching weather: {response.status_code}")
         return None
 
-# ----------------------------
-# 📍 Current Weather by Coordinates
-# ----------------------------
+
+#FETCHING CURRENT WEATHER BY LATITUDE AND LONGITUDE (MORE ACCURATE THAN CITY NAME)
+
 def fetch_current_weather_by_coords(lat, lon):
     url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}&units=imperial"
     response = requests.get(url)
@@ -30,9 +37,9 @@ def fetch_current_weather_by_coords(lat, lon):
         print(f"Error fetching weather by coordinates: {response.status_code}")
         return None
 
-# ----------------------------
-# 📍 Forecast by City
-# ----------------------------
+
+# FETCHING 5-DAY FORECAST IN 3-HOUR INCREMENTS FOR A CITY
+
 def fetch_forecast(city):
     url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={API_KEY}&units=imperial"
     response = requests.get(url)
@@ -42,9 +49,9 @@ def fetch_forecast(city):
         print(f"Error fetching forecast: {response.status_code}")
         return None
 
-# ----------------------------
-# 📍 Extended Forecast by City (deprecated endpoint)
-# ----------------------------
+
+# Extended Forecast by City (deprecated endpoint)
+
 def fetch_extended_forecast(city, days=7):
     url = (
         f"https://api.openweathermap.org/data/2.5/forecast/daily?"
@@ -53,7 +60,7 @@ def fetch_extended_forecast(city, days=7):
     return requests.get(url).json()
 
 # Fetching air quality
-# ------------------------------
+
 def fetch_air_quality(lat, lon):
     api_key = os.getenv("OPENWEATHER_API_KEY")
     url = f"https://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={api_key}"

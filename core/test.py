@@ -9,7 +9,7 @@ url = "https://api.openweathermap.org/data/2.5/forecast/daily"
 params = {
     "q": "Selmer",         # You can change to any city
     "cnt": 16,             # Request up to 16 days
-    "appid": API_KEY,  # <-- replace with your real API key
+    "appid": API_KEY,  
     "units": "imperial"
 }
 

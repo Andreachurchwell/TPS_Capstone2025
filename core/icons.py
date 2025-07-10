@@ -5,7 +5,7 @@ import io #used to handle byte streams for downloaded img
 def get_icon_image(icon_code):
         # """
         # downloads the weather icon image based on the icon code from openweather converts
-        #   it inot a format tkinter can use(photoimage)
+        #   it into a format tkinter can use(photoimage)
         #   """
     try:
 # using icon endpoint from openweather

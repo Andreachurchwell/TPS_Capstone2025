@@ -4,35 +4,28 @@ from datetime import datetime
 from core.api import fetch_current_weather, fetch_forecast, fetch_extended_forecast
 from core.icons import get_icon_image, get_detail_icon
 from features.storage import save_current_weather_to_csv, save_forecast_to_csv
-
 from features.dark_light_mode import ThemeToggle 
-
 from features.map_feature import MapFeature
 
-
-import subprocess
-import sys
-import os
 from tkinter import messagebox
-
 # for logo
 from PIL import Image, ImageTk
 
+import customtkinter as ctk
+
+import os
 
 from gui.forecast_popups import show_forecast_popup, process_forecast_data,process_extended_forecast_data
-
 from features.radar_launcher import launch_radar_map
-
 from core.weather_database import save_forecast_to_db
-
 from features.custom_buttons import create_button, create_forecast_segmented_button
-import customtkinter as ctk
 from features.autocomplete import AutocompleteEntry
 from core.api import fetch_current_weather_by_coords
 
-from core.api import fetch_air_quality
 
+# from core.api import fetch_air_quality
 
+# MainWindow is the core GUI class that builds and runs the weather app
 class MainWindow:
     def __init__(self, root):
 
@@ -43,17 +36,17 @@ class MainWindow:
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"    # makes it start it dark mode
 
-        # self.city_var = tk.StringVar(value='Selmer') # makes selmer my original city
+    #   stores the city name from the input (used for forecast btns)
         self.city_var = tk.StringVar() # makes selmer my original city
 
-        # --- Centered Search Row ---
+    # top search row setup (input, search, unit toggle)
         self.input_container = ctk.CTkFrame(self.root, fg_color="transparent")
         self.input_container.pack(pady=10)
 
         self.input_frame = ctk.CTkFrame(self.input_container, fg_color="transparent")
         self.input_frame.pack(anchor='center')
 
-
+# autocomplete input for city search with dark styling
         autocomplete_theme = {
             "bg": "#3A3A3A",         # fallback for dark
             "fg": "#EBE8E5",
@@ -69,6 +62,8 @@ class MainWindow:
         )
         self.city_entry.pack(side="left", padx=(0, 5))
 
+
+# search btn triggers weather fetch
         self.search_button = create_button(
             parent=self.input_frame,
             text="Search",
@@ -92,9 +87,11 @@ class MainWindow:
 )
         self.unit_switch.pack(side="left", padx=(10, 0)) 
         self.use_fahrenheit = not self.unit_switch.get()
+
+
+
+
         # --- Logo Section (circular + centered under search bar) ---
-
-
         logo_path = os.path.join("assets", "icons", "vw.png")
         logo_raw = Image.open(logo_path).resize((60, 60))
         self.logo_img = ImageTk.PhotoImage(logo_raw)
@@ -106,7 +103,7 @@ class MainWindow:
 
 
 
-        # Theme toggle button that links to the apply theme function
+        # Theme toggle button that links to the apply theme function(top right corner)
         self.theme_toggle_container = tk.Frame(self.root, bg="#2E2E2E")
         self.theme_toggle_container.place(relx=1.0, rely=0.0, x=-10, y=10, anchor="ne")
 
@@ -119,6 +116,7 @@ class MainWindow:
         self.theme_toggle.button.pack()
 
         # --- Main Weather Card Frame ---
+        # (city, icon, temp, weather grid)
         self.weather_card = ctk.CTkFrame(
             self.root,
             fg_color="#3A3A3A",
@@ -132,7 +130,7 @@ class MainWindow:
         self.card_row = ctk.CTkFrame(self.weather_card, fg_color="transparent")
         self.card_row.pack(padx=10, pady=(10,15))
 
-                # --- Left: City + Icon + Temp
+                # --- Left: City Name + Weather Icon + Temp, Description
         self.left_section = ctk.CTkFrame(
             self.card_row,
             fg_color="#3a3a3a",
@@ -165,7 +163,7 @@ class MainWindow:
         )
         self.temp_desc_label.pack(pady=(0, 10))
 
-        # --- Right: 3x3 Grid Weather Stats (Tic-Tac-Toe Style)
+        # --- Right: 3x3 weather detail grid
         self.right_section = ctk.CTkFrame(
             self.card_row,
             fg_color="#3a3a3a",
@@ -175,7 +173,7 @@ class MainWindow:
         )
         self.right_section.pack(side="left", fill="both", expand=True, padx=(0,10), pady=10)
 
-        # Make a dict to hold labels for easy updating later
+    #    will hold weather stat labels for updates
         self.detail_labels = {}
 
         grid_keys = [
@@ -183,7 +181,8 @@ class MainWindow:
             "Feels Like", "Pressure", "Visibility",
             "Gusts", "Rain", "Sunrise/Sunset"
         ]
-
+# gives me both indexnum and value from the list exp. 0,1,2 'humidity' 'wind'
+# enumerate() lets me loop through each weather stat with a counter, so I can calculate what row and column to put it in.
         for idx, key in enumerate(grid_keys):
             row = idx // 3
             col = idx % 3
@@ -227,9 +226,9 @@ class MainWindow:
         }
 
 
-
+# holds current tile selection (default is openstreetmap)
         self.tile_layer_var = ctk.StringVar(value="OpenStreetMap")
-
+# dropdown menu to switch to map tile layers (triggers map update)
         self.tile_dropdown = ctk.CTkOptionMenu(
             master=self.root,
             values=list(tile_layers.keys()),
@@ -248,9 +247,7 @@ class MainWindow:
         self.tile_dropdown.pack(pady=5)
 
       
-
-
-# leave this out for now bc i dont wanna show this!!!!! But ITS DEF GOING IN MY CAPSTONE SO DONOT DELETE ANDREA!!!!
+# this launches an external live radar map in the browser using folium and rainviewer tiles
         self.radar_button = create_button(
             parent=self.root,
             text="Live Radar",
@@ -259,12 +256,12 @@ class MainWindow:
         )
         self.radar_button.pack(pady=10)
 
-                # creates fram for my forecast btns
+# forecast section btn group for 3 5 7 10 16 day forecasts
         self.forecast_button_frame = tk.Frame(self.root, bg="#2E2E2E")
         self.forecast_button_frame.pack(pady=5)
 
 
-
+# forecast label above button group
         self.forecast_label = ctk.CTkLabel(
             master=self.forecast_button_frame,
             text="Select Daily Forecast",
@@ -272,6 +269,7 @@ class MainWindow:
             text_color="dark gray"
         )
         self.forecast_label.pack(pady=(5, 2))
+        # custom seg btn that triggers forecast popup based on selected days
         self.forecast_toggle = create_forecast_segmented_button(
             parent=self.forecast_button_frame,
             on_select_callback=self.handle_forecast_button_click,
@@ -280,11 +278,11 @@ class MainWindow:
         self.forecast_toggle.pack(pady=10)
 
 
-
-        self.setup_styles() # applies custom widget style
-
+# apply widget styling (defined in setup_styles method)
+        self.setup_styles() 
+# bind window close event to clean shutdown handler
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)  # Handles graceful shutdown
-
+# after 100ms auto-fetch weather for the default city ("Selmer") when my app loads
         self.root.after(100, self.get_weather) # fetches weather for selmer(my default)
 
 
@@ -293,41 +291,44 @@ class MainWindow:
 
     def setup_styles(self):
         style = ttk.Style()
-# style for main weather card
-        style.configure("MainCard.TFrame", background="#3a3a3a", relief="flat", borderwidth=1)
+# style for main weather card background
+        # style.configure("MainCard.TFrame", background="#3a3a3a", relief="flat", borderwidth=1)
 # style for city name label thats big and bold
         style.configure("CityTitle.TLabel", background="#3a3a3a", foreground="#ffa040", font=("Segoe UI", 22, "bold"))
-# style for temp and condition label
+# style for temp and weather condition label
         style.configure("Condition.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 14,'bold'))
 # style for all the detail labels
         style.configure("Detail.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 10))
 
+# get_weather() checks if the user picked a city from autocomplete or typed it in. It fetches weather using the right method, updates the UI with temp, description, icon, and then fills out my 3x3 weather stats grid. It also moves the map to the new location and saves the results to CSV.
 
     def get_weather(self):
-        # Check if the user selected a suggestion (has lat/lon)
+    #   first check if a city was selected from autocomplete(has coordinates)
         location = self.city_entry.selected_location
 
         if location:
-            #  Use coordinates if selected from autocomplete
+        #    fetch weather by coodinates(more accurate)
             lat = location["lat"]
             lon = location["lon"]
             weather = fetch_current_weather_by_coords(lat, lon)
             city_name = location.get("label", "Unknown")  # For debug or error messages
+            
         else:
+            # no location selected, fallback to typed city name
             #  User typed a city name manually
             city = self.city_entry.get().strip()
             if not city:
-                city = "Selmer"  # Default fallback
+                city = "Selmer"  #default city if nothing is entered
             weather = fetch_current_weather(city)
             city_name = city  # For debug or error messages
 
-        #  Debug print to check what city was used in the API response
+        #  Debug print to see what city the api returned
         if weather:
             print("[DEBUG] Weather API response says city is:", weather.get("name"))
         else:
             print("[DEBUG] No weather data returned for:", city_name)
 
-        # Error handling if city is invalid or API failed
+    #  if api failed or response is missing expected fields, show an error
         if not weather or "main" not in weather or "weather" not in weather:
             messagebox.showerror(
                 "City Not Found",
@@ -336,33 +337,34 @@ class MainWindow:
             self.city_entry.focus_set()
             return
 
-        # Process valid weather data
+# if weather data is valid, update the UI
         temp_k = weather["main"]["temp"]
         formatted_temp = self.format_temp(temp_k)
         description = weather["weather"][0]["description"].title()
         icon_code = weather["weather"][0]["icon"]
-
+# update city name label
         self.city_label.configure(text=location.get("label", weather["name"]) if location else weather["name"])
-
+# update temp and condition label
         self.temp_desc_label.configure(text=f"{formatted_temp}, {description}")
 
-        # Display weather icon
+# update weather icon image
         icon_image = get_icon_image(icon_code)
         if icon_image:
             self.icon_label.config(image=icon_image)
-            self.icon_label.image = icon_image  # Keep a reference
+            self.icon_label.image = icon_image  # Keep a reference to avoid garbage collection
 
-        #  Update map to show new location
+# update map position
         lat = weather["coord"]["lat"]
         lon = weather["coord"]["lon"]
         self.map.update_location(lat, lon)
 
-        #  Clear out old detail labels so they don't stack
+# clear out old grid labels before adding new ones
         for label in self.detail_labels.values():
             label.destroy()
         self.detail_labels.clear()
 
-        # ROW 0
+# add updated weather into into 3X3 grid
+# row 0
         self.detail_labels["Humidity"] = ttk.Label(
             self.right_section,
             text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%",
@@ -435,25 +437,32 @@ class MainWindow:
         )
         self.detail_labels["Sunrise/Sunset"].grid(row=2, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
-        # Save the weather to CSV
+# save the weather to csv file (for future use or tracking)
         save_current_weather_to_csv(weather)
 
-        # Clear the saved location
+# clear selected location so it doesnt reuse stale coordinates
         self.city_entry.selected_location = None
 
 
 
     def open_radar_map(self):
+        # get the city name from the input(only the first part before any comma)
         city = self.city_entry.get().strip().split(",")[0]
+        # if nothing was typed, shows an error popup
         if not city:
             self.show_custom_popup("Missing City", "Please enter a city before launching radar.")
             return
-
+# launch radar in the web browser using folium and rainviewer tiles
         launch_radar_map(city, self.show_custom_popup)
 
+
+
     def change_map_layer(self, tile_url):
+        # switches the current map tile layer(radar, wind, clouds)
         print(f"Switching map tiles to: {tile_url}")
+        # update map to use the selected tile server url
         self.map.map_widget.set_tile_server(tile_url)
+        # 2 zoom lines force the map to visually refresh
         self.map.map_widget.set_zoom(self.map.map_widget.zoom + 0.1)
         self.map.map_widget.set_zoom(self.map.map_widget.zoom - 0.1) 
 
@@ -541,37 +550,48 @@ class MainWindow:
         # Map frame (ttk)
         self.map_frame.configure(style="TFrame")
 
-        # Weather card (ttk)
-        self.weather_card.configure(style="MainCard.TFrame")
+        # Always use dark style for weather card (even in light mode)
+        self.weather_card.configure(fg_color="#3A3A3A", border_color="#FFA040", border_width=2)
+ 
+        if hasattr(self, "left_card"):
+            self.left_card.configure(fg_color="#2E2E2E")
+        if hasattr(self, "right_card"):
+            self.right_card.configure(fg_color="#3A3A3A")
+
+
 
 
     def handle_forecast_button_click(self, days):
+        # get city from the input field
         city = self.city_var.get().strip()
         if not city:
-            city = 'Selmer'
-
+            city = 'Selmer'#default is nothing is entered
+# short range (3/5 days)
         if days in [3, 5]:  # ← these use standard 3-hour forecast
             forecast = fetch_forecast(city)
+            # if the api failed or didnt return data, show this error
             if not forecast or "list" not in forecast:
                 self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
                 return
-
+# save raw forcast to csv file
             save_forecast_to_csv(forecast)
+# summarize the raw forecast in to daily high/low plus icon and description
             forecast_summary = process_forecast_data(forecast, days)
-
+# extended range(7,10,16)
         else:  # ← 7, 10, 16 use extended forecast
             forecast = fetch_extended_forecast(city, days)
+        # if api call failed show error
             if not forecast or "list" not in forecast:
                 self.show_custom_popup("Extended Forecast Error", f"Could not retrieve extended forecast for '{city}'.")
                 return
-
+# summarize extended forecast into daily high/low 
             forecast_summary = process_extended_forecast_data(forecast, days)
 
-        # Save to DB
+        # format data for saving to sqlite database
         formatted_forecast = []
         for day in forecast_summary:
             if day["high"] == "--":
-                continue
+                continue #skip empty placeholders
             formatted_forecast.append({
                 "date": day["date"],
                 "min_temp": day["low"],
@@ -581,15 +601,16 @@ class MainWindow:
                 "description": day["desc"],
                 "icon_code": day["icon"]
             })
+            # save to local database for long term storage
         save_forecast_to_db(city, formatted_forecast)
-
+# fill in any missing days with placeholders so charts display evenly
         while len(forecast_summary) < days:
             forecast_summary.append({
                 "date": f"Day +{len(forecast_summary) + 1}",
                 "high": "--", "low": "--",
                 "desc": "Predicted Day", "icon": "01d"
             })
-
+# display popup with forecast summary and visual chart
         show_forecast_popup(
             self.root,
             city,
@@ -602,12 +623,13 @@ class MainWindow:
 
     
     def show_custom_popup(self, title, message):
+        # create a new popup window like a mini alert box
         popup = tk.Toplevel(self.root)
         popup.title(title)
         popup.configure(bg="#3A3A3A")
         popup.geometry("300x150")
-        popup.resizable(False, False)
-
+        popup.resizable(False, False) #lock window size
+# add the message label in the center of the popup
         label = tk.Label(
             popup,
             text=message,
@@ -618,7 +640,7 @@ class MainWindow:
             justify="center"
         )
         label.pack(pady=20, padx=10)
-
+# ok btn that closes the popup
         close_button = tk.Button(
             popup,
             text="OK",
@@ -631,18 +653,19 @@ class MainWindow:
             activeforeground="white"
         )
         close_button.pack(pady=10)
-
-        popup.transient(self.root)
-        popup.grab_set()
-        self.root.wait_window(popup)
+# set popup behavior stay on top and wait for it to close before continuing
+        popup.transient(self.root) #ties popup to main window
+        popup.grab_set() #block interactio with main window
+        self.root.wait_window(popup) #pause program until popup is closed
 
 
     def format_temp(self, temp):
+        # try to safely convert the input to a float
         try:
             temp = float(temp)  # Fixes the bug!
         except ValueError:
-            return "N/A"
-
+            return "N/A" #return fallback if conversion fails
+# convert temp based on selected unit (f or c)
         if self.use_fahrenheit:
             return f"{round(temp)}°F"
         else:
@@ -651,18 +674,26 @@ class MainWindow:
 
 
     def update_weather_units(self):
+        # toggles between fahrenheit and celsius
         self.use_fahrenheit = not self.unit_switch.get()  # True = °F, False = °C
-        self.get_weather()  # Optional: refresh weather display after toggling
+        self.get_weather()  # makes the temp update right away
 
 
     def on_close(self):
+        # try to safely destroy the map to avoid errors on exit
         try:
             self.map.destroy()
         except Exception as e:
             print("Map cleanup error:", e)
-
+# delay app exit slightly to avoid crashing threads, then force exit
         self.root.after(100, self.root.destroy)  #Slight delay to avoid crashing background threads
-        os._exit(0)
+        os._exit(0) #completely shuts down the app(including background threads)
+
+
+
+
+
+
 
 
 
