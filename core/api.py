@@ -17,12 +17,15 @@ API_KEY = os.getenv("OPENWEATHER_API_KEY")
 # FETCHING CURRENT WEATHER BY THE CITIES NAME
 
 def fetch_current_weather(city):
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=imperial"
-    response = requests.get(url)
-    if response.status_code == 200:
+    try:
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=imperial"
+        response = requests.get(url, timeout=10)
+        # if response.status_code == 200:
+        response.raise_for_status()
         return response.json()
-    else:
-        print(f"Error fetching weather: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        # print(f"Error fetching weather: {response.status_code}")
+        print(f'XX request failed: {e}')
         return None
 
 
@@ -39,7 +42,7 @@ def fetch_current_weather_by_coords(lat, lon):
 
 
 # FETCHING 5-DAY FORECAST IN 3-HOUR INCREMENTS FOR A CITY
-
+# This gives more detailed trends (like temp changes throughout each day), not just daily summaries.
 def fetch_forecast(city):
     url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={API_KEY}&units=imperial"
     response = requests.get(url)

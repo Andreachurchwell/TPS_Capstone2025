@@ -35,6 +35,19 @@ class MainWindow:
         self.root.geometry("1000x900") # sets my window size
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"    # makes it start it dark mode
+        # --- Logo Section (circular + centered under search bar) ---
+        logo_path = os.path.join("assets", "icons", "vw.png")
+        logo_raw = Image.open(logo_path).resize((40, 40))
+        self.logo_img = ImageTk.PhotoImage(logo_raw)
+
+        # --- Top-left logo ---
+        self.logo_label = tk.Label(
+            self.root,
+            image=self.logo_img,
+            bg="#2E2E2E"
+        )
+        self.logo_label.place(x=10, y=10)
+
 
     #   stores the city name from the input (used for forecast btns)
         self.city_var = tk.StringVar() # makes selmer my original city
@@ -61,7 +74,7 @@ class MainWindow:
             theme_colors=autocomplete_theme
         )
         self.city_entry.pack(side="left", padx=(0, 5))
-
+    
 
 # search btn triggers weather fetch
         self.search_button = create_button(
@@ -71,7 +84,10 @@ class MainWindow:
             theme=self.current_theme
         )
         self.search_button.pack(side="left", padx=(5, 0))
-
+        try:
+            self.city_entry.entry.bind("<Return>", lambda event: self.get_weather())
+        except Exception as e:
+            print("Binding failed:", e)
 
                 # Temperature Unit Switch (F / C)
         self.unit_switch = ctk.CTkSwitch(
@@ -88,18 +104,6 @@ class MainWindow:
         self.unit_switch.pack(side="left", padx=(10, 0)) 
         self.use_fahrenheit = not self.unit_switch.get()
 
-
-
-
-        # --- Logo Section (circular + centered under search bar) ---
-        logo_path = os.path.join("assets", "icons", "vw.png")
-        logo_raw = Image.open(logo_path).resize((60, 60))
-        self.logo_img = ImageTk.PhotoImage(logo_raw)
-
-
-        # Display logo centered under the input frame
-        self.logo_label = tk.Label(self.root, image=self.logo_img, bg="#2E2E2E")
-        self.logo_label.pack(pady=(10, 0))
 
 
 
@@ -207,6 +211,9 @@ class MainWindow:
         # Set column weight so they stretch evenly
         for i in range(3):
             self.right_section.grid_columnconfigure(i, weight=1)
+
+
+
 
         # Add map frame and map widget
         self.map_frame = ttk.Frame(self.root)
@@ -465,6 +472,7 @@ class MainWindow:
         # 2 zoom lines force the map to visually refresh
         self.map.map_widget.set_zoom(self.map.map_widget.zoom + 0.1)
         self.map.map_widget.set_zoom(self.map.map_widget.zoom - 0.1) 
+
 
 
 
