@@ -16,11 +16,13 @@ import customtkinter as ctk
 import os
 
 from gui.forecast_popups import show_forecast_popup, process_forecast_data,process_extended_forecast_data
-from features.radar_launcher import launch_radar_map
+# from features.radar_launcher import launch_radar_map
 from core.weather_database import save_forecast_to_db
 from features.custom_buttons import create_button, create_forecast_segmented_button
 from features.autocomplete import AutocompleteEntry
 from core.api import fetch_current_weather_by_coords
+
+from features.radar_launcher import launch_radar_map_by_coords, launch_radar_map_by_name
 
 
 # from core.api import fetch_air_quality
@@ -447,20 +449,23 @@ class MainWindow:
 # save the weather to csv file (for future use or tracking)
         save_current_weather_to_csv(weather)
 
-# clear selected location so it doesnt reuse stale coordinates
-        self.city_entry.selected_location = None
-
 
 
     def open_radar_map(self):
-        # get the city name from the input(only the first part before any comma)
-        city = self.city_entry.get().strip().split(",")[0]
-        # if nothing was typed, shows an error popup
-        if not city:
-            self.show_custom_popup("Missing City", "Please enter a city before launching radar.")
-            return
-# launch radar in the web browser using folium and rainviewer tiles
-        launch_radar_map(city, self.show_custom_popup)
+        location = self.city_entry.selected_location
+
+        if location:
+            lat = location["lat"]
+            lon = location["lon"]
+            launch_radar_map_by_coords(lat, lon)
+        else:
+            city = self.city_entry.get().strip().split(",")[0]
+            if not city:
+                self.show_custom_popup("Missing City", "Please enter a city before launching radar.")
+                return
+            launch_radar_map_by_name(city)
+
+
 
 
 

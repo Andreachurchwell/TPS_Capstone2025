@@ -1,16 +1,72 @@
-import os
-import subprocess
-import sys
 
-def launch_radar_map(city, show_popup_callback):
-    print(f"Launching radar for: {city}")
+
+
+
+import os
+import webbrowser
+from geopy.geocoders import Nominatim
+
+# New function that uses coordinates directly
+def launch_radar_map_by_coords(lat, lon):
+    html_template = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Animated Radar Map</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    </head>
+    <body>
+        <div id="map" style="width: 100%; height: 700px;"></div>
+        <script>
+            var map = L.map('map').setView([{lat}, {lon}], 7);
+            L.marker([{lat}, {lon}]).addTo(map);
+            L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+                maxZoom: 19
+            }}).addTo(map);
+
+            fetch('https://api.rainviewer.com/public/weather-maps.json')
+                .then(response => response.json())
+                .then(data => {{
+                    var radarFrames = data.radar.past.map(f => f.time);
+                    var layers = [];
+                    var current = 0;
+
+                    function getTileLayer(time) {{
+                        return L.tileLayer(`https://tilecache.rainviewer.com/v2/radar/${{time}}/256/{{z}}/{{x}}/{{y}}/2/1_1.png`, {{
+                            opacity: 0.6
+                        }});
+                    }}
+
+                    radarFrames.forEach((t, i) => {{
+                        layers.push(getTileLayer(t));
+                    }});
+
+                    layers[current].addTo(map);
+                    setInterval(() => {{
+                        map.removeLayer(layers[current]);
+                        current = (current + 1) % layers.length;
+                        layers[current].addTo(map);
+                    }}, 700);
+                }});
+        </script>
+    </body>
+    </html>
     """
-    Launches the radar animation script using the given city.
-    Calls show_popup_callback(title, message) if feedback is needed.
-    """
-    if city:
-        radar_script = os.path.join("features", "radar_animated_map.py")
-        subprocess.Popen([sys.executable, radar_script, city])
-        show_popup_callback("Live Radar", "Radar opened in your browser.\nReturn to this app window when you're done.")
-    else:
-        show_popup_callback("Missing City", "Please enter a city before launching radar.")
+
+    html_path = os.path.join(os.path.dirname(__file__), "animated_radar_map.html")
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(html_template)
+
+    webbrowser.open_new(html_path)
+
+# This still lets you launch by city name
+def launch_radar_map_by_name(city_name):
+    geolocator = Nominatim(user_agent="animated_radar_app")
+    location = geolocator.geocode(city_name)
+    if not location:
+        print(f"City '{city_name}' not found.")
+        return
+    launch_radar_map_by_coords(location.latitude, location.longitude)

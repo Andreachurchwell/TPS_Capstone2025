@@ -55,6 +55,9 @@ class AutocompleteEntry(tk.Frame):  # Subclass Frame, not Entry
         if self.after_id:
             self.after_cancel(self.after_id)
 
+        self.selected_location = None  # ✅ FIXED: clears only if user starts typing again
+
+        
         # Capitalize first letter
         current_text = self.entry.get()
         if current_text:
