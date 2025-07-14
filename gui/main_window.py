@@ -130,11 +130,11 @@ class MainWindow:
             border_width=3,
             border_color="#FFA040"  # Orange border around full card
         )
-        self.weather_card.pack(pady=(20,10), padx=12)
+        self.weather_card.pack(pady=(30,20), padx=30)
 
         # Top row container
         self.card_row = ctk.CTkFrame(self.weather_card, fg_color="transparent")
-        self.card_row.pack(padx=10, pady=(10,15))
+        self.card_row.pack(padx=20, pady=(20,20))
 
                 # --- Left: City Name + Weather Icon + Temp, Description
         self.left_section = ctk.CTkFrame(
@@ -214,8 +214,14 @@ class MainWindow:
         for i in range(3):
             self.right_section.grid_columnconfigure(i, weight=1)
 
-
-
+# # timestamp
+        self.timestamp_label = ctk.CTkLabel(
+            master=self.card_row,
+            text="",
+            font=("Segoe UI", 12),
+            text_color="lightgray"
+        )
+        self.timestamp_label.pack(pady=(10, 5), anchor='e')
 
         # Add map frame and map widget
         self.map_frame = ttk.Frame(self.root)
@@ -448,6 +454,10 @@ class MainWindow:
 
 # save the weather to csv file (for future use or tracking)
         save_current_weather_to_csv(weather)
+        # Add a "Last updated" timestamp to the UI
+
+        now = datetime.now().strftime("%I:%M %p")  # or full format if you want
+        self.timestamp_label.configure(text=f"Last updated: {now}")
 
 
 
