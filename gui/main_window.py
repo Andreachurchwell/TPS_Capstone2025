@@ -214,7 +214,7 @@ class MainWindow:
         for i in range(3):
             self.right_section.grid_columnconfigure(i, weight=1)
 
-# # timestamp
+# # # timestamp
         self.timestamp_label = ctk.CTkLabel(
             master=self.card_row,
             text="",
@@ -223,6 +223,7 @@ class MainWindow:
         )
         self.timestamp_label.pack(pady=(10, 5), anchor='e')
 
+
         # Add map frame and map widget
         self.map_frame = ttk.Frame(self.root)
         self.map_frame.pack(pady=10)
@@ -230,38 +231,6 @@ class MainWindow:
         self.map = MapFeature(self.map_frame)
 
 
-                # ---- Map Tile Layer Dropdown ----
-        tile_layers = {
-            "OpenStreetMap": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            "Radar": f"https://tile.openweathermap.org/map/radar/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
-            "Clouds": f"https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
-            "Precipitation": f"https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
-            "Temperature": f"https://tile.openweathermap.org/map/temp_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
-            "Wind": f"https://tile.openweathermap.org/map/wind_new/{{z}}/{{x}}/{{y}}.png?appid={os.getenv('OPENWEATHER_API_KEY')}",
-        }
-
-
-# holds current tile selection (default is openstreetmap)
-        self.tile_layer_var = ctk.StringVar(value="OpenStreetMap")
-# dropdown menu to switch to map tile layers (triggers map update)
-        self.tile_dropdown = ctk.CTkOptionMenu(
-            master=self.root,
-            values=list(tile_layers.keys()),
-            variable=self.tile_layer_var,
-            command=lambda selection: self.change_map_layer(tile_layers[selection])
-        )
-        self.tile_dropdown.configure(
-            width=200,
-            height=32,
-            fg_color="#444444",
-            button_color="#555555",
-            button_hover_color="orange",
-            text_color="white",
-            font=ctk.CTkFont("Segoe UI", 12)
-        )
-        self.tile_dropdown.pack(pady=5)
-
-      
 # this launches an external live radar map in the browser using folium and rainviewer tiles
         self.radar_button = create_button(
             parent=self.root,
@@ -474,21 +443,6 @@ class MainWindow:
                 self.show_custom_popup("Missing City", "Please enter a city before launching radar.")
                 return
             launch_radar_map_by_name(city)
-
-
-
-
-
-    def change_map_layer(self, tile_url):
-        # switches the current map tile layer(radar, wind, clouds)
-        print(f"Switching map tiles to: {tile_url}")
-        # update map to use the selected tile server url
-        self.map.map_widget.set_tile_server(tile_url)
-        # 2 zoom lines force the map to visually refresh
-        self.map.map_widget.set_zoom(self.map.map_widget.zoom + 0.1)
-        self.map.map_widget.set_zoom(self.map.map_widget.zoom - 0.1) 
-
-
 
 
 
