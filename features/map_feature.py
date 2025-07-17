@@ -3,7 +3,7 @@ from tkintermapview import TkinterMapView
 
 class MapFeature:
     def __init__(self, parent):
-        self.map_widget = TkinterMapView(parent, width=500, height=300, corner_radius=10)
+        self.map_widget = TkinterMapView(parent, width=400, height=240, corner_radius=0)
         self.map_widget.set_position(35.0, -90.0)
         self.map_widget.set_zoom(6)
         self.map_widget.pack(pady=10)

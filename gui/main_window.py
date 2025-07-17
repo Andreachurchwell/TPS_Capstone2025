@@ -141,8 +141,7 @@ class MainWindow:
             self.card_row,
             fg_color="#3a3a3a",
             corner_radius=8,
-            # border_width=1,
-            # border_color="black",  # Soft border
+
             width=220
         )
         self.left_section.pack(side="left", padx=(0, 8), fill="y")
@@ -224,16 +223,30 @@ class MainWindow:
         self.timestamp_label.pack(pady=(10, 5), anchor='e')
 
 
-        # Add map frame and map widget
-        self.map_frame = ttk.Frame(self.root)
-        self.map_frame.pack(pady=10)
-        # makes map widget using custom mapfeature class
+
+        # Frame to hold both the map and the buttons side by side
+        self.map_and_buttons_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        self.map_and_buttons_frame.pack(pady=10)
+
+        # Left side: the map
+        # self.map_frame = ctk.CTkFrame(self.map_and_buttons_frame, fg_color="#2e2e2e")
+        map_bg_color = "#2e2e2e" if self.current_theme == "dark" else "#F2F2F2"
+
+        self.map_frame = ctk.CTkFrame(self.map_and_buttons_frame, fg_color=map_bg_color, border_width=0)
+        self.map_frame.pack(side="left", padx=10)
+
         self.map = MapFeature(self.map_frame)
+
+        # Right side: button column
+        self.button_column = ctk.CTkFrame(self.map_and_buttons_frame, fg_color="transparent", border_width=0)
+        self.button_column.pack(side="left", padx=10)
+
+
 
 
 # this launches an external live radar map in the browser using folium and rainviewer tiles
         self.radar_button = create_button(
-            parent=self.root,
+            parent=self.button_column,
             text="Live Radar",
             command=self.open_radar_map,
             theme=self.current_theme
@@ -241,7 +254,7 @@ class MainWindow:
         self.radar_button.pack(pady=10)
 
 # forecast section btn group for 3 5 7 10 16 day forecasts
-        self.forecast_button_frame = tk.Frame(self.root, bg="#2E2E2E")
+        self.forecast_button_frame = tk.Frame(self.button_column, bg="#2E2E2E")
         self.forecast_button_frame.pack(pady=5)
 
 
@@ -469,7 +482,14 @@ class MainWindow:
         self.root.configure(bg=bg_color)
 
         # TTK styles
-        style.configure("TFrame", background=bg_color)
+        # style.configure("TFrame", background=bg_color)
+        map_bg_color = "#2e2e2e" if theme_name == "dark" else "#F9f6f3"
+        self.map_frame.configure(fg_color=map_bg_color, border_width=0)
+        self.button_column.configure(fg_color=map_bg_color, border_width=0)
+        self.forecast_button_frame.configure(bg=map_bg_color)
+
+        self.map_and_buttons_frame.configure(fg_color=bg_color)
+
         style.configure("TLabel", background=bg_color, foreground=fg_color)
         style.configure("TEntry", fieldbackground=card_bg, background=card_bg, foreground=fg_color)
         style.configure("TButton", background=card_bg, foreground=fg_color)
@@ -525,7 +545,7 @@ class MainWindow:
         self.logo_label.configure(bg=bg_color)
 
         # Map frame (ttk)
-        self.map_frame.configure(style="TFrame")
+
 
         # Always use dark style for weather card (even in light mode)
         self.weather_card.configure(fg_color="#3A3A3A", border_color="#FFA040", border_width=2)
@@ -536,7 +556,7 @@ class MainWindow:
             self.right_card.configure(fg_color="#3A3A3A")
 
 
-
+        self.theme_toggle.update_style(theme_name)
 
     def handle_forecast_button_click(self, days):
         # get city from the input field
