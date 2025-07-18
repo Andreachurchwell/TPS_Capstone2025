@@ -23,6 +23,7 @@ __pycache__/
 *.csv
 *.xls
 *.xlsx
+features/animated_radar_map.html
 
 # Log files
 *.log
