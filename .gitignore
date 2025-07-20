@@ -32,3 +32,5 @@ features/animated_radar_map.html
 *.vscode/
 *.idea/
 
+tests/*.txt
+*.db

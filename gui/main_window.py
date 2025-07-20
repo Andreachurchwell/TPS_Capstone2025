@@ -23,9 +23,15 @@ from features.autocomplete import AutocompleteEntry
 from core.api import fetch_current_weather_by_coords
 
 from features.radar_launcher import launch_radar_map_by_coords, launch_radar_map_by_name
-
+from features.temp_trend_chart import display_temperature_chart
 
 # from core.api import fetch_air_quality
+import threading
+import time
+from geopy.geocoders import Nominatim
+
+
+
 
 # MainWindow is the core GUI class that builds and runs the weather app
 class MainWindow:
@@ -37,11 +43,10 @@ class MainWindow:
         self.root.geometry("1000x900") # sets my window size
         self.root.configure(bg="#2E2E2E")  # Dark background
         self.current_theme = "dark"    # makes it start it dark mode
-        # --- Logo Section (circular + centered under search bar) ---
+        # --- Logo Section ---
         logo_path = os.path.join("assets", "icons", "vw.png")
         logo_raw = Image.open(logo_path).resize((40, 40))
         self.logo_img = ImageTk.PhotoImage(logo_raw)
-
         # --- Top-left logo ---
         self.logo_label = tk.Label(
             self.root,
@@ -275,6 +280,19 @@ class MainWindow:
         self.forecast_toggle.pack(pady=10)
 
 
+
+        # --- Frame to hold the temperature trend chart at the very bottom ---
+        # self.temp_chart_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        self.temp_chart_frame = ctk.CTkFrame(
+            self.root,
+            fg_color="#3A3A3A",
+            corner_radius=12,
+            border_width=3,
+            border_color="#FFA040"
+        )
+        self.temp_chart_frame.pack(padx=20, pady=(10, 20), fill="x")
+
+
 # apply widget styling (defined in setup_styles method)
         self.setup_styles() 
 # bind window close event to clean shutdown handler
@@ -435,11 +453,48 @@ class MainWindow:
         self.detail_labels["Sunrise/Sunset"].grid(row=2, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
 # save the weather to csv file (for future use or tracking)
-        save_current_weather_to_csv(weather)
+
+# comment out for now to see if its why my app is slow 7-19!!!!!!
+        # save_current_weather_to_csv(weather)
+
+
         # Add a "Last updated" timestamp to the UI
 
         now = datetime.now().strftime("%I:%M %p")  # or full format if you want
         self.timestamp_label.configure(text=f"Last updated: {now}")
+
+
+        # --- Get forecast and display temperature trend chart ---
+        forecast = fetch_forecast(self.city_label.cget("text"))
+        if forecast:
+            temps = self.extract_hourly_temps(forecast, hours=8)
+            # Clear existing chart if needed (optional: not required if just redrawing)
+            # for widget in self.temp_chart_frame.winfo_children():
+            #     widget.destroy()
+            # # Draw the new chart
+            # display_temperature_chart(self.temp_chart_frame, temps)
+
+            # Clear old chart
+        for widget in self.temp_chart_frame.winfo_children():
+            widget.destroy()
+
+        # Create inner frame so border isn't hidden
+        inner_chart_frame = ctk.CTkFrame(
+            self.temp_chart_frame,
+            fg_color="transparent"
+        )
+        inner_chart_frame.pack(padx=10, pady=10, fill="both", expand=True)
+
+        # Display chart inside the inner frame
+        display_temperature_chart(inner_chart_frame, temps)
+
+    def extract_hourly_temps(self, forecast_data, hours=8):
+        temps = []
+        if "list" in forecast_data:
+            for entry in forecast_data["list"][:hours]:
+                temp_k = entry["main"]["temp"]
+                temps.append(round(temp_k))
+        return temps
 
 
 
@@ -558,67 +613,142 @@ class MainWindow:
 
         self.theme_toggle.update_style(theme_name)
 
-    def handle_forecast_button_click(self, days):
+    # def handle_forecast_button_click(self, days):
         # get city from the input field
-        city = self.city_var.get().strip()
-        if not city:
-            city = 'Selmer'#default is nothing is entered
-# short range (3/5 days)
-        if days in [3, 5]:  # ← these use standard 3-hour forecast
-            forecast = fetch_forecast(city)
-            # if the api failed or didnt return data, show this error
+    def handle_forecast_button_click(self, days):
+        threading.Thread(target=self._run_forecast_logic, args=(days,), daemon=True).start()
+
+#         city = self.city_var.get().strip()
+#         if not city:
+#             city = 'Selmer'#default is nothing is entered
+# # short range (3/5 days)
+#         if days in [3, 5]:  # ← these use standard 3-hour forecast
+#             forecast = fetch_forecast(city)
+#             # if the api failed or didnt return data, show this error
+#             if not forecast or "list" not in forecast:
+#                 self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
+#                 return
+# # save raw forcast to csv file
+#             save_forecast_to_csv(forecast)
+# # summarize the raw forecast in to daily high/low plus icon and description
+#             forecast_summary = process_forecast_data(forecast, days)
+# # extended range(7,10,16)
+#         else:  # ← 7, 10, 16 use extended forecast
+#             forecast = fetch_extended_forecast(city, days)
+#         # if api call failed show error
+#             if not forecast or "list" not in forecast:
+#                 self.show_custom_popup("Extended Forecast Error", f"Could not retrieve extended forecast for '{city}'.")
+#                 return
+# # summarize extended forecast into daily high/low 
+#             forecast_summary = process_extended_forecast_data(forecast, days)
+
+#         # format data for saving to sqlite database
+#         formatted_forecast = []
+#         for day in forecast_summary:
+#             if day["high"] == "--":
+#                 continue #skip empty placeholders
+#             formatted_forecast.append({
+#                 "date": day["date"],
+#                 "min_temp": day["low"],
+#                 "max_temp": day["high"],
+#                 "humidity": 55,
+#                 "wind_speed": 5.2,
+#                 "description": day["desc"],
+#                 "icon_code": day["icon"]
+#             })
+#             # save to local database for long term storage
+#         save_forecast_to_db(city, formatted_forecast)
+# # fill in any missing days with placeholders so charts display evenly
+#         while len(forecast_summary) < days:
+#             forecast_summary.append({
+#                 "date": f"Day +{len(forecast_summary) + 1}",
+#                 "high": "--", "low": "--",
+#                 "desc": "Predicted Day", "icon": "01d"
+#             })
+# # display popup with forecast summary and visual chart
+#         show_forecast_popup(
+#             self.root,
+#             city,
+#             forecast_summary,
+#             days,
+#             theme=self.current_theme,
+#             format_temp_func=self.format_temp
+#         )
+
+    def _run_forecast_logic(self, days):
+        print(f"[DEBUG] Running forecast logic for {days}-day forecast")
+
+        location = self.city_entry.selected_location
+        coords = None
+        city_label = None
+        if location:
+            coords = (location["lat"], location["lon"])
+            city_label = location.get("label", "Unknown")
+        else:
+            city_label = self.city_entry.get().strip() or "Selmer"
+            print(f"[DEBUG] No selected_location found. Defaulting to city name only: {city_label}")
+
+            # ✅ Try to geocode it manually using geopy
+            try:
+                geolocator = Nominatim(user_agent="volunteer_weather_app")
+                geo_location = geolocator.geocode(city_label)
+                if geo_location:
+                    coords = (geo_location.latitude, geo_location.longitude)
+                    print(f"[DEBUG] Manual geocoding success: {coords}")
+                else:
+                    print("[DEBUG] Geocoding failed")
+            except Exception as e:
+                print("[DEBUG] Geocoding error:", e)
+
+        print(f"[DEBUG] City entry: {city_label}")
+        print(f"[DEBUG] Coordinates: {coords}")
+
+        if days in [3, 5]:
+            print("[DEBUG] Fetching short-range forecast")
+            forecast = fetch_forecast(city_label)
             if not forecast or "list" not in forecast:
-                self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
+                self.show_custom_popup("Forecast Error", f"Could not retrieve forecast for '{city_label}'.")
                 return
-# save raw forcast to csv file
-            save_forecast_to_csv(forecast)
-# summarize the raw forecast in to daily high/low plus icon and description
             forecast_summary = process_forecast_data(forecast, days)
-# extended range(7,10,16)
-        else:  # ← 7, 10, 16 use extended forecast
-            forecast = fetch_extended_forecast(city, days)
-        # if api call failed show error
-            if not forecast or "list" not in forecast:
-                self.show_custom_popup("Extended Forecast Error", f"Could not retrieve extended forecast for '{city}'.")
+        else:
+            print("[DEBUG] Fetching extended forecast")
+            if coords:
+                lat, lon = coords
+                forecast = fetch_extended_forecast(lat, lon, days)
+            else:
+                print("[DEBUG] No coordinates available for extended forecast.")
+                self.show_custom_popup("Location Error", f"Coordinates are required for a {days}-day forecast.")
                 return
-# summarize extended forecast into daily high/low 
+
+            if not forecast or "list" not in forecast:
+                print("[DEBUG] Extended forecast failed")
+                self.show_custom_popup("Extended Forecast Error", f"Could not retrieve extended forecast for '{city_label}'.")
+                return
+
             forecast_summary = process_extended_forecast_data(forecast, days)
 
-        # format data for saving to sqlite database
-        formatted_forecast = []
-        for day in forecast_summary:
-            if day["high"] == "--":
-                continue #skip empty placeholders
-            formatted_forecast.append({
-                "date": day["date"],
-                "min_temp": day["low"],
-                "max_temp": day["high"],
-                "humidity": 55,
-                "wind_speed": 5.2,
-                "description": day["desc"],
-                "icon_code": day["icon"]
-            })
-            # save to local database for long term storage
-        save_forecast_to_db(city, formatted_forecast)
-# fill in any missing days with placeholders so charts display evenly
+        # Pad forecast to match expected days (for chart layout)
         while len(forecast_summary) < days:
             forecast_summary.append({
                 "date": f"Day +{len(forecast_summary) + 1}",
                 "high": "--", "low": "--",
                 "desc": "Predicted Day", "icon": "01d"
             })
-# display popup with forecast summary and visual chart
-        show_forecast_popup(
+
+        print(f"[DEBUG] Final forecast summary ({len(forecast_summary)} days):", forecast_summary)
+
+        self.root.after(0, lambda: show_forecast_popup(
             self.root,
-            city,
+            city_label,
             forecast_summary,
             days,
             theme=self.current_theme,
             format_temp_func=self.format_temp
-        )
+        ))
 
 
-    
+
+
     def show_custom_popup(self, title, message):
         # create a new popup window like a mini alert box
         popup = tk.Toplevel(self.root)
@@ -685,7 +815,6 @@ class MainWindow:
 # delay app exit slightly to avoid crashing threads, then force exit
         self.root.after(100, self.root.destroy)  #Slight delay to avoid crashing background threads
         os._exit(0) #completely shuts down the app(including background threads)
-
 
 
 
