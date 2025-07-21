@@ -6,31 +6,27 @@ from core.icons import get_icon_image, get_detail_icon
 from features.storage import save_current_weather_to_csv, save_forecast_to_csv
 from features.dark_light_mode import ThemeToggle 
 from features.map_feature import MapFeature
-
 from tkinter import messagebox
 # for logo
 from PIL import Image, ImageTk
-
 import customtkinter as ctk
-
 import os
-
 from gui.forecast_popups import show_forecast_popup, process_forecast_data,process_extended_forecast_data
-# from features.radar_launcher import launch_radar_map
 from core.weather_database import save_forecast_to_db
 from features.custom_buttons import create_button, create_forecast_segmented_button
 from features.autocomplete import AutocompleteEntry
 from core.api import fetch_current_weather_by_coords
-
 from features.radar_launcher import launch_radar_map_by_coords, launch_radar_map_by_name
 from features.temp_trend_chart import display_temperature_chart
-
-# from core.api import fetch_air_quality
 import threading
-import time
 from geopy.geocoders import Nominatim
+from features.dark_light_mode import theme_colors
+from datetime import datetime, timedelta
 
-
+def get_local_time_from_offset(offset_seconds):
+    utc_now = datetime.utcnow()
+    local_time = utc_now + timedelta(seconds=offset_seconds)
+    return local_time.strftime("%I:%M %p")
 
 
 # MainWindow is the core GUI class that builds and runs the weather app
@@ -100,18 +96,21 @@ class MainWindow:
         self.unit_switch = ctk.CTkSwitch(
             self.input_frame,
             text="°F / °C",
+            text_color="#7A7A7A",
             command=self.update_weather_units,
             onvalue=True,
             offvalue=False,
             progress_color="orange",
             fg_color="#444444",
             button_color="white",
-            button_hover_color="gray"
+            button_hover_color="gray",
+            font=ctk.CTkFont("Segoe UI", 12, "bold")
 )
         self.unit_switch.pack(side="left", padx=(10, 0)) 
+        self.unit_switch.configure(
+            text_color=theme_colors[self.current_theme]["button_text"]
+        )
         self.use_fahrenheit = not self.unit_switch.get()
-
-
 
 
         # Theme toggle button that links to the apply theme function(top right corner)
@@ -136,6 +135,16 @@ class MainWindow:
             border_color="#FFA040"  # Orange border around full card
         )
         self.weather_card.pack(pady=(30,20), padx=30)
+
+        #  "Last updated" label (moved outside card, below it)
+        self.timestamp_label = ctk.CTkLabel(
+            master=self.root,
+            text="",
+            font=ctk.CTkFont("Segoe UI", 14, "bold"),
+            text_color=theme_colors[self.current_theme]["button_text"]
+        )
+        self.timestamp_label.pack(pady=(5, 10), anchor="center")
+
 
         # Top row container
         self.card_row = ctk.CTkFrame(self.weather_card, fg_color="transparent")
@@ -218,15 +227,6 @@ class MainWindow:
         for i in range(3):
             self.right_section.grid_columnconfigure(i, weight=1)
 
-# # # timestamp
-        self.timestamp_label = ctk.CTkLabel(
-            master=self.card_row,
-            text="",
-            font=("Segoe UI", 12),
-            text_color="lightgray"
-        )
-        self.timestamp_label.pack(pady=(10, 5), anchor='e')
-
 
 
         # Frame to hold both the map and the buttons side by side
@@ -245,8 +245,6 @@ class MainWindow:
         # Right side: button column
         self.button_column = ctk.CTkFrame(self.map_and_buttons_frame, fg_color="transparent", border_width=0)
         self.button_column.pack(side="left", padx=10)
-
-
 
 
 # this launches an external live radar map in the browser using folium and rainviewer tiles
@@ -271,6 +269,10 @@ class MainWindow:
             text_color="dark gray"
         )
         self.forecast_label.pack(pady=(5, 2))
+
+        self.forecast_label.configure(
+            text_color=theme_colors[self.current_theme]["button_text"]
+        )
         # custom seg btn that triggers forecast popup based on selected days
         self.forecast_toggle = create_forecast_segmented_button(
             parent=self.forecast_button_frame,
@@ -278,8 +280,6 @@ class MainWindow:
             theme="dark"  # or "light"
         )
         self.forecast_toggle.pack(pady=10)
-
-
 
         # --- Frame to hold the temperature trend chart at the very bottom ---
         # self.temp_chart_frame = ctk.CTkFrame(self.root, fg_color="transparent")
@@ -303,7 +303,6 @@ class MainWindow:
 
 
 
-
     def setup_styles(self):
         style = ttk.Style()
 # style for main weather card background
@@ -314,6 +313,8 @@ class MainWindow:
         style.configure("Condition.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 14,'bold'))
 # style for all the detail labels
         style.configure("Detail.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 10))
+
+
 
 # get_weather() checks if the user picked a city from autocomplete or typed it in. It fetches weather using the right method, updates the UI with temp, description, icon, and then fills out my 3x3 weather stats grid. It also moves the map to the new location and saves the results to CSV.
 
@@ -458,35 +459,88 @@ class MainWindow:
         # save_current_weather_to_csv(weather)
 
 
-        # Add a "Last updated" timestamp to the UI
+        # City local time (from offset)
+        local_time_str = get_local_time_from_offset(weather.get("timezone", 0))
 
-        now = datetime.now().strftime("%I:%M %p")  # or full format if you want
-        self.timestamp_label.configure(text=f"Last updated: {now}")
+        # Your local update time
+        last_updated_str = datetime.now().strftime("%I:%M %p")
 
+        # Update the label
+        self.timestamp_label.configure(
+            text=f"{self.city_label.cget('text')} local time: {local_time_str}   |   Last updated: {last_updated_str}"
+        )
+   
+
+
+
+#         # --- Get forecast and display temperature trend chart ---
+#         forecast = fetch_forecast(self.city_label.cget("text"))
+#         if forecast:
+#             # temps = self.extract_hourly_temps(forecast, hours=8)
+#             temps_raw = self.extract_hourly_temps(forecast, hours=8)
+#             temps = [self.format_temp_value_only(temp_k) for temp_k in temps_raw]
+
+
+#             # Clear old chart
+#         for widget in self.temp_chart_frame.winfo_children():
+#             widget.destroy()
+
+#         # Create inner frame so border isn't hidden
+#         inner_chart_frame = ctk.CTkFrame(
+#             self.temp_chart_frame,
+#             fg_color="transparent"
+#         )
+#         inner_chart_frame.pack(padx=10, pady=14, fill="both", expand=True)
+#         # Create time labels in local time
+#         offset_seconds = weather.get("timezone", 0)
+#         now_utc = datetime.utcnow()
+
+#         time_labels = [
+#             (now_utc + timedelta(hours=i) + timedelta(seconds=offset_seconds)).strftime("%I %p")
+#             for i in range(8)
+# ]
+#         # Display chart inside the inner frame
+#         display_temperature_chart(inner_chart_frame, temps, time_labels)
 
         # --- Get forecast and display temperature trend chart ---
         forecast = fetch_forecast(self.city_label.cget("text"))
-        if forecast:
-            temps = self.extract_hourly_temps(forecast, hours=8)
-            # Clear existing chart if needed (optional: not required if just redrawing)
-            # for widget in self.temp_chart_frame.winfo_children():
-            #     widget.destroy()
-            # # Draw the new chart
-            # display_temperature_chart(self.temp_chart_frame, temps)
 
-            # Clear old chart
-        for widget in self.temp_chart_frame.winfo_children():
-            widget.destroy()
+        if forecast and "list" in forecast:
+            try:
+                temps_raw = self.extract_hourly_temps(forecast, hours=8)
+                temps = [self.format_temp_value_only(temp_k) for temp_k in temps_raw]
 
-        # Create inner frame so border isn't hidden
-        inner_chart_frame = ctk.CTkFrame(
-            self.temp_chart_frame,
-            fg_color="transparent"
-        )
-        inner_chart_frame.pack(padx=10, pady=10, fill="both", expand=True)
+                # Clear old chart
+                for widget in self.temp_chart_frame.winfo_children():
+                    widget.destroy()
 
-        # Display chart inside the inner frame
-        display_temperature_chart(inner_chart_frame, temps)
+                # Create inner frame so border isn't hidden
+                inner_chart_frame = ctk.CTkFrame(
+                    self.temp_chart_frame,
+                    fg_color="transparent"
+                )
+                inner_chart_frame.pack(padx=10, pady=14, fill="both", expand=True)
+
+                # Create time labels in local time
+                offset_seconds = weather.get("timezone", 0)
+                now_utc = datetime.utcnow()
+
+                time_labels = [
+                    (now_utc + timedelta(hours=i) + timedelta(seconds=offset_seconds)).strftime("%I %p")
+                    for i in range(8)
+                ]
+
+                # Display chart inside the inner frame
+                display_temperature_chart(inner_chart_frame, temps, time_labels)
+
+            except Exception as e:
+                print(f"[ERROR] Failed to process temperature chart: {e}")
+        else:
+            print(f"[DEBUG] Forecast not available or invalid for {self.city_label.cget('text')}")
+            return
+
+
+
 
     def extract_hourly_temps(self, forecast_data, hours=8):
         temps = []
@@ -495,7 +549,6 @@ class MainWindow:
                 temp_k = entry["main"]["temp"]
                 temps.append(round(temp_k))
         return temps
-
 
 
     def open_radar_map(self):
@@ -550,7 +603,9 @@ class MainWindow:
         style.configure("TButton", background=card_bg, foreground=fg_color)
 
         style.configure("InputRow.TFrame", background=bg_color)
-
+        self.timestamp_label.configure(
+            text_color=theme_colors[self.current_theme]["button_text"]
+        )
         # Map for button hover/active
         style.map("Accent.TButton",
                 background=[("active", accent), ("!active", accent)],
@@ -595,6 +650,14 @@ class MainWindow:
             text_color="white" if theme_name == "dark" else fg_color
         )
 
+        
+        self.unit_switch.configure(
+            text_color=theme_colors[self.current_theme]["button_text"]
+        )
+
+        self.forecast_label.configure(
+            text_color=theme_colors[self.current_theme]["button_text"]
+        )
         # Regular Tk widgets (logo + toggle container)
         self.theme_toggle_container.configure(bg=bg_color)
         self.logo_label.configure(bg=bg_color)
@@ -618,62 +681,7 @@ class MainWindow:
     def handle_forecast_button_click(self, days):
         threading.Thread(target=self._run_forecast_logic, args=(days,), daemon=True).start()
 
-#         city = self.city_var.get().strip()
-#         if not city:
-#             city = 'Selmer'#default is nothing is entered
-# # short range (3/5 days)
-#         if days in [3, 5]:  # ← these use standard 3-hour forecast
-#             forecast = fetch_forecast(city)
-#             # if the api failed or didnt return data, show this error
-#             if not forecast or "list" not in forecast:
-#                 self.show_custom_popup("Forecast Error", f"Could not retrieve forecast data for '{city}'.")
-#                 return
-# # save raw forcast to csv file
-#             save_forecast_to_csv(forecast)
-# # summarize the raw forecast in to daily high/low plus icon and description
-#             forecast_summary = process_forecast_data(forecast, days)
-# # extended range(7,10,16)
-#         else:  # ← 7, 10, 16 use extended forecast
-#             forecast = fetch_extended_forecast(city, days)
-#         # if api call failed show error
-#             if not forecast or "list" not in forecast:
-#                 self.show_custom_popup("Extended Forecast Error", f"Could not retrieve extended forecast for '{city}'.")
-#                 return
-# # summarize extended forecast into daily high/low 
-#             forecast_summary = process_extended_forecast_data(forecast, days)
 
-#         # format data for saving to sqlite database
-#         formatted_forecast = []
-#         for day in forecast_summary:
-#             if day["high"] == "--":
-#                 continue #skip empty placeholders
-#             formatted_forecast.append({
-#                 "date": day["date"],
-#                 "min_temp": day["low"],
-#                 "max_temp": day["high"],
-#                 "humidity": 55,
-#                 "wind_speed": 5.2,
-#                 "description": day["desc"],
-#                 "icon_code": day["icon"]
-#             })
-#             # save to local database for long term storage
-#         save_forecast_to_db(city, formatted_forecast)
-# # fill in any missing days with placeholders so charts display evenly
-#         while len(forecast_summary) < days:
-#             forecast_summary.append({
-#                 "date": f"Day +{len(forecast_summary) + 1}",
-#                 "high": "--", "low": "--",
-#                 "desc": "Predicted Day", "icon": "01d"
-#             })
-# # display popup with forecast summary and visual chart
-#         show_forecast_popup(
-#             self.root,
-#             city,
-#             forecast_summary,
-#             days,
-#             theme=self.current_theme,
-#             format_temp_func=self.format_temp
-#         )
 
     def _run_forecast_logic(self, days):
         print(f"[DEBUG] Running forecast logic for {days}-day forecast")
@@ -688,7 +696,7 @@ class MainWindow:
             city_label = self.city_entry.get().strip() or "Selmer"
             print(f"[DEBUG] No selected_location found. Defaulting to city name only: {city_label}")
 
-            # ✅ Try to geocode it manually using geopy
+            # Try to geocode it manually using geopy
             try:
                 geolocator = Nominatim(user_agent="volunteer_weather_app")
                 geo_location = geolocator.geocode(city_label)
@@ -798,7 +806,17 @@ class MainWindow:
         else:
             celsius = (temp - 32) * 5 / 9
             return f"{round(celsius)}°C"
-
+        
+    def format_temp_value_only(self, temp):
+        try:
+            temp = float(temp)
+        except ValueError:
+            return None
+        if self.use_fahrenheit:
+            return round(temp)
+        else:
+            celsius = (temp - 32) * 5 / 9
+            return round(celsius)
 
     def update_weather_units(self):
         # toggles between fahrenheit and celsius

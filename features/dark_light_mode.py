@@ -37,3 +37,14 @@ class ThemeToggle:
         new_bg = "#F9F6F3" if theme_name == "light" else "#2E2E2E"
         new_active = "#CCCCCC" if theme_name == "light" else "#444444"
         self.button.configure(bg=new_bg, activebackground=new_active)
+
+
+
+theme_colors = {
+    "dark": {
+        "button_text": "#FFFFFF"
+    },
+    "light": {
+        "button_text": "#1F1F1F"
+    }
+}

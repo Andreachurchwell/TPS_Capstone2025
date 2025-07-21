@@ -1,7 +1,4 @@
 
-
-
-
 import tkinter as tk
 from datetime import datetime  # wanted to format my forecast dates
 from core.icons import get_icon_image  # grabs icon images based on openweather icon codes
