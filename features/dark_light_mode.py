@@ -40,11 +40,26 @@ class ThemeToggle:
 
 
 
+# theme_colors = {
+#     "dark": {
+#         "button_text": "#FFFFFF"
+#     },
+#     "light": {
+#         "button_text": "#1F1F1F"
+#     }
+# }
+
 theme_colors = {
     "dark": {
-        "button_text": "#FFFFFF"
+        "bg": "#2E2E2E",            # main window and popup background
+        "sub_bg": "#3A3A3A",        # card/panel background
+        "button_text": "#FFFFFF",
+        "text": "#FFFFFF"
     },
     "light": {
-        "button_text": "#1F1F1F"
+        "bg": "#F9F6F3",
+        "sub_bg": "#FFFFFF",
+        "button_text": "#1F1F1F",
+        "text": "#1A1A1A"
     }
 }

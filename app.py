@@ -1,5 +1,3 @@
-
-
 import tkinter as tk
 from gui.splash_screen import SplashScreen
 from gui.main_window import MainWindow
@@ -41,4 +39,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 

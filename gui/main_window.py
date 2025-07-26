@@ -7,7 +7,6 @@ from features.storage import save_current_weather_to_csv, save_forecast_to_csv
 from features.dark_light_mode import ThemeToggle 
 from features.map_feature import MapFeature
 from tkinter import messagebox
-# for logo
 from PIL import Image, ImageTk
 import customtkinter as ctk
 import os
@@ -22,11 +21,15 @@ import threading
 from geopy.geocoders import Nominatim
 from features.dark_light_mode import theme_colors
 from datetime import datetime, timedelta
+from team_7_Folder.team_dashboard import render_team_dashboard
+
 
 def get_local_time_from_offset(offset_seconds):
     utc_now = datetime.utcnow()
     local_time = utc_now + timedelta(seconds=offset_seconds)
     return local_time.strftime("%I:%M %p")
+
+
 
 
 # MainWindow is the core GUI class that builds and runs the weather app
@@ -69,7 +72,6 @@ class MainWindow:
             "highlight": "#FF8C00",
             "border": "#FF8C00"
         }
-
         self.city_entry = AutocompleteEntry(
             master=self.input_frame,
             width=240,
@@ -281,6 +283,17 @@ class MainWindow:
         )
         self.forecast_toggle.pack(pady=10)
 
+
+        # Team Viewer button (opens team popup with map + charts)
+        self.team_viewer_btn = create_button(
+            parent=self.button_column,
+            text="Team Viewer",
+            command=self.show_team_dashboard,
+            theme=self.current_theme
+        )
+        self.team_viewer_btn.pack(pady=(10, 0))
+ 
+
         # --- Frame to hold the temperature trend chart at the very bottom ---
         # self.temp_chart_frame = ctk.CTkFrame(self.root, fg_color="transparent")
         self.temp_chart_frame = ctk.CTkFrame(
@@ -291,6 +304,11 @@ class MainWindow:
             border_color="#FFA040"
         )
         self.temp_chart_frame.pack(padx=20, pady=(10, 20), fill="x")
+
+
+        # Frame to hold the team dashboard (initially hidden)
+        self.team_dashboard_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        self.team_dashboard_frame.pack_forget()
 
 
 # apply widget styling (defined in setup_styles method)
@@ -471,36 +489,6 @@ class MainWindow:
         )
    
 
-
-
-#         # --- Get forecast and display temperature trend chart ---
-#         forecast = fetch_forecast(self.city_label.cget("text"))
-#         if forecast:
-#             # temps = self.extract_hourly_temps(forecast, hours=8)
-#             temps_raw = self.extract_hourly_temps(forecast, hours=8)
-#             temps = [self.format_temp_value_only(temp_k) for temp_k in temps_raw]
-
-
-#             # Clear old chart
-#         for widget in self.temp_chart_frame.winfo_children():
-#             widget.destroy()
-
-#         # Create inner frame so border isn't hidden
-#         inner_chart_frame = ctk.CTkFrame(
-#             self.temp_chart_frame,
-#             fg_color="transparent"
-#         )
-#         inner_chart_frame.pack(padx=10, pady=14, fill="both", expand=True)
-#         # Create time labels in local time
-#         offset_seconds = weather.get("timezone", 0)
-#         now_utc = datetime.utcnow()
-
-#         time_labels = [
-#             (now_utc + timedelta(hours=i) + timedelta(seconds=offset_seconds)).strftime("%I %p")
-#             for i in range(8)
-# ]
-#         # Display chart inside the inner frame
-#         display_temperature_chart(inner_chart_frame, temps, time_labels)
 
         # --- Get forecast and display temperature trend chart ---
         forecast = fetch_forecast(self.city_label.cget("text"))
@@ -822,6 +810,44 @@ class MainWindow:
         # toggles between fahrenheit and celsius
         self.use_fahrenheit = not self.unit_switch.get()  # True = °F, False = °C
         self.get_weather()  # makes the temp update right away
+
+
+    def show_team_dashboard(self):
+        # Hide all other main window sections
+        self.weather_card.pack_forget()
+        self.timestamp_label.pack_forget()
+        self.map_and_buttons_frame.pack_forget()
+        self.temp_chart_frame.pack_forget()
+
+        # Show the team dashboard frame
+        self.team_dashboard_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Render the dashboard inside that frame
+        render_team_dashboard(
+            parent_frame=self.team_dashboard_frame,
+            csv_path="team_7_Folder/team_weather_data.csv",
+            theme=self.current_theme,
+            show_main_callback=self.render_main_view
+        )
+
+
+    def render_main_view(self):
+        self.team_dashboard_frame.pack_forget()
+
+        self.weather_card.pack(pady=10)
+        self.timestamp_label.pack()
+
+        # Restore map_and_buttons_frame
+        self.map_and_buttons_frame.pack(pady=10, anchor='center')
+
+        #  Restore inner layout
+        self.map_frame.pack_forget()
+        self.button_column.pack_forget()
+
+        self.map_frame.pack(side="left", padx=10)
+        self.button_column.pack(side="left", padx=10)
+
+        self.temp_chart_frame.pack(fill="x", padx=10, pady=(0, 10))
 
 
     def on_close(self):
