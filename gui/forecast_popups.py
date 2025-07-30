@@ -80,7 +80,7 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark", format
     title = tk.Label(
         popup,
         text=f"{days}-Day Forecast",
-        font=("Segoe UI", 14, "bold"),
+        font=("Lucida Bright", 14, "bold"),
         fg=title_fg,
         bg=bg
     )
@@ -128,7 +128,7 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark", format
         tk.Label(
             card,
             text=formatted_date,
-            font=("Segoe UI", 10, "bold"),
+            font=("Lucida Bright", 12, "bold"),
             fg=title_fg,
             bg=card_bg
         ).pack(pady=(10, 0))
@@ -152,7 +152,7 @@ def show_forecast_popup(root, city, forecast_summary, days, theme="dark", format
         tk.Label(
             card,
             text=info,
-            font=("Segoe UI", 10),
+            font=("Lucida Bright", 10, "bold"),
             fg=fg,
             bg=card_bg
         ).pack(pady=(0, 10))

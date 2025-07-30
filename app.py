@@ -3,7 +3,7 @@ from gui.splash_screen import SplashScreen
 from gui.main_window import MainWindow
 from core.weather_database import init_db
 import customtkinter as ctk 
-
+from tkinter import font as tkfont
 
 # Utility function to center a window on the screen
 def center_window(window, width=1000, height=900):
@@ -20,9 +20,11 @@ def main():
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("dark-blue")
 
+
     root = tk.Tk()
     root.withdraw()  # Hide the main window during splash
 
+ 
     # Show splash screen
     splash = SplashScreen(root)
 

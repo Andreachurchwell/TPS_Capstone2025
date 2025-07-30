@@ -1,6 +1,6 @@
 import customtkinter as ctk
 
-def create_button(parent, text, command=None, theme="dark", width=120, height=32, font_size=11):
+def create_button(parent, text, command=None, theme="dark", width=120, height=32, font_size=13):
     """
     Creates a styled CTkButton that works for both dark and light themes.
     """
@@ -25,7 +25,7 @@ def create_button(parent, text, command=None, theme="dark", width=120, height=32
         fg_color=fg_color,
         hover_color=hover_color,
         text_color=text_color,
-        font=ctk.CTkFont("Segoe UI", font_size, "bold"),
+        font=ctk.CTkFont("Lucide Bright", font_size, "bold"),
         border_width=0,
         bg_color=bg_color          # Makes button background blend in clean
     )
@@ -69,7 +69,8 @@ def create_forecast_segmented_button(parent, on_select_callback, theme="dark"):
         selected_color=selected_color,
         unselected_color=unselected_color,
         corner_radius=10,
-        text_color="white"  # ← only text color used
+        text_color="white",
+         font=ctk.CTkFont("Lucida Bright", 12, "bold") # ← only text color used
     )
     segmented_btn.set("3")  # Default selection
 

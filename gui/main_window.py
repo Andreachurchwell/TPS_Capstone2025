@@ -22,6 +22,8 @@ from geopy.geocoders import Nominatim
 from features.dark_light_mode import theme_colors
 from datetime import datetime, timedelta
 from team_7_Folder.team_dashboard import render_team_dashboard
+from features.fonts import title_font, label_font, small_font, button_font, grid_font, popup_font
+from tkinter import Label
 
 
 def get_local_time_from_offset(offset_seconds):
@@ -75,7 +77,7 @@ class MainWindow:
         self.city_entry = AutocompleteEntry(
             master=self.input_frame,
             width=240,
-            font=("Segoe UI", 12),
+            font=label_font,
             theme_colors=autocomplete_theme
         )
         self.city_entry.pack(side="left", padx=(0, 5))
@@ -106,7 +108,7 @@ class MainWindow:
             fg_color="#444444",
             button_color="white",
             button_hover_color="gray",
-            font=ctk.CTkFont("Segoe UI", 12, "bold")
+            font=ctk.CTkFont(*button_font)
 )
         self.unit_switch.pack(side="left", padx=(10, 0)) 
         self.unit_switch.configure(
@@ -142,7 +144,7 @@ class MainWindow:
         self.timestamp_label = ctk.CTkLabel(
             master=self.root,
             text="",
-            font=ctk.CTkFont("Segoe UI", 14, "bold"),
+            font=ctk.CTkFont(*label_font),
             text_color=theme_colors[self.current_theme]["button_text"]
         )
         self.timestamp_label.pack(pady=(5, 10), anchor="center")
@@ -157,44 +159,44 @@ class MainWindow:
             self.card_row,
             fg_color="#3a3a3a",
             corner_radius=8,
-
+            height=240,
             width=220
         )
-        self.left_section.pack(side="left", padx=(0, 8), fill="y")
+        self.left_section.pack(side="left", padx=(0, 8), fill="y",pady=10)
 
         self.city_label = ctk.CTkLabel(
             self.left_section,
             text="Selmer",
-            font=ctk.CTkFont("Segoe UI", 22, "bold"),
+            font=ctk.CTkFont(*title_font),
             text_color="#FFA040"
         )
-        self.city_label.pack(pady=(0, 10))
+        self.city_label.pack(pady=(20, 6),anchor="center")
 
         self.icon_label = tk.Label(
             self.left_section,
             bg="#3a3a3a"
         )
-        self.icon_label.pack(pady=(0, 10))
+        self.icon_label.pack(pady=(0, 6),anchor="center")
 
         self.temp_desc_label = ctk.CTkLabel(
             self.left_section,
             text="94°F, Very Heavy Rain",
-            font=ctk.CTkFont("Segoe UI", 14, "bold"),
+            font=ctk.CTkFont(*label_font),
             text_color="white"
         )
-        self.temp_desc_label.pack(pady=(0, 10))
+        self.temp_desc_label.pack(pady=(0, 8),anchor="center")
 
         # --- Right: 3x3 weather detail grid
         self.right_section = ctk.CTkFrame(
             self.card_row,
-            fg_color="#3a3a3a",
+            fg_color="transparent",
             corner_radius=12,
             border_width=1,
             border_color="#444444"  # Matches left
         )
         self.right_section.pack(side="left", fill="both", expand=True, padx=(0,10), pady=10)
 
-    #    will hold weather stat labels for updates
+# Holds weather stat labels for updates
         self.detail_labels = {}
 
         grid_keys = [
@@ -202,33 +204,41 @@ class MainWindow:
             "Feels Like", "Pressure", "Visibility",
             "Gusts", "Rain", "Sunrise/Sunset"
         ]
-# gives me both indexnum and value from the list exp. 0,1,2 'humidity' 'wind'
-# enumerate() lets me loop through each weather stat with a counter, so I can calculate what row and column to put it in.
+
         for idx, key in enumerate(grid_keys):
             row = idx // 3
             col = idx % 3
-            label = ctk.CTkLabel(
+
+            stat_frame = ctk.CTkFrame(
                 self.right_section,
-                text=f"{get_detail_icon(key)} {key}: --",
-                font=ctk.CTkFont("Segoe UI", 11, "bold"),
-                text_color="white",
-                anchor="w"
+                fg_color="#3A3A3A",       # same as right_section background
+                corner_radius=8,
+                border_width=1,
+                border_color="#5A5A5A"    # subtle border for contrast
             )
-            label.grid(
+            stat_frame.grid(
                 row=row,
                 column=col,
-                sticky="w",
-                padx=20,
-                pady=10,
-                ipady=6,
-                ipadx=6
+                padx=6,
+                pady=6,
+                sticky="nsew"
             )
+
+            label = ctk.CTkLabel(
+                stat_frame,
+                text=f"{key}: --",  # No icon
+                font=ctk.CTkFont("Lucida Bright", 11, "bold"),
+                text_color="white",
+                fg_color="transparent",
+                anchor="w"
+            )
+            label.pack(fill="both", expand=True, padx=6, pady=4)
+
             self.detail_labels[key] = label
 
-        # Set column weight so they stretch evenly
+        # Stretch evenly
         for i in range(3):
             self.right_section.grid_columnconfigure(i, weight=1)
-
 
 
         # Frame to hold both the map and the buttons side by side
@@ -267,7 +277,7 @@ class MainWindow:
         self.forecast_label = ctk.CTkLabel(
             master=self.forecast_button_frame,
             text="Select Daily Forecast",
-            font=ctk.CTkFont("Segoe UI", 14, "bold"),
+            font=ctk.CTkFont(*label_font),
             text_color="dark gray"
         )
         self.forecast_label.pack(pady=(5, 2))
@@ -312,26 +322,11 @@ class MainWindow:
 
 
 # apply widget styling (defined in setup_styles method)
-        self.setup_styles() 
+        # self.setup_styles() 
 # bind window close event to clean shutdown handler
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)  # Handles graceful shutdown
 # after 100ms auto-fetch weather for the default city ("Selmer") when my app loads
         self.root.after(100, self.get_weather) # fetches weather for selmer(my default)
-
-
-
-
-    def setup_styles(self):
-        style = ttk.Style()
-# style for main weather card background
-        # style.configure("MainCard.TFrame", background="#3a3a3a", relief="flat", borderwidth=1)
-# style for city name label thats big and bold
-        style.configure("CityTitle.TLabel", background="#3a3a3a", foreground="#ffa040", font=("Segoe UI", 22, "bold"))
-# style for temp and weather condition label
-        style.configure("Condition.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 14,'bold'))
-# style for all the detail labels
-        style.configure("Detail.TLabel", background="#3a3a3a", foreground="white", font=("Segoe UI", 10))
-
 
 
 # get_weather() checks if the user picked a city from autocomplete or typed it in. It fetches weather using the right method, updates the UI with temp, description, icon, and then fills out my 3x3 weather stats grid. It also moves the map to the new location and saves the results to CSV.
@@ -399,64 +394,90 @@ class MainWindow:
 
 # add updated weather into into 3X3 grid
 # row 0
-        self.detail_labels["Humidity"] = ttk.Label(
+        # ROW 0
+        self.detail_labels["Humidity"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%",
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Humidity"].grid(row=0, column=0, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
-        self.detail_labels["Wind"] = ttk.Label(
+        self.detail_labels["Wind"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Wind')} Wind: {weather['wind']['speed']} mph",
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Wind"].grid(row=0, column=1, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
-        self.detail_labels["Cloudiness"] = ttk.Label(
+        self.detail_labels["Cloudiness"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Cloudiness')} Cloudiness: {weather['clouds']['all']}%",
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Cloudiness"].grid(row=0, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
         # ROW 1
         feels_like = self.format_temp(weather["main"]["feels_like"])
-        self.detail_labels["Feels Like"] = ttk.Label(
+        self.detail_labels["Feels Like"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Feels Like')} Feels Like: {feels_like}",
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Feels Like"].grid(row=1, column=0, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
-        self.detail_labels["Pressure"] = ttk.Label(
+        self.detail_labels["Pressure"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Pressure')} Pressure: {weather['main']['pressure']} hPa",
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Pressure"].grid(row=1, column=1, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
-        self.detail_labels["Visibility"] = ttk.Label(
+        self.detail_labels["Visibility"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km",
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Visibility"].grid(row=1, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
         # ROW 2
         wind_gust = weather["wind"].get("gust")
-        self.detail_labels["Wind Gust"] = ttk.Label(
+        gust_text = f"{get_detail_icon('Gust')} Gusts: {wind_gust} mph" if wind_gust else "Gusts: N/A"
+        self.detail_labels["Wind Gust"] = ctk.CTkLabel(
             self.right_section,
-            text=f"{get_detail_icon('Gust')} Gusts: {wind_gust} mph" if wind_gust else "Gusts: N/A",
-            style="Detail.TLabel"
+            text=gust_text,
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Wind Gust"].grid(row=2, column=0, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
         rain_1h = weather.get("rain", {}).get("1h", 0)
-        self.detail_labels["Rain"] = ttk.Label(
+        self.detail_labels["Rain"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Rain')} Rain (1h): {rain_1h} mm",
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Rain"].grid(row=2, column=1, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
@@ -464,10 +485,13 @@ class MainWindow:
         sunset_time = datetime.fromtimestamp(weather['sys']['sunset']).strftime("%I:%M %p")
         sunrise_sunset_text = f"{get_detail_icon('Sunrise')} {sunrise_time} / {sunset_time}"
 
-        self.detail_labels["Sunrise/Sunset"] = ttk.Label(
+        self.detail_labels["Sunrise/Sunset"] = ctk.CTkLabel(
             self.right_section,
             text=sunrise_sunset_text,
-            style="Detail.TLabel"
+            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            text_color="white",
+            fg_color="#3A3A3A",
+            anchor="w"
         )
         self.detail_labels["Sunrise/Sunset"].grid(row=2, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
@@ -475,7 +499,6 @@ class MainWindow:
 
 # comment out for now to see if its why my app is slow 7-19!!!!!!
         # save_current_weather_to_csv(weather)
-
 
         # City local time (from offset)
         local_time_str = get_local_time_from_offset(weather.get("timezone", 0))
@@ -526,8 +549,6 @@ class MainWindow:
         else:
             print(f"[DEBUG] Forecast not available or invalid for {self.city_label.cget('text')}")
             return
-
-
 
 
     def extract_hourly_temps(self, forecast_data, hours=8):
@@ -630,8 +651,6 @@ class MainWindow:
             print("City entry styling skipped due to:", e)
 
 
-
-
         self.search_button.configure(
             fg_color=accent,
             hover_color="#FFB866" if theme_name == "light" else "#FFA040",
@@ -663,6 +682,7 @@ class MainWindow:
 
 
         self.theme_toggle.update_style(theme_name)
+
 
     # def handle_forecast_button_click(self, days):
         # get city from the input field
@@ -743,8 +763,6 @@ class MainWindow:
         ))
 
 
-
-
     def show_custom_popup(self, title, message):
         # create a new popup window like a mini alert box
         popup = tk.Toplevel(self.root)
@@ -756,7 +774,7 @@ class MainWindow:
         label = tk.Label(
             popup,
             text=message,
-            font=("Segoe UI", 10),
+            font=popup_font,
             fg="white",
             bg="#3A3A3A",
             wraplength=280,
@@ -770,7 +788,7 @@ class MainWindow:
             command=popup.destroy,
             bg="#5a5a5a",
             fg="white",
-            font=("Segoe UI", 10, "bold"),
+            font=popup_font,
             relief="flat",
             activebackground="#777777",
             activeforeground="white"
@@ -780,6 +798,7 @@ class MainWindow:
         popup.transient(self.root) #ties popup to main window
         popup.grab_set() #block interactio with main window
         self.root.wait_window(popup) #pause program until popup is closed
+
 
 
     def format_temp(self, temp):
@@ -806,10 +825,13 @@ class MainWindow:
             celsius = (temp - 32) * 5 / 9
             return round(celsius)
 
+
+
     def update_weather_units(self):
         # toggles between fahrenheit and celsius
         self.use_fahrenheit = not self.unit_switch.get()  # True = °F, False = °C
         self.get_weather()  # makes the temp update right away
+
 
 
     def show_team_dashboard(self):
@@ -829,6 +851,7 @@ class MainWindow:
             theme=self.current_theme,
             show_main_callback=self.render_main_view
         )
+
 
 
     def render_main_view(self):
@@ -859,6 +882,10 @@ class MainWindow:
 # delay app exit slightly to avoid crashing threads, then force exit
         self.root.after(100, self.root.destroy)  #Slight delay to avoid crashing background threads
         os._exit(0) #completely shuts down the app(including background threads)
+
+
+
+
 
 
 
