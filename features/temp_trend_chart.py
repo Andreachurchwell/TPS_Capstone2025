@@ -43,5 +43,5 @@ def display_temperature_chart(parent, temps, time_labels):
     canvas = FigureCanvasTkAgg(fig, master=parent)
     canvas.draw()
     canvas.get_tk_widget().pack(fill="both", expand=True)
-
+    plt.close(fig)  # ✅ This prevents memory buildup
     return canvas
