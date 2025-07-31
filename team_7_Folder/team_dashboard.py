@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime
 from features.custom_buttons import create_button
+from features.dark_light_mode import theme_colors
+
 plt.rcParams["font.family"] = "Lucida Bright"
 plt.rcParams["axes.unicode_minus"] = False
 def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_data.csv", theme="dark", unit="Celsius", show_main_callback=None):
@@ -64,42 +66,47 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
     menu_hover = "#FF9A3C"
 
     # Dropdowns
+    # Centered dropdown layout using grid
+    dropdown_frame = ctk.CTkFrame(top_frame, fg_color="transparent")
+    dropdown_frame.pack(anchor="center")
+
+    dropdown_frame.grid_columnconfigure((0, 1, 2), weight=1)
+
     chart_menu = ctk.CTkOptionMenu(
-        top_frame, values=chart_options, variable=selected_chart,
+        dropdown_frame, values=chart_options, variable=selected_chart,
         command=lambda _: draw_chart(),
         fg_color=menu_fg, button_color=menu_button, text_color=menu_text,
         dropdown_fg_color=menu_dropdown_fg, dropdown_text_color=menu_dropdown_text,
         dropdown_hover_color=menu_hover,
         font=ctk.CTkFont("Lucida Bright", 12) 
     )
-    chart_menu.pack(side="left", padx=10)
+    chart_menu.grid(row=0, column=0, padx=10, pady=5)
 
     city_menu = ctk.CTkOptionMenu(
-        top_frame, values=["All"] + cities, variable=selected_city,
+        dropdown_frame, values=["All"] + cities, variable=selected_city,
         command=lambda _: draw_chart(),
         fg_color=menu_fg, button_color=menu_button, text_color=menu_text,
         dropdown_fg_color=menu_dropdown_fg, dropdown_text_color=menu_dropdown_text,
         dropdown_hover_color=menu_hover,
         font=ctk.CTkFont("Lucida Bright", 12) 
-        
     )
-    city_menu.pack(side="left", padx=10)
+    city_menu.grid(row=0, column=1, padx=10, pady=5)
 
     month_menu = ctk.CTkOptionMenu(
-        top_frame, values=["All"] + months, variable=selected_month,
+        dropdown_frame, values=["All"] + months, variable=selected_month,
         command=lambda _: draw_chart(),
         fg_color=menu_fg, button_color=menu_button, text_color=menu_text,
         dropdown_fg_color=menu_dropdown_fg, dropdown_text_color=menu_dropdown_text,
         dropdown_hover_color=menu_hover,
         font=ctk.CTkFont("Lucida Bright", 12) 
     )
-    month_menu.pack(side="left", padx=10)
+    month_menu.grid(row=0, column=2, padx=10, pady=5)
+
 
     # Temp conversion
     def to_fahrenheit(c):
         return c * 9 / 5 + 32
 
-    # Chart rendering function
     def draw_chart():
         for widget in chart_frame.winfo_children():
             widget.destroy()
@@ -109,6 +116,14 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
         ax.set_facecolor(bg_color)
         ax.tick_params(axis='x', rotation=45)
         ax.tick_params(colors=text_color)
+
+        # Spine color fix for theme
+        for spine in ax.spines.values():
+            spine.set_color(text_color)
+
+        # Tick label color fix
+        for label in ax.get_xticklabels() + ax.get_yticklabels():
+            label.set_color(text_color)
 
         # Filters
         city_filter = selected_city.get()
@@ -133,8 +148,9 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
                     monthly["max_temp"] = monthly["max_temp"].apply(to_fahrenheit)
                 ax.plot(monthly["month_str"], monthly["min_temp"], marker="o", label=f"{city} Min", color=city_colors.get(city, "gray"))
                 ax.plot(monthly["month_str"], monthly["max_temp"], marker="o", linestyle="--", label=f"{city} Max", color=city_colors.get(city, "gray"))
-            ax.set_title("Monthly Avg Min/Max Temp", color=text_color,fontsize=12,fontweight="bold")
-            ax.set_ylabel("°F" if use_fahrenheit else "°C",fontsize=10)
+            ax.set_title("Monthly Avg Min/Max Temp", color=text_color, fontsize=12, fontweight="bold")
+            ax.set_ylabel("°F" if use_fahrenheit else "°C", fontsize=10, color=text_color)
+            ax.set_xlabel("Month", fontsize=10, color=text_color)
 
         elif option == "Total Monthly Precipitation":
             plot_cities = [city_filter] if city_filter != "All" else cities
@@ -142,8 +158,9 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
                 city_data = filtered_df[filtered_df["city"] == city]
                 monthly = city_data.groupby("month_str")["precip"].sum().reset_index()
                 ax.plot(monthly["month_str"], monthly["precip"], marker="s", label=city, color=city_colors.get(city, "gray"))
-            ax.set_title("Total Monthly Precipitation", color=text_color,fontsize=12,fontweight="bold")
-            ax.set_ylabel("Precipitation (mm or inch)",fontsize=10)
+            ax.set_title("Total Monthly Precipitation", color=text_color, fontsize=12, fontweight="bold")
+            ax.set_ylabel("Precipitation (mm or inch)", fontsize=10, color=text_color)
+            ax.set_xlabel("Month", fontsize=10, color=text_color)
 
         elif option == "Max Wind Speed by Month":
             plot_cities = [city_filter] if city_filter != "All" else cities
@@ -152,15 +169,20 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
                 monthly = city_data.groupby("month_str")["max_wind_spd"].max().reset_index()
                 ax.plot(monthly["month_str"], monthly["max_wind_spd"], marker="x", label=city, color=city_colors.get(city, "gray"))
             ax.set_title("Max Wind Speed by Month", color=text_color, fontsize=12, fontweight="bold")
-            ax.set_ylabel("Max Wind Speed",fontsize=10)
+            ax.set_ylabel("Max Wind Speed", fontsize=10, color=text_color)
+            ax.set_xlabel("Month", fontsize=10, color=text_color)
 
-        ax.legend(loc="upper left",  prop={"family": "Lucida Bright", "size": 9})
+        legend = ax.legend(loc="upper left", prop={"family": "Lucida Bright", "size": 9})
+        legend.get_frame().set_facecolor(bg_color)
+        legend.get_frame().set_edgecolor(text_color)
+        for text in legend.get_texts():
+            text.set_color(text_color)
 
         canvas = FigureCanvasTkAgg(fig, master=chart_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
+        plt.close(fig)  # Cleanup
 
-    draw_chart()
 
     # Back button
     back_btn = create_button(
@@ -170,3 +192,5 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
     )
     back_btn.pack(pady=20)
 
+  # ✅ Render initial chart on load
+    draw_chart()

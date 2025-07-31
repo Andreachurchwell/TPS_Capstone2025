@@ -498,7 +498,7 @@ class MainWindow:
 # save the weather to csv file (for future use or tracking)
 
 # comment out for now to see if its why my app is slow 7-19!!!!!!
-        # save_current_weather_to_csv(weather)
+        save_current_weather_to_csv(weather)
 
         # City local time (from offset)
         local_time_str = get_local_time_from_offset(weather.get("timezone", 0))
@@ -834,6 +834,23 @@ class MainWindow:
 
 
 
+    # def show_team_dashboard(self):
+    #     # Hide all other main window sections
+    #     self.weather_card.pack_forget()
+    #     self.timestamp_label.pack_forget()
+    #     self.map_and_buttons_frame.pack_forget()
+    #     self.temp_chart_frame.pack_forget()
+
+    #     # Show the team dashboard frame
+    #     self.team_dashboard_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+    #     # Render the dashboard inside that frame
+    #     render_team_dashboard(
+    #         parent_frame=self.team_dashboard_frame,
+    #         csv_path="team_7_Folder/team_weather_data.csv",
+    #         theme=self.current_theme,
+    #         show_main_callback=self.render_main_view
+    #     )
     def show_team_dashboard(self):
         # Hide all other main window sections
         self.weather_card.pack_forget()
@@ -844,14 +861,13 @@ class MainWindow:
         # Show the team dashboard frame
         self.team_dashboard_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # Render the dashboard inside that frame
+        #  Always get current theme dynamically
         render_team_dashboard(
             parent_frame=self.team_dashboard_frame,
             csv_path="team_7_Folder/team_weather_data.csv",
-            theme=self.current_theme,
+            theme=ctk.get_appearance_mode().lower(),
             show_main_callback=self.render_main_view
         )
-
 
 
     def render_main_view(self):

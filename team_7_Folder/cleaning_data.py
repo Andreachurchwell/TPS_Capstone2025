@@ -43,6 +43,7 @@ import pandas as pd
 
 # Load the CSV
 df = pd.read_csv("team_7_Folder/cleaned_weather_data_selmer.csv")
+
 print("[INFO] Loaded data:")
 print(df.head())
 
