@@ -150,7 +150,7 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
                 ax.plot(monthly["month_str"], monthly["max_temp"], marker="o", linestyle="--", label=f"{city} Max", color=city_colors.get(city, "gray"))
             ax.set_title("Monthly Avg Min/Max Temp", color=text_color, fontsize=12, fontweight="bold")
             ax.set_ylabel("°F" if use_fahrenheit else "°C", fontsize=10, color=text_color)
-            ax.set_xlabel("Month", fontsize=10, color=text_color)
+            # ax.set_xlabel("Month", fontsize=10, color=text_color)
 
         elif option == "Total Monthly Precipitation":
             plot_cities = [city_filter] if city_filter != "All" else cities

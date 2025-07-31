@@ -357,12 +357,22 @@ class MainWindow:
         else:
             print("[DEBUG] No weather data returned for:", city_name)
 
-    #  if api failed or response is missing expected fields, show an error
         if not weather or "main" not in weather or "weather" not in weather:
-            messagebox.showerror(
-                "City Not Found",
-                f"Oops! '{city_name}' doesn't seem to be a real city.\nDouble-check your spelling and try again."
-            )
+            if not weather:
+                # Fallback failed or internet is off
+                message = (
+                    f"Could not fetch weather for '{city_name}'.\n"
+                    "You may be offline, or the city hasn't been saved yet.\n\n"
+                    "Try again when you're connected to the internet."
+                )
+            else:
+                # API returned something, but missing expected fields
+                message = (
+                    f"Oops! '{city_name}' doesn't seem to be a real city.\n"
+                    "Double-check your spelling and try again."
+                )
+
+            messagebox.showerror("Weather Fetch Error", message)
             self.city_entry.focus_set()
             return
 
@@ -398,7 +408,7 @@ class MainWindow:
         self.detail_labels["Humidity"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%",
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14,),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -408,7 +418,7 @@ class MainWindow:
         self.detail_labels["Wind"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Wind')} Wind: {weather['wind']['speed']} mph",
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14,),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -418,7 +428,7 @@ class MainWindow:
         self.detail_labels["Cloudiness"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Cloudiness')} Cloudiness: {weather['clouds']['all']}%",
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14, ),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -430,7 +440,7 @@ class MainWindow:
         self.detail_labels["Feels Like"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Feels Like')} Feels Like: {feels_like}",
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14, ),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -440,7 +450,7 @@ class MainWindow:
         self.detail_labels["Pressure"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Pressure')} Pressure: {weather['main']['pressure']} hPa",
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14, ),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -450,7 +460,7 @@ class MainWindow:
         self.detail_labels["Visibility"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km",
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14, ),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -463,7 +473,7 @@ class MainWindow:
         self.detail_labels["Wind Gust"] = ctk.CTkLabel(
             self.right_section,
             text=gust_text,
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14, ),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -474,7 +484,7 @@ class MainWindow:
         self.detail_labels["Rain"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Rain')} Rain (1h): {rain_1h} mm",
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14, ),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
@@ -488,16 +498,16 @@ class MainWindow:
         self.detail_labels["Sunrise/Sunset"] = ctk.CTkLabel(
             self.right_section,
             text=sunrise_sunset_text,
-            font=ctk.CTkFont("Lucida Bright", 12, "bold"),
+            font=ctk.CTkFont("Lucida Bright", 14, ),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
         self.detail_labels["Sunrise/Sunset"].grid(row=2, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
 
+
 # save the weather to csv file (for future use or tracking)
 
-# comment out for now to see if its why my app is slow 7-19!!!!!!
         save_current_weather_to_csv(weather)
 
         # City local time (from offset)

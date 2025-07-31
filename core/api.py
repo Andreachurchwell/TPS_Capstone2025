@@ -2,7 +2,10 @@
 import os
 import requests
 from dotenv import load_dotenv
-
+from loguru import logger
+import pandas as pd
+import csv
+from datetime import datetime
 # Load API key securely from .env
 load_dotenv()
 API_KEY = os.getenv("OPENWEATHER_API_KEY")
@@ -24,7 +27,12 @@ def fetch_current_weather(city):
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"[ERROR] Failed to fetch current weather for {city}: {e}")
-        return None
+        # return None
+                # Optional fallback: try to load from backup CSV
+        fallback = load_last_saved_weather(city)
+        if fallback:
+            print(f"[INFO] Showing last saved data for {city}")
+        return fallback
 
 
 # ----------------------------------------
@@ -92,3 +100,58 @@ def fetch_air_quality(lat, lon):
     except requests.exceptions.RequestException as e:
         print(f"[ERROR] Failed to fetch air quality: {e}")
         return None
+
+
+
+def load_last_saved_weather(city):
+    try:
+        df = pd.read_csv("data/current_weather.csv")  # Adjust this path if needed
+        df = df[df["city"].str.lower() == city.lower()]  # Match the city name, case-insensitive
+
+        if df.empty:
+            print(f"[INFO] No backup weather data found for {city}")
+            return None
+
+        # Get the most recent row for that city
+        latest = df.sort_values("timestamp", ascending=False).iloc[0]
+
+        print(f"[INFO] Loaded fallback data for {city} from {latest['timestamp']}")
+
+        # Return a fake API-style dictionary
+        return {
+            "name": latest["city"],
+            "main": {
+                "temp": latest["temperature"],
+                "humidity": latest["humidity"],
+                "pressure": latest["pressure"]
+            },
+            "weather": [{
+                "description": latest["description"],
+                "icon": latest["icon"]
+            }],
+            "wind": {
+                "speed": latest["wind_speed"]
+            }
+        }
+
+    except Exception as e:
+        print(f"[ERROR] Could not load fallback weather data: {e}")
+        return None
+    
+
+def save_current_weather_to_csv(data):
+    try:
+        with open("data/current_weather.csv", "a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                data["name"],
+                data["main"]["temp"],
+                data["main"]["humidity"],
+                data["main"]["pressure"],
+                data["weather"][0]["description"],
+                data["weather"][0]["icon"],
+                data["wind"]["speed"],
+                datetime.now().isoformat()
+            ])
+    except Exception as e:
+        print(f"[ERROR] Failed to save current weather to CSV: {e}")

@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import customtkinter as ctk
 plt.rcParams["font.family"] = "Lucida Bright"
+
+
 def display_temperature_chart(parent, temps, time_labels):
     # Large chart size, slim fonts
     fig, ax = plt.subplots(figsize=(7.5, 3.2), dpi=100)
@@ -27,8 +29,8 @@ def display_temperature_chart(parent, temps, time_labels):
     ax.plot(temps, color="#FF7E00", marker='o', linewidth=2.5)
 
     # Smaller, cleaner fonts
-    ax.set_title("Today’s Temperature Trend", color=text_color, fontsize=11)
-    ax.set_xlabel("Hour", color=text_color, fontsize=9)
+    ax.set_title("Today’s Temperature Trend", color=text_color, fontsize=10)
+    # ax.set_xlabel("Hour", color=text_color, fontsize=9)
     ax.set_ylabel("°F", color=text_color, fontsize=9)
 
     # X-axis hours
