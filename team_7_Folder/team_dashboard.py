@@ -160,7 +160,7 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
                 ax.plot(monthly["month_str"], monthly["precip"], marker="s", label=city, color=city_colors.get(city, "gray"))
             ax.set_title("Total Monthly Precipitation", color=text_color, fontsize=12, fontweight="bold")
             ax.set_ylabel("Precipitation (mm or inch)", fontsize=10, color=text_color)
-            ax.set_xlabel("Month", fontsize=10, color=text_color)
+            # ax.set_xlabel("Month", fontsize=10, color=text_color)
 
         elif option == "Max Wind Speed by Month":
             plot_cities = [city_filter] if city_filter != "All" else cities
@@ -170,7 +170,7 @@ def render_team_dashboard(parent_frame, csv_path="team_7_Folder/team_weather_dat
                 ax.plot(monthly["month_str"], monthly["max_wind_spd"], marker="x", label=city, color=city_colors.get(city, "gray"))
             ax.set_title("Max Wind Speed by Month", color=text_color, fontsize=12, fontweight="bold")
             ax.set_ylabel("Max Wind Speed", fontsize=10, color=text_color)
-            ax.set_xlabel("Month", fontsize=10, color=text_color)
+            # ax.set_xlabel("Month", fontsize=10, color=text_color)
 
         legend = ax.legend(loc="upper left", prop={"family": "Lucida Bright", "size": 9})
         legend.get_frame().set_facecolor(bg_color)
