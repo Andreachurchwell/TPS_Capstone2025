@@ -19,21 +19,42 @@ print("[DEBUG] API key loaded successfully")
 # ----------------------------------------
 # Fetch current weather by city name
 # ----------------------------------------
+# def fetch_current_weather(city):
+#     try:
+#         url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=imperial"
+#         response = requests.get(url, timeout=10)
+#         response.raise_for_status()
+#         return response.json()
+#     except requests.exceptions.RequestException as e:
+#         print(f"[ERROR] Failed to fetch current weather for {city}: {e}")
+#         # return None
+#                 # Optional fallback: try to load from backup CSV
+#         fallback = load_last_saved_weather(city)
+#         if fallback:
+#             print(f"[INFO] Showing last saved data for {city}")
+#         return fallback
 def fetch_current_weather(city):
     try:
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=imperial"
         response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        return response.json()
+        try:
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as http_err:
+            # Return the actual error JSON if available (like {"cod": "404"})
+            try:
+                error_json = response.json()
+                print(f"[ERROR] HTTP error with JSON: {error_json}")
+                return error_json
+            except Exception:
+                print("[ERROR] Failed to parse error JSON.")
+                return None
     except requests.exceptions.RequestException as e:
         print(f"[ERROR] Failed to fetch current weather for {city}: {e}")
-        # return None
-                # Optional fallback: try to load from backup CSV
         fallback = load_last_saved_weather(city)
         if fallback:
             print(f"[INFO] Showing last saved data for {city}")
         return fallback
-
 
 # ----------------------------------------
 # Fetch current weather by coordinates

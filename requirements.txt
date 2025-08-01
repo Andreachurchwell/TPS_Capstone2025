@@ -1,26 +1,23 @@
-contourpy==1.3.2
-cycler==0.12.1
-fonttools==4.58.0
-kiwisolver==1.4.8
-matplotlib==3.10.3
-numpy==2.2.5
-packaging==25.0
-pandas==2.2.3
-pillow==11.2.1
-pyparsing==3.2.3
-python-dateutil==2.9.0.post0
-pytz==2025.2
-scipy==1.15.3
-seaborn==0.13.2
-six==1.17.0
-tzdata==2025.2
-requests==2.31.0
-tkintermapview==1.28
-python-dotenv==1.0.1
-geopy==2.4.1
-pytest==8.2.2
-openpyxl==3.1.2
-scikit-learn==1.5.0
-loguru==0.7.2
+# === GUI & Visuals ===
+customtkinter==5.2.2        # Modern themed widgets for your main GUI
+tkintermapview==1.28        # Embedded weather map (OpenStreetMap/Radar)
+pillow==11.2.1               # For displaying weather icon images
 
+# === Charts & Data Visualization ===
+matplotlib==3.10.3           # Line charts (temperature trends, forecast visuals)
 
+# === Data Handling & ML ===
+numpy==2.2.5                 # Numeric operations, used in charts & ML
+pandas==2.2.3                # Reading, cleaning, and structuring weather data
+scikit-learn==1.5.0          # Linear Regression for temperature prediction
+
+# === API & Environment ===
+requests==2.31.0             # Used to make API calls to OpenWeather
+python-dotenv==1.0.1         # Loads your API key securely from .env file
+geopy==2.4.1                 # Autocomplete & city location handling
+
+# === Logging & Debugging ===
+loguru==0.7.2                # Clean, colorful debug logs
+
+# === Testing ===
+pytest==8.2.2                # For running your test folder (optional)

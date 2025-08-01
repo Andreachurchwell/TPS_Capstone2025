@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
 from team_7_Folder.team_dashboard import render_team_dashboard
 from features.fonts import title_font, label_font, small_font, button_font, grid_font, popup_font
 from tkinter import Label
-
+import requests
 
 def get_local_time_from_offset(offset_seconds):
     utc_now = datetime.utcnow()
@@ -332,233 +332,215 @@ class MainWindow:
 # get_weather() checks if the user picked a city from autocomplete or typed it in. It fetches weather using the right method, updates the UI with temp, description, icon, and then fills out my 3x3 weather stats grid. It also moves the map to the new location and saves the results to CSV.
 
     def get_weather(self):
-    #   first check if a city was selected from autocomplete(has coordinates)
         location = self.city_entry.selected_location
 
         if location:
-        #    fetch weather by coodinates(more accurate)
             lat = location["lat"]
             lon = location["lon"]
-            weather = fetch_current_weather_by_coords(lat, lon)
-            city_name = location.get("label", "Unknown")  # For debug or error messages
-            
+            try:
+                weather = fetch_current_weather_by_coords(lat, lon)
+                city_name = location.get("label", "Unknown")
+            except requests.exceptions.ConnectionError:
+                self.show_custom_popup("No Internet", "You're offline or the server can't be reached. Please check your connection.")
+                return
+            except Exception as e:
+                print("[ERROR] Unexpected error during coordinate fetch:", e)
+                self.show_custom_popup("Error", "Something went wrong while fetching weather by coordinates.")
+                return
         else:
-            # no location selected, fallback to typed city name
-            #  User typed a city name manually
             city = self.city_entry.get().strip()
             if not city:
-                city = "Selmer"  #default city if nothing is entered
-            weather = fetch_current_weather(city)
-            city_name = city  # For debug or error messages
+                city = "Selmer"
+            try:
+                weather = fetch_current_weather(city)
+                city_name = city
+            except requests.exceptions.ConnectionError:
+                self.show_custom_popup("No Internet", "You're offline or the server can't be reached. Please check your connection.")
+                return
+            except Exception as e:
+                print("[ERROR] Unexpected error during city fetch:", e)
+                self.show_custom_popup("Error", "Something went wrong while fetching weather by city.")
+                return
 
-        #  Debug print to see what city the api returned
         if weather:
             print("[DEBUG] Weather API response says city is:", weather.get("name"))
         else:
             print("[DEBUG] No weather data returned for:", city_name)
 
         if not weather or "main" not in weather or "weather" not in weather:
-            if not weather:
-                # Fallback failed or internet is off
+            # Handle OpenWeather 404 error properly (city not found)
+            if isinstance(weather, dict) and weather.get("cod") == "404":
+                message = (
+                    f"Oops! '{city_name}' doesn't seem to be a valid city.\n"
+                    "Double-check your spelling and try again."
+                )
+            elif weather is None:
+                # Likely offline or connection issue
                 message = (
                     f"Could not fetch weather for '{city_name}'.\n"
-                    "You may be offline, or the city hasn't been saved yet.\n\n"
+                    "You may be offline, or there was a problem reaching the API.\n\n"
                     "Try again when you're connected to the internet."
                 )
             else:
-                # API returned something, but missing expected fields
-                message = (
-                    f"Oops! '{city_name}' doesn't seem to be a real city.\n"
-                    "Double-check your spelling and try again."
-                )
+                message = f"Something went wrong while fetching weather for '{city_name}'."
 
-            messagebox.showerror("Weather Fetch Error", message)
+            self.show_custom_popup("Weather Error", message)
             self.city_entry.focus_set()
             return
 
-# if weather data is valid, update the UI
+        # --- Existing valid weather rendering code ---
         temp_k = weather["main"]["temp"]
         formatted_temp = self.format_temp(temp_k)
         description = weather["weather"][0]["description"].title()
         icon_code = weather["weather"][0]["icon"]
-# update city name label
         self.city_label.configure(text=location.get("label", weather["name"]) if location else weather["name"])
-# update temp and condition label
         self.temp_desc_label.configure(text=f"{formatted_temp}, {description}")
 
-# update weather icon image
         icon_image = get_icon_image(icon_code)
         if icon_image:
             self.icon_label.config(image=icon_image)
-            self.icon_label.image = icon_image  # Keep a reference to avoid garbage collection
+            self.icon_label.image = icon_image
 
-# update map position
         lat = weather["coord"]["lat"]
         lon = weather["coord"]["lon"]
         self.map.update_location(lat, lon)
 
-# clear out old grid labels before adding new ones
         for label in self.detail_labels.values():
             label.destroy()
         self.detail_labels.clear()
 
-# add updated weather into into 3X3 grid
-# row 0
-        # ROW 0
+        # Grid rows...
         self.detail_labels["Humidity"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Humidity')} Humidity: {weather['main']['humidity']}%",
-            font=ctk.CTkFont("Lucida Bright", 14,),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Humidity"].grid(row=0, column=0, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Humidity"].grid(row=0, column=0, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
         self.detail_labels["Wind"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Wind')} Wind: {weather['wind']['speed']} mph",
-            font=ctk.CTkFont("Lucida Bright", 14,),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Wind"].grid(row=0, column=1, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Wind"].grid(row=0, column=1, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
         self.detail_labels["Cloudiness"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Cloudiness')} Cloudiness: {weather['clouds']['all']}%",
-            font=ctk.CTkFont("Lucida Bright", 14, ),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Cloudiness"].grid(row=0, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Cloudiness"].grid(row=0, column=2, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
-        # ROW 1
+        # Row 1
         feels_like = self.format_temp(weather["main"]["feels_like"])
         self.detail_labels["Feels Like"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Feels Like')} Feels Like: {feels_like}",
-            font=ctk.CTkFont("Lucida Bright", 14, ),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Feels Like"].grid(row=1, column=0, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Feels Like"].grid(row=1, column=0, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
         self.detail_labels["Pressure"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Pressure')} Pressure: {weather['main']['pressure']} hPa",
-            font=ctk.CTkFont("Lucida Bright", 14, ),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Pressure"].grid(row=1, column=1, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Pressure"].grid(row=1, column=1, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
         self.detail_labels["Visibility"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Visibility')} Visibility: {weather.get('visibility', 0)/1000:.1f} km",
-            font=ctk.CTkFont("Lucida Bright", 14, ),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Visibility"].grid(row=1, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Visibility"].grid(row=1, column=2, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
-        # ROW 2
+        # Row 2
         wind_gust = weather["wind"].get("gust")
         gust_text = f"{get_detail_icon('Gust')} Gusts: {wind_gust} mph" if wind_gust else "Gusts: N/A"
         self.detail_labels["Wind Gust"] = ctk.CTkLabel(
             self.right_section,
             text=gust_text,
-            font=ctk.CTkFont("Lucida Bright", 14, ),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Wind Gust"].grid(row=2, column=0, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Wind Gust"].grid(row=2, column=0, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
         rain_1h = weather.get("rain", {}).get("1h", 0)
         self.detail_labels["Rain"] = ctk.CTkLabel(
             self.right_section,
             text=f"{get_detail_icon('Rain')} Rain (1h): {rain_1h} mm",
-            font=ctk.CTkFont("Lucida Bright", 14, ),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Rain"].grid(row=2, column=1, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
+        self.detail_labels["Rain"].grid(row=2, column=1, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
         sunrise_time = datetime.fromtimestamp(weather['sys']['sunrise']).strftime("%I:%M %p")
         sunset_time = datetime.fromtimestamp(weather['sys']['sunset']).strftime("%I:%M %p")
         sunrise_sunset_text = f"{get_detail_icon('Sunrise')} {sunrise_time} / {sunset_time}"
-
         self.detail_labels["Sunrise/Sunset"] = ctk.CTkLabel(
             self.right_section,
             text=sunrise_sunset_text,
-            font=ctk.CTkFont("Lucida Bright", 14, ),
+            font=ctk.CTkFont("Lucida Bright", 14),
             text_color="white",
             fg_color="#3A3A3A",
             anchor="w"
         )
-        self.detail_labels["Sunrise/Sunset"].grid(row=2, column=2, sticky="w", padx=20, pady=10, ipady=6,ipadx=6)
-
-
-# save the weather to csv file (for future use or tracking)
+        self.detail_labels["Sunrise/Sunset"].grid(row=2, column=2, sticky="w", padx=20, pady=10, ipady=6, ipadx=6)
 
         save_current_weather_to_csv(weather)
 
-        # City local time (from offset)
+        # Local time and update label
         local_time_str = get_local_time_from_offset(weather.get("timezone", 0))
-
-        # Your local update time
         last_updated_str = datetime.now().strftime("%I:%M %p")
-
-        # Update the label
         self.timestamp_label.configure(
             text=f"{self.city_label.cget('text')} local time: {local_time_str}   |   Last updated: {last_updated_str}"
         )
-   
 
-
-        # --- Get forecast and display temperature trend chart ---
+        # --- Forecast Chart ---
         forecast = fetch_forecast(self.city_label.cget("text"))
-
         if forecast and "list" in forecast:
             try:
                 temps_raw = self.extract_hourly_temps(forecast, hours=8)
                 temps = [self.format_temp_value_only(temp_k) for temp_k in temps_raw]
-
-                # Clear old chart
                 for widget in self.temp_chart_frame.winfo_children():
                     widget.destroy()
-
-                # Create inner frame so border isn't hidden
-                inner_chart_frame = ctk.CTkFrame(
-                    self.temp_chart_frame,
-                    fg_color="transparent"
-                )
+                inner_chart_frame = ctk.CTkFrame(self.temp_chart_frame, fg_color="transparent")
                 inner_chart_frame.pack(padx=10, pady=14, fill="both", expand=True)
-
-                # Create time labels in local time
                 offset_seconds = weather.get("timezone", 0)
                 now_utc = datetime.utcnow()
-
                 time_labels = [
                     (now_utc + timedelta(hours=i) + timedelta(seconds=offset_seconds)).strftime("%I %p")
                     for i in range(8)
                 ]
-
-                # Display chart inside the inner frame
                 display_temperature_chart(inner_chart_frame, temps, time_labels)
-
             except Exception as e:
                 print(f"[ERROR] Failed to process temperature chart: {e}")
         else:
             print(f"[DEBUG] Forecast not available or invalid for {self.city_label.cget('text')}")
-            return
+
+
 
 
     def extract_hourly_temps(self, forecast_data, hours=8):
@@ -778,7 +760,19 @@ class MainWindow:
         popup = tk.Toplevel(self.root)
         popup.title(title)
         popup.configure(bg="#3A3A3A")
-        popup.geometry("300x150")
+        # Center the popup on the main window
+        popup_width = 300
+        popup_height = 150
+
+        self.root.update_idletasks()
+        root_x = self.root.winfo_rootx()
+        root_y = self.root.winfo_rooty()
+        root_width = self.root.winfo_width()
+        root_height = self.root.winfo_height()
+
+        x = root_x + (root_width // 2) - (popup_width // 2)
+        y = root_y + (root_height // 2) - (popup_height // 2)
+        popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
         popup.resizable(False, False) #lock window size
 # add the message label in the center of the popup
         label = tk.Label(
@@ -836,31 +830,21 @@ class MainWindow:
             return round(celsius)
 
 
-
     def update_weather_units(self):
         # toggles between fahrenheit and celsius
         self.use_fahrenheit = not self.unit_switch.get()  # True = °F, False = °C
         self.get_weather()  # makes the temp update right away
 
+        # ✅ If team dashboard is showing, update it too
+        if self.team_dashboard_frame.winfo_ismapped():
+            render_team_dashboard(
+                parent_frame=self.team_dashboard_frame,
+                csv_path="team_7_Folder/team_weather_data.csv",
+                theme=ctk.get_appearance_mode().lower(),
+                unit="Fahrenheit" if self.use_fahrenheit else "Celsius",
+                show_main_callback=self.render_main_view
+            )
 
-
-    # def show_team_dashboard(self):
-    #     # Hide all other main window sections
-    #     self.weather_card.pack_forget()
-    #     self.timestamp_label.pack_forget()
-    #     self.map_and_buttons_frame.pack_forget()
-    #     self.temp_chart_frame.pack_forget()
-
-    #     # Show the team dashboard frame
-    #     self.team_dashboard_frame.pack(fill="both", expand=True, padx=20, pady=20)
-
-    #     # Render the dashboard inside that frame
-    #     render_team_dashboard(
-    #         parent_frame=self.team_dashboard_frame,
-    #         csv_path="team_7_Folder/team_weather_data.csv",
-    #         theme=self.current_theme,
-    #         show_main_callback=self.render_main_view
-    #     )
     def show_team_dashboard(self):
         # Hide all other main window sections
         self.weather_card.pack_forget()
@@ -880,24 +864,53 @@ class MainWindow:
         )
 
 
+    # def render_main_view(self):
+    #     self.team_dashboard_frame.pack_forget()
+
+    #     self.weather_card.pack(pady=10)
+    #     self.timestamp_label.pack()
+
+    #     # Restore map_and_buttons_frame
+    #     self.map_and_buttons_frame.pack(pady=10, anchor='center')
+
+    #     #  Restore inner layout
+    #     self.map_frame.pack_forget()
+    #     self.button_column.pack_forget()
+
+    #     self.map_frame.pack(side="left", padx=10)
+    #     self.button_column.pack(side="left", padx=10)
+
+    #     self.temp_chart_frame.pack(fill="x", padx=10, pady=(0, 10))
+
     def render_main_view(self):
         self.team_dashboard_frame.pack_forget()
-
         self.weather_card.pack(pady=10)
         self.timestamp_label.pack()
-
-        # Restore map_and_buttons_frame
         self.map_and_buttons_frame.pack(pady=10, anchor='center')
-
-        #  Restore inner layout
         self.map_frame.pack_forget()
         self.button_column.pack_forget()
-
         self.map_frame.pack(side="left", padx=10)
         self.button_column.pack(side="left", padx=10)
-
         self.temp_chart_frame.pack(fill="x", padx=10, pady=(0, 10))
 
+    def show_team_dashboard(self):
+        # Hide all other main window sections
+        self.weather_card.pack_forget()
+        self.timestamp_label.pack_forget()
+        self.map_and_buttons_frame.pack_forget()
+        self.temp_chart_frame.pack_forget()
+
+        # Show the team dashboard frame
+        self.team_dashboard_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Always get current theme and unit dynamically
+        render_team_dashboard(
+            parent_frame=self.team_dashboard_frame,
+            csv_path="team_7_Folder/team_weather_data.csv",
+            theme=ctk.get_appearance_mode().lower(),
+            unit="Fahrenheit" if self.use_fahrenheit else "Celsius",  # ✅ pass unit!
+            show_main_callback=self.render_main_view
+        )
 
     def on_close(self):
         # try to safely destroy the map to avoid errors on exit
