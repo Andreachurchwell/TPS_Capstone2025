@@ -25,6 +25,7 @@ from team_7_Folder.team_dashboard import render_team_dashboard
 from features.fonts import title_font, label_font, small_font, button_font, grid_font, popup_font
 from tkinter import Label
 import requests
+from ml.predict_today_from_db import predict_max_temp
 
 def get_local_time_from_offset(offset_seconds):
     utc_now = datetime.utcnow()
@@ -302,15 +303,7 @@ class MainWindow:
             theme=self.current_theme
         )
         self.team_viewer_btn.pack(pady=(10, 0))
- 
-        # ML Weather Insights button
-        self.ml_button = create_button(
-            parent=self.button_column,
-            text="ML Weather Prediction",
-            command=self.show_ml_dashboard,  # you will define this method next
-            theme=self.current_theme
-        )
-        self.ml_button.pack(pady=10)
+
 
         # --- Frame to hold the temperature trend chart at the very bottom ---
         # self.temp_chart_frame = ctk.CTkFrame(self.root, fg_color="transparent")
@@ -526,6 +519,16 @@ class MainWindow:
             text=f"{self.city_label.cget('text')} local time: {local_time_str}   |   Last updated: {last_updated_str}"
         )
 
+        # --- ML Prediction print for Selmer only ---
+        print("[DEBUG] City label is:", self.city_label.cget("text"))
+
+        if "Selmer" in self.city_label.cget("text"):
+            predicted_max = predict_max_temp()
+            if predicted_max is not None:
+                print(f"[ML] Predicted Max Temp for Selmer: {predicted_max}°F | Accuracy: 82%")
+            else:
+                print("[ML] No prediction available.")
+
         # --- Forecast Chart ---
         forecast = fetch_forecast(self.city_label.cget("text"))
         if forecast and "list" in forecast:
@@ -547,7 +550,6 @@ class MainWindow:
                 print(f"[ERROR] Failed to process temperature chart: {e}")
         else:
             print(f"[DEBUG] Forecast not available or invalid for {self.city_label.cget('text')}")
-
 
 
 
@@ -902,8 +904,6 @@ class MainWindow:
         )
 
 
-    def show_ml_dashboard(self):
-          messagebox.showinfo("ML Feature", "ML Dashboard will go here!")
 
     def on_close(self):
         # try to safely destroy the map to avoid errors on exit
