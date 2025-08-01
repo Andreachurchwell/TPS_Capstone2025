@@ -303,6 +303,14 @@ class MainWindow:
         )
         self.team_viewer_btn.pack(pady=(10, 0))
  
+        # ML Weather Insights button
+        self.ml_button = create_button(
+            parent=self.button_column,
+            text="ML Weather Prediction",
+            command=self.show_ml_dashboard,  # you will define this method next
+            theme=self.current_theme
+        )
+        self.ml_button.pack(pady=10)
 
         # --- Frame to hold the temperature trend chart at the very bottom ---
         # self.temp_chart_frame = ctk.CTkFrame(self.root, fg_color="transparent")
@@ -863,25 +871,6 @@ class MainWindow:
             show_main_callback=self.render_main_view
         )
 
-
-    # def render_main_view(self):
-    #     self.team_dashboard_frame.pack_forget()
-
-    #     self.weather_card.pack(pady=10)
-    #     self.timestamp_label.pack()
-
-    #     # Restore map_and_buttons_frame
-    #     self.map_and_buttons_frame.pack(pady=10, anchor='center')
-
-    #     #  Restore inner layout
-    #     self.map_frame.pack_forget()
-    #     self.button_column.pack_forget()
-
-    #     self.map_frame.pack(side="left", padx=10)
-    #     self.button_column.pack(side="left", padx=10)
-
-    #     self.temp_chart_frame.pack(fill="x", padx=10, pady=(0, 10))
-
     def render_main_view(self):
         self.team_dashboard_frame.pack_forget()
         self.weather_card.pack(pady=10)
@@ -911,6 +900,10 @@ class MainWindow:
             unit="Fahrenheit" if self.use_fahrenheit else "Celsius",  # ✅ pass unit!
             show_main_callback=self.render_main_view
         )
+
+
+    def show_ml_dashboard(self):
+          messagebox.showinfo("ML Feature", "ML Dashboard will go here!")
 
     def on_close(self):
         # try to safely destroy the map to avoid errors on exit
