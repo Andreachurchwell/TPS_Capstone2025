@@ -4,7 +4,7 @@ import customtkinter as ctk
 plt.rcParams["font.family"] = "Lucida Bright"
 
 
-def display_temperature_chart(parent, temps, time_labels):
+def display_temperature_chart(parent, temps, time_labels, unit="°F"):
     # Large chart size, slim fonts
     fig, ax = plt.subplots(figsize=(7.5, 3.2), dpi=100)
     plt.subplots_adjust(bottom=0.2)  # add more space at the bottom
@@ -31,7 +31,7 @@ def display_temperature_chart(parent, temps, time_labels):
     # Smaller, cleaner fonts
     ax.set_title("Today’s Temperature Trend", color=text_color, fontsize=10)
     # ax.set_xlabel("Hour", color=text_color, fontsize=9)
-    ax.set_ylabel("°F", color=text_color, fontsize=9)
+    ax.set_ylabel(unit, color=text_color, fontsize=9)
 
     # X-axis hours
     ax.set_xticks(range(len(time_labels)))

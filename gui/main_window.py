@@ -139,7 +139,7 @@ class MainWindow:
             border_width=3,
             border_color="#FFA040"  # Orange border around full card
         )
-        self.weather_card.pack(pady=(30,20), padx=30)
+        self.weather_card.pack(pady=(30,10), padx=30, fill='x')
 
         #  "Last updated" label (moved outside card, below it)
         self.timestamp_label = ctk.CTkLabel(
@@ -160,16 +160,19 @@ class MainWindow:
             self.card_row,
             fg_color="#3a3a3a",
             corner_radius=8,
-            height=240,
+            height=210,
             width=220
         )
         self.left_section.pack(side="left", padx=(0, 8), fill="y",pady=10)
+        self.left_section.pack_propagate(False)
 
         self.city_label = ctk.CTkLabel(
             self.left_section,
             text="Selmer",
             font=ctk.CTkFont(*title_font),
-            text_color="#FFA040"
+            text_color="#FFA040",
+            wraplength=180, 
+            justify='center'
         )
         self.city_label.pack(pady=(20, 6),anchor="center")
 
@@ -193,9 +196,11 @@ class MainWindow:
             fg_color="transparent",
             corner_radius=12,
             border_width=1,
-            border_color="#444444"  # Matches left
+            border_color="#444444",
+            height=210  # Matches left
         )
         self.right_section.pack(side="left", fill="both", expand=True, padx=(0,10), pady=10)
+        self.right_section.pack_propagate(False)
 
 # Holds weather stat labels for updates
         self.detail_labels = {}
@@ -314,7 +319,7 @@ class MainWindow:
             border_width=3,
             border_color="#FFA040"
         )
-        self.temp_chart_frame.pack(padx=20, pady=(10, 20), fill="x")
+        self.temp_chart_frame.pack(padx=20, pady=(10, 20), fill="both", expand=True)
 
 
         # Frame to hold the team dashboard (initially hidden)
@@ -519,7 +524,8 @@ class MainWindow:
             text=f"{self.city_label.cget('text')} local time: {local_time_str}   |   Last updated: {last_updated_str}"
         )
 
-        # --- ML Prediction print for Selmer only ---
+
+        # # --- ML Prediction print for Selmer only ---
         print("[DEBUG] City label is:", self.city_label.cget("text"))
 
         if "Selmer" in self.city_label.cget("text"):
@@ -528,6 +534,8 @@ class MainWindow:
                 print(f"[ML] Predicted Max Temp for Selmer: {predicted_max}°F | Accuracy: 82%")
             else:
                 print("[ML] No prediction available.")
+
+        
 
         # --- Forecast Chart ---
         forecast = fetch_forecast(self.city_label.cget("text"))
@@ -545,7 +553,8 @@ class MainWindow:
                     (now_utc + timedelta(hours=i) + timedelta(seconds=offset_seconds)).strftime("%I %p")
                     for i in range(8)
                 ]
-                display_temperature_chart(inner_chart_frame, temps, time_labels)
+                unit = "°F" if self.use_fahrenheit else "°C"
+                display_temperature_chart(inner_chart_frame, temps, time_labels,unit)
             except Exception as e:
                 print(f"[ERROR] Failed to process temperature chart: {e}")
         else:
