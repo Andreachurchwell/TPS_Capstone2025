@@ -174,13 +174,13 @@ class MainWindow:
             wraplength=180, 
             justify='center'
         )
-        self.city_label.pack(pady=(20, 6),anchor="center")
+        self.city_label.pack(pady=(20, 6),anchor="center", expand=True)
 
         self.icon_label = tk.Label(
             self.left_section,
             bg="#3a3a3a"
         )
-        self.icon_label.pack(pady=(0, 6),anchor="center")
+        self.icon_label.pack(pady=(0, 6),anchor="center", expand=True)
 
         self.temp_desc_label = ctk.CTkLabel(
             self.left_section,
@@ -188,7 +188,7 @@ class MainWindow:
             font=ctk.CTkFont(*label_font),
             text_color="white"
         )
-        self.temp_desc_label.pack(pady=(0, 8),anchor="center")
+        self.temp_desc_label.pack(pady=(0, 8),anchor="center",expand=True)
 
         # --- Right: 3x3 weather detail grid
         self.right_section = ctk.CTkFrame(
@@ -197,9 +197,9 @@ class MainWindow:
             corner_radius=12,
             border_width=1,
             border_color="#444444",
-            height=210  # Matches left
+            height=220  # Matches left
         )
-        self.right_section.pack(side="left", fill="both", expand=True, padx=(0,10), pady=10)
+        self.right_section.pack(side="left", fill="both", expand=True, padx=(0,10), )
         self.right_section.pack_propagate(False)
 
 # Holds weather stat labels for updates
@@ -225,8 +225,8 @@ class MainWindow:
             stat_frame.grid(
                 row=row,
                 column=col,
-                padx=6,
-                pady=6,
+                padx=4,
+                pady=4,
                 sticky="nsew"
             )
 
@@ -238,15 +238,16 @@ class MainWindow:
                 fg_color="transparent",
                 anchor="w"
             )
-            label.pack(fill="both", expand=True, padx=6, pady=4)
+            label.pack(fill="both", expand=True, padx=6, pady=2)
 
             self.detail_labels[key] = label
 
         # Stretch evenly
         for i in range(3):
-            self.right_section.grid_columnconfigure(i, weight=1)
+            self.right_section.grid_columnconfigure(i, weight=1, uniform="row")
 
-
+        for i in range(3):
+            self.right_section.grid_rowconfigure(i, weight=1, uniform="row")
         # Frame to hold both the map and the buttons side by side
         self.map_and_buttons_frame = ctk.CTkFrame(self.root, fg_color="transparent")
         self.map_and_buttons_frame.pack(pady=10)
