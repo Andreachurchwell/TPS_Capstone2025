@@ -3,15 +3,16 @@ import pandas as pd
 import joblib
 from datetime import date
 
+
 def predict_max_temp():
     try:
-        # Load the trained model
+        # Load trained model
         model = joblib.load("ml/selmer_temp_model.pkl")
 
-        # Connect to the weather database
+        # Connect to DB
         conn = sqlite3.connect("data/weather.db")
 
-        # 🧡 STEP 1: Try tomorrow's forecast first
+        # Step 1: Try tomorrow's forecast
         query = """
         SELECT min_temp, wind_speed
         FROM forecast_data
@@ -20,7 +21,7 @@ def predict_max_temp():
         """
         row = pd.read_sql_query(query, conn)
 
-        # 🔁 STEP 2: If nothing found, fallback to today's forecast
+        # Step 2: Fallback to today's forecast if needed
         if row.empty:
             print("[DEBUG] No forecast found for tomorrow. Trying today instead.")
             fallback_query = """
@@ -37,17 +38,22 @@ def predict_max_temp():
             print("[ML] No forecast data found for Selmer.")
             return None
 
-        # ✅ Match training column names
+        # Match training format
         row = row.rename(columns={"wind_speed": "max_wind_speed"})
 
-        # 🧪 Print inputs used for prediction
         print("[DEBUG] Forecast data used:", row.to_dict(orient="records"))
 
-        # Format and predict
         X = row[["min_temp", "max_wind_speed"]]
         predicted_max = model.predict(X)[0]
+        predicted_max = round(predicted_max, 1)
 
-        return round(predicted_max, 1)
+        # ✅ Load real accuracy
+        accuracy = get_model_accuracy()
+        if accuracy is None:
+            print("[ML] Accuracy could not be loaded. Skipping prediction.")
+            return None
+
+        return predicted_max, accuracy
 
     except Exception as e:
         print(f"[ML ERROR] {e}")
@@ -58,7 +64,7 @@ def get_model_accuracy():
     try:
         with open("ml/model_accuracy.txt", "r") as f:
             score = float(f.read().strip())
-            return round(score * 100, 1)  # Example: 82.3%
+            return round(score * 100, 1)  # Turn 0.7973 → 79.7%
     except Exception as e:
         print(f"[ML ERROR] Failed to load accuracy: {e}")
         return None

@@ -7,7 +7,7 @@ plt.rcParams["font.family"] = "Lucida Bright"
 def display_temperature_chart(parent, temps, time_labels, unit="°F"):
     # Large chart size, slim fonts
     fig, ax = plt.subplots(figsize=(7.5, 3.2), dpi=100)
-    plt.subplots_adjust(bottom=0.2)  # add more space at the bottom
+    plt.subplots_adjust(top=0.95, bottom=0.26)  # balance top and bottom spacing
 
     # Theme-aware styling
     mode = ctk.get_appearance_mode().lower()
@@ -29,7 +29,7 @@ def display_temperature_chart(parent, temps, time_labels, unit="°F"):
     ax.plot(temps, color="#FF7E00", marker='o', linewidth=2.5)
 
     # Smaller, cleaner fonts
-    ax.set_title("Today’s Temperature Trend", color=text_color, fontsize=10)
+    # ax.set_title("Today’s Temperature Trend", color=text_color, fontsize=10)
     # ax.set_xlabel("Hour", color=text_color, fontsize=9)
     ax.set_ylabel(unit, color=text_color, fontsize=9)
 
@@ -39,7 +39,7 @@ def display_temperature_chart(parent, temps, time_labels, unit="°F"):
 
     # Grid and layout
     ax.grid(True, linestyle='--', alpha=0.3)
-    plt.tight_layout(pad=3)
+    # plt.tight_layout(pad=3)
 
     # Embed in GUI
     canvas = FigureCanvasTkAgg(fig, master=parent)

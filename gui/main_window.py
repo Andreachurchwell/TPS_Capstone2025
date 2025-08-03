@@ -6,7 +6,6 @@ from core.icons import get_icon_image, get_detail_icon
 from features.storage import save_current_weather_to_csv, save_forecast_to_csv
 from features.dark_light_mode import ThemeToggle 
 from features.map_feature import MapFeature
-from tkinter import messagebox
 from PIL import Image, ImageTk
 import customtkinter as ctk
 import os
@@ -22,10 +21,11 @@ from geopy.geocoders import Nominatim
 from features.dark_light_mode import theme_colors
 from datetime import datetime, timedelta
 from team_7_Folder.team_dashboard import render_team_dashboard
-from features.fonts import title_font, label_font, small_font, button_font, grid_font, popup_font
-from tkinter import Label
+from features.fonts import title_font, label_font,button_font,popup_font
 import requests
 from ml.predict_today_from_db import predict_max_temp
+
+
 
 def get_local_time_from_offset(offset_seconds):
     utc_now = datetime.utcnow()
@@ -150,6 +150,14 @@ class MainWindow:
         )
         self.timestamp_label.pack(pady=(5, 10), anchor="center")
 
+        # ML Prediction label (initially blank)
+        self.ml_prediction_label = ctk.CTkLabel(
+            master=self.root,
+            text="",
+            font=ctk.CTkFont("Lucida Bright", 14, "bold"),
+            text_color="#FFA040" 
+        )
+        self.ml_prediction_label.pack(pady=(0, 10), anchor="center")
 
         # Top row container
         self.card_row = ctk.CTkFrame(self.weather_card, fg_color="transparent")
@@ -160,8 +168,8 @@ class MainWindow:
             self.card_row,
             fg_color="#3a3a3a",
             corner_radius=8,
-            height=210,
-            width=220
+            height=195,
+            width=195
         )
         self.left_section.pack(side="left", padx=(0, 8), fill="y",pady=10)
         self.left_section.pack_propagate(False)
@@ -197,7 +205,7 @@ class MainWindow:
             corner_radius=12,
             border_width=1,
             border_color="#444444",
-            height=220  # Matches left
+            height=195  # Matches left
         )
         self.right_section.pack(side="left", fill="both", expand=True, padx=(0,10), )
         self.right_section.pack_propagate(False)
@@ -220,13 +228,14 @@ class MainWindow:
                 fg_color="#3A3A3A",       # same as right_section background
                 corner_radius=8,
                 border_width=1,
-                border_color="#5A5A5A"    # subtle border for contrast
+                border_color="#5A5A5A",
+                height=50    # subtle border for contrast
             )
             stat_frame.grid(
                 row=row,
                 column=col,
-                padx=4,
-                pady=4,
+                padx=2,
+                pady=2,
                 sticky="nsew"
             )
 
@@ -238,7 +247,7 @@ class MainWindow:
                 fg_color="transparent",
                 anchor="w"
             )
-            label.pack(fill="both", expand=True, padx=6, pady=2)
+            label.pack(fill="both", expand=True, padx=4, pady=2)
 
             self.detail_labels[key] = label
 
@@ -318,9 +327,10 @@ class MainWindow:
             fg_color="#3A3A3A",
             corner_radius=12,
             border_width=3,
-            border_color="#FFA040"
+            border_color="#FFA040",
+            height=160 
         )
-        self.temp_chart_frame.pack(padx=20, pady=(10, 20), fill="both", expand=True)
+        self.temp_chart_frame.pack(padx=20, pady=(10, 20), fill="x")
 
 
         # Frame to hold the team dashboard (initially hidden)
@@ -530,11 +540,16 @@ class MainWindow:
         print("[DEBUG] City label is:", self.city_label.cget("text"))
 
         if "Selmer" in self.city_label.cget("text"):
-            predicted_max = predict_max_temp()
-            if predicted_max is not None:
-                print(f"[ML] Predicted Max Temp for Selmer: {predicted_max}°F | Accuracy: 82%")
+            result = predict_max_temp()
+            if result:
+                predicted_temp, accuracy = result
+                self.ml_prediction_label.configure(
+                    text=f"ML Predicted Max Temp for Selmer: {predicted_temp:.1f}°F | Accuracy: {accuracy}%"
+                )
             else:
-                print("[ML] No prediction available.")
+                self.ml_prediction_label.configure(text="")
+        else:
+            self.ml_prediction_label.configure(text="")
 
         
 
