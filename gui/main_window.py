@@ -555,8 +555,11 @@ class MainWindow:
 
         # --- Forecast Chart ---
         forecast = fetch_forecast(self.city_label.cget("text"))
+        
+      
         if forecast and "list" in forecast:
             try:
+               
                 temps_raw = self.extract_hourly_temps(forecast, hours=8)
                 temps = [self.format_temp_value_only(temp_k) for temp_k in temps_raw]
                 for widget in self.temp_chart_frame.winfo_children():
