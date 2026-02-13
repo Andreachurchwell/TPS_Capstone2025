@@ -60,7 +60,7 @@ OPENWEATHER_API_KEY=your_api_key_here
 python app.py
 ```
 ## 🗂️ Project Structure
-
+```
 TPS_Capstone2025/
 ├── app.py                  # Entry point for the GUI
 ├── config.py               # API and environment settings
@@ -76,7 +76,7 @@ TPS_Capstone2025/
 ├── .env                    # API key (not committed)
 └── README.md
 
- 
+ ```
 
 ### 🙌 Acknowledgments
 - OpenWeatherMap – For providing detailed current and forecast weather data
