@@ -76,6 +76,7 @@ TPS_Capstone2025/
 ├── .env                    # API key (not committed)
 └── README.md
 
+ 
 
 ### 🙌 Acknowledgments
 - OpenWeatherMap – For providing detailed current and forecast weather data
